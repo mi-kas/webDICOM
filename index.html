@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>webDICOM</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+        <link rel="stylesheet" href="css/main.css">
+
+        <!-- jQuery -->
+        <script src="js/libs/jquery-1.9.0/jquery.min.js"></script>
+
+        <!-- External jsdicom-lib -->
+        <script type="text/javascript" src="js/libs/jsdicom-lib/src/dcmdict.js"></script>
+        <script type="text/javascript" src="js/libs/jsdicom-lib/src/binutils.js"></script>
+        <script type="text/javascript" src="js/libs/jsdicom-lib/src/dcmfile.js"></script>
+        <script type="text/javascript" src="js/libs/jsdicom-lib/src/dicomparser.js"></script>
+        <script type="text/javascript" src="js/libs/jsdicom-lib/src/transfersyntax.js"></script>
+        <script type="text/javascript" src="js/libs/jsdicom-lib/src/qr.js"></script>
+
+        <script>
+            $(document).ready(function() {
+                $('#uploadForm').submit(function(event) {
+                    event.preventDefault();
+                    alert('Hallo');
+                });
+
+                $('input').change(function(e) {
+                    var files = e.target.files;
+
+                    var reader = new FileReader();
+                    reader.readAsArrayBuffer(files[0]);
+
+                    reader.onloadend = function(evt) {
+                        if (evt.target.readyState === FileReader.DONE) {
+
+                            var array = new Uint8Array(evt.target.result);
+                            var parser = new DicomParser(array);
+                            var file = parser.parse_file();
+                            console.log(file);
+                            var canvas = document.getElementById('myCanvas');
+                            canvas.height = file.Rows;
+                            canvas.width = file.Columns;
+
+                            if (canvas.getContext) {
+                                var context = canvas.getContext("2d");
+                                context.fillStyle = "rgb(0,0,0)";
+                                context.fillRect(0, 0, file.Columns, file.Rows);
+                                var imgData = context.createImageData(file.Columns, file.Rows);
+                                var pixelData = file.PixelData;
+
+//                                var lowestVisibleValue = 0;
+//                                var highestVisibleValue = 0;
+
+                                if (typeof file.WindowCenter !== 'undefined' && typeof file.WindowWidth !== 'undefined') {
+                                    if ($.isArray(file.WindowCenter) && $.isArray(file.WindowWidth)) {
+                                        var lowestVisibleValue = file.WindowCenter[0] - file.WindowWidth[0] / 2.0;
+                                        var highestVisibleValue = file.WindowCenter[0] + file.WindowWidth[0] / 2.0;
+
+                                    } else {
+                                        var lowestVisibleValue = file.WindowCenter - file.WindowWidth / 2.0;
+                                        var highestVisibleValue = file.WindowCenter + file.WindowWidth / 2.0;
+                                    }
+
+                                } else {
+                                    var lowestVisibleValue = 85 - 171 / 2.0;
+                                    var highestVisibleValue = 85 + 171 / 2.0;
+                                }
+
+
+                                for (var i = 0; i < imgData.data.length; i += 4)
+                                {
+                                    var intensity = pixelData[(i / 4)];
+
+                                    if (typeof file.RescaleSlope !== 'undefined' && typeof file.RescaleIntercept !== 'undefined') {
+                                        intensity = intensity * file.RescaleSlope + file.RescaleIntercept;
+                                    }
+
+                                    intensity = (intensity - lowestVisibleValue) / (highestVisibleValue - lowestVisibleValue);
+                                    if (intensity < 0.0)
+                                        intensity = 0.0;
+                                    if (intensity > 1.0)
+                                        intensity = 1.0;
+
+                                    intensity *= 255.0;
+
+                                    imgData.data[i + 0] = intensity; // R
+                                    imgData.data[i + 1] = intensity; // G
+                                    imgData.data[i + 2] = intensity; // B
+                                    imgData.data[i + 3] = 255; // alpha
+                                }
+
+
+                                context.putImageData(imgData, 0, 0);
+                            }
+                        }
+                    };
+                });
+            });
+        </script>
+    </head>
+    <body>
+        <form id="uploadForm">
+            <input type="file" accept="application/dicom" id="dicomfiles" multiple /> 
+        </form>
+        <canvas id="myCanvas"></canvas>
+    </body>
+</html>
