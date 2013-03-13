@@ -6,7 +6,7 @@ function CanvasPainter(canvasId) {
     this.ww;
     this.wc;
     this.scale = 1;
-    this.pan = [0,0];
+    this.pan = [100, 0];
 }
 
 CanvasPainter.prototype.setFile = function(file) {
@@ -28,9 +28,6 @@ CanvasPainter.prototype.setPan = function(panx, pany) {
 };
 
 CanvasPainter.prototype.drawImg = function() {
-    tempcanvas = document.createElement("canvas");
-    tempcanvas.height = this.currentFile.Rows;
-    tempcanvas.width = this.currentFile.Columns;
     this.canvas.height = this.currentFile.Rows;
     this.canvas.width = this.currentFile.Columns;
 
@@ -75,7 +72,18 @@ CanvasPainter.prototype.drawImg = function() {
         imgData.data[i + 2] = intensity; // B
         imgData.data[i + 3] = 255; // alpha
     }
+
+    var ratio = this.currentFile.Columns / this.currentFile.Rows;
+    var targetWidth = this.currentFile.Rows * this.scale * ratio;
+    var targetHeight = this.currentFile.Columns * this.scale * ratio;
+    var xOffset = (this.canvas.width - targetWidth) / 2 + this.pan[0];
+    var yOffset = (this.canvas.height - targetHeight) / 2 + this.pan[1];
     
-    this.context.putImageData(imgData, 20, 20);
+    var tempcanvas = document.createElement("canvas");
+    tempcanvas.height = this.currentFile.Rows;
+    tempcanvas.width = this.currentFile.Columns;
+    var tempContext = tempcanvas.getContext("2d");
     
+    tempContext.putImageData(imgData, 0, 0);
+    this.context.drawImage(tempcanvas, xOffset, yOffset, targetWidth, targetHeight);
 };
