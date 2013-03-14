@@ -34,16 +34,8 @@
                     dcmViewer.loadFiles(e.target.files);
                 });
 
-                $('#windowLevel-button').click(function() {
-                    dcmViewer.setCurrentTool('Window level');
-                });
-                
-                $('#move-button').click(function() {
-                    dcmViewer.setCurrentTool('Move');
-                });
-                
-                $('#zoom-button').click(function() {
-                    dcmViewer.setCurrentTool('Zoom');
+                $('.toolbox-buttons').click(function(e) {
+                    dcmViewer.setCurrentTool((this).value);
                 });
                 
                 $('#myCanvas').click(function() {
@@ -58,9 +50,9 @@
             <input type="file" accept="application/dicom" id="dicomfiles" multiple /> 
         </form>
         <div id="toolbox">
-            <button type="button" id="windowLevel-button">Window level</button>
-            <button type="button" id="move-button">Move</button>
-            <button type="button" id="zoom-button">Zoom</button>
+            <button type="button" class="toolbox-buttons" value="Window level">Window level</button>
+            <button type="button" class="toolbox-buttons" value ="Move">Move</button>
+            <button type="button" class="toolbox-buttons" value ="Zoom">Zoom</button>
         </div>
         <canvas id="myCanvas" width="512" height="512"></canvas>
     </body>
