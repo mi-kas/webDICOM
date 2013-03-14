@@ -2,12 +2,18 @@
 function DcmViewer(canvasId) {
     this.canvasId = canvasId;
     this.files = [];
+    this.painter;
+    this.toolbox;
 }
 
 DcmViewer.prototype.init = function() {
-//    this.canvas = document.getElementById(this.canvasId);
-//    this.context = canvas.getContext("2d");
     this.painter = new CanvasPainter(this.canvasId);
+    this.toolbox = new Toolbox(this.painter);
+    // TODO: Add mouse events on canvas
+};
+
+DcmViewer.prototype.setCurrentTool = function(toolName) {
+    this.toolbox.setCurrentTool(toolName);
 };
 
 DcmViewer.prototype.loadFiles = function(rawFiles) {
@@ -27,8 +33,6 @@ DcmViewer.prototype.loadFile = function(rawFile) {
             var array = new Uint8Array(evt.target.result);
             var parser = new DicomParser(array);
             var file = parser.parse_file();
-
-            console.log(file);
             var str = '';
 
             // TODO: Hier noch überprüfung auf RescaleSlope, Intercept, ww & wc setzen
@@ -42,7 +46,7 @@ DcmViewer.prototype.loadFile = function(rawFile) {
             }
             if(typeof file.WindowCenter === 'undefined') {
                file.WindowCenter = 85;
-                str += 'WindowCenter undefined ';
+                str += 'WindowCenter undefined, ';
             } 
             if(typeof file.WindowWidth === 'undefined') {
                file.WindowWidth = 171;

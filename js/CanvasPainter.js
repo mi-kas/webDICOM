@@ -6,25 +6,37 @@ function CanvasPainter(canvasId) {
     this.ww;
     this.wc;
     this.scale = 1;
-    this.pan = [0, 0];
+    this.pan = [0, 0]; //[panX, panY]
 }
 
 CanvasPainter.prototype.setFile = function(file) {
     this.currentFile = file;
 };
 
-CanvasPainter.prototype.setWindowing = function(ww, wc) {
+CanvasPainter.prototype.setWindowing = function(wc, ww) {
     this.ww = ww;
     this.wc = wc;
+};
+
+CanvasPainter.prototype.getWindowing = function() {
+    return [this.wc, this.ww];
 };
 
 CanvasPainter.prototype.setScale = function(scale) {
     this.scale = scale;
 };
 
-CanvasPainter.prototype.setPan = function(panx, pany) {
-    this.pan[0] = panx;
-    this.pan[1] = pany;
+CanvasPainter.prototype.getScale = function() {
+    return this.scale;
+};
+
+CanvasPainter.prototype.setPan = function(panX, panY) {
+    this.pan[0] = panX;
+    this.pan[1] = panY;
+};
+
+CanvasPainter.prototype.getPan = function() {
+    return this.pan;
 };
 
 CanvasPainter.prototype.drawImg = function() {
@@ -42,11 +54,8 @@ CanvasPainter.prototype.drawImg = function() {
         var intensity = pixelData[(i / 4)];
         intensity = intensity * this.currentFile.RescaleSlope + this.currentFile.RescaleIntercept;
         intensity = (intensity - lowestVisibleValue) / (highestVisibleValue - lowestVisibleValue);
-        if(intensity < 0.0)
-            intensity = 0.0;
-        if(intensity > 1.0)
-            intensity = 1.0;
-
+        intensity = intensity < 0.0 ? 0.0 : intensity;
+        intensity = intensity > 1.0 ? 1.0 : intensity;
         intensity *= 255.0;
 
         imgData.data[i + 0] = intensity; // R

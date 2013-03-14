@@ -16,30 +16,52 @@
         <script type="text/javascript" src="js/libs/jsdicom-lib/src/dicomparser.js"></script>
         <script type="text/javascript" src="js/libs/jsdicom-lib/src/transfersyntax.js"></script>
         <script type="text/javascript" src="js/libs/jsdicom-lib/src/qr.js"></script>
-        
-         <script type="text/javascript" src="js/DcmViewer.js"></script>
-         <script type="text/javascript" src="js/CanvasPainter.js"></script>
+
+        <script type="text/javascript" src="js/DcmViewer.js"></script>
+        <script type="text/javascript" src="js/CanvasPainter.js"></script>
+        <script type="text/javascript" src="js/Toolbox.js"></script>
 
         <script>
             $(document).ready(function() {
-               var dcmViewer = new DcmViewer('myCanvas');
-               dcmViewer.init();
+                var dcmViewer = new DcmViewer('myCanvas');
+                dcmViewer.init();
 
-                $('#uploadForm').submit(function(event) {
-                    event.preventDefault();
-                    alert('Hallo');
+                $('#uploadForm').submit(function(e) {
+                    e.preventDefault();
                 });
 
                 $('input').change(function(e) {
                     dcmViewer.loadFiles(e.target.files);
                 });
+
+                $('#windowLevel-button').click(function() {
+                    dcmViewer.setCurrentTool('Window level');
+                });
+                
+                $('#move-button').click(function() {
+                    dcmViewer.setCurrentTool('Move');
+                });
+                
+                $('#zoom-button').click(function() {
+                    dcmViewer.setCurrentTool('Zoom');
+                });
+                
+                $('#myCanvas').click(function() {
+                    dcmViewer.toolbox.currentTool();
+                });
             });
         </script>
     </head>
     <body>
+
         <form id="uploadForm">
             <input type="file" accept="application/dicom" id="dicomfiles" multiple /> 
         </form>
+        <div id="toolbox">
+            <button type="button" id="windowLevel-button">Window level</button>
+            <button type="button" id="move-button">Move</button>
+            <button type="button" id="zoom-button">Zoom</button>
+        </div>
         <canvas id="myCanvas" width="512" height="512"></canvas>
     </body>
 </html>
