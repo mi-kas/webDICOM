@@ -11,11 +11,16 @@ function CanvasPainter(canvasId) {
 
 CanvasPainter.prototype.setFile = function(file) {
     this.currentFile = file;
+    this.wc = file.WindowCenter;
+    this.ww = file.WindowWidth;
 };
 
 CanvasPainter.prototype.setWindowing = function(wc, ww) {
-    this.ww = ww;
+//    var relX = (wc / this.currentFile.Columns) * this.wc + this.wc;
+//    var relY = (ww / this.currentFile.Rows) * this.ww + this.ww;
+    
     this.wc = wc;
+    this.ww = ww;
 };
 
 CanvasPainter.prototype.getWindowing = function() {
@@ -40,10 +45,14 @@ CanvasPainter.prototype.getPan = function() {
 };
 
 CanvasPainter.prototype.drawImg = function() {
+//    console.log('draw image ' + this.ww + ' ' + this.wc);
+
     this.canvas.height = this.currentFile.Rows;
     this.canvas.width = this.currentFile.Columns;
-    var lowestVisibleValue = this.currentFile.WindowCenter - this.currentFile.WindowWidth / 2.0;
-    var highestVisibleValue = this.currentFile.WindowCenter + this.currentFile.WindowWidth / 2.0;
+//    var lowestVisibleValue = this.currentFile.WindowCenter - this.currentFile.WindowWidth / 2.0;
+//    var highestVisibleValue = this.currentFile.WindowCenter + this.currentFile.WindowWidth / 2.0;
+    var lowestVisibleValue = this.wc - this.ww / 2.0;
+    var highestVisibleValue = this.wc + this.ww / 2.0;
 
     this.context.fillStyle = "rgb(0,0,0)";
     this.context.fillRect(0, 0, this.currentFile.Columns, this.currentFile.Rows);

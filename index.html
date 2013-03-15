@@ -3,11 +3,10 @@
     <head>
         <title>webDICOM</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-
         <link rel="stylesheet" href="css/main.css">
 
         <!-- jQuery -->
-        <script src="js/libs/jquery-1.9.0/jquery.min.js"></script>
+        <script type="text/javascript" src="js/libs/jquery-1.9.0/jquery.min.js"></script>
 
         <!-- External jsdicom-lib -->
         <script type="text/javascript" src="js/libs/jsdicom-lib/src/dcmdict.js"></script>
@@ -17,14 +16,19 @@
         <script type="text/javascript" src="js/libs/jsdicom-lib/src/transfersyntax.js"></script>
         <script type="text/javascript" src="js/libs/jsdicom-lib/src/qr.js"></script>
 
+        <!--Dicom Viewer-->
         <script type="text/javascript" src="js/DcmViewer.js"></script>
         <script type="text/javascript" src="js/CanvasPainter.js"></script>
         <script type="text/javascript" src="js/Toolbox.js"></script>
 
+        <!-- Tools -->
+        <script type="text/javascript" src="js/tools/WindowLevel.js"></script>
+        <script type="text/javascript" src="js/tools/Zoom.js"></script>
+        <script type="text/javascript" src="js/tools/Move.js"></script>
+
         <script>
             $(document).ready(function() {
                 var dcmViewer = new DcmViewer('myCanvas');
-                dcmViewer.init();
 
                 $('#uploadForm').submit(function(e) {
                     e.preventDefault();
@@ -34,13 +38,33 @@
                     dcmViewer.loadFiles(e.target.files);
                 });
 
-                $('.toolbox-buttons').click(function(e) {
+                $('.toolbox-buttons').click(function() {
                     dcmViewer.setCurrentTool((this).value);
                 });
-                
-                $('#myCanvas').click(function() {
-                    dcmViewer.toolbox.currentTool();
+
+                $('#myCanvas').click(function(e) {
+                    dcmViewer.eventHandler(e);
                 });
+                $('#myCanvas').mousemove(function(e) {
+                    dcmViewer.eventHandler(e);
+                });
+                $('#myCanvas').mousedown(function(e) {
+                    dcmViewer.eventHandler(e);
+                });
+                $('#myCanvas').mouseup(function(e) {
+                    dcmViewer.eventHandler(e);
+                });
+                $('#myCanvas').mouseout(function(e) {
+                    dcmViewer.eventHandler(e);
+                });
+                $('#myCanvas').bind('mousewheel', function(e) {
+                    dcmViewer.scrollHandler(e);
+                });
+                // scroll event for firefox
+                $('#myCanvas').bind('DOMMouseScroll', function(e) {
+                    dcmViewer.scrollHandler(e);
+                });
+
             });
         </script>
     </head>
@@ -51,9 +75,9 @@
         </form>
         <div id="toolbox">
             <button type="button" class="toolbox-buttons" value="Window level">Window level</button>
-            <button type="button" class="toolbox-buttons" value ="Move">Move</button>
-            <button type="button" class="toolbox-buttons" value ="Zoom">Zoom</button>
+            <button type="button" class="toolbox-buttons" value="Move">Move</button>
+            <button type="button" class="toolbox-buttons" value="Zoom">Zoom</button>
         </div>
-        <canvas id="myCanvas" width="512" height="512"></canvas>
+        <canvas id="myCanvas" width="512" height="512">Your browser doesn't support HTML5</canvas>
     </body>
 </html>
