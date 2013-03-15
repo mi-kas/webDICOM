@@ -17,6 +17,10 @@ function WindowLevel() {
 WindowLevel.prototype.click = function() {
 };
 
+WindowLevel.prototype.dblclick = function(x, y, painter) {
+    painter.reset();
+};
+
 WindowLevel.prototype.mousedown = function() {
     this.started = true;
 };

@@ -44,6 +44,14 @@ CanvasPainter.prototype.getPan = function() {
     return this.pan;
 };
 
+CanvasPainter.prototype.reset = function() {
+    this.wc = this.currentFile.WindowCenter;
+    this.ww = this.currentFile.WindowWidth;
+    this.scale = 1;
+    this.pan = [0, 0];
+    this.drawImg();
+};
+
 CanvasPainter.prototype.drawImg = function() {
 //    console.log('draw image ' + this.ww + ' ' + this.wc);
 

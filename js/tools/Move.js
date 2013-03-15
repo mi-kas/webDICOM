@@ -15,6 +15,10 @@ function Move() {
 Move.prototype.click = function() {
 };
 
+Move.prototype.dblclick = function(x, y, painter) {
+    painter.reset();
+};
+
 Move.prototype.mousedown = function() {
     this.started = true;
 };
