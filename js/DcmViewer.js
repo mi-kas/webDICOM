@@ -4,6 +4,7 @@ function DcmViewer(canvasId) {
     this.files = [];
     this.painter = new CanvasPainter(this.canvasId);
     this.toolbox = new Toolbox(this.painter);
+    this.scrollIndex = 0;
 }
 
 DcmViewer.prototype.setCurrentTool = function(toolName) {
@@ -11,14 +12,14 @@ DcmViewer.prototype.setCurrentTool = function(toolName) {
 };
 
 DcmViewer.prototype.loadFiles = function(rawFiles) {
+    this.files = [];
     for(var i = 0; i < rawFiles.length; i++) {
-        this.loadFile(rawFiles[i], i);
+        this.loadFile(rawFiles[i], i, rawFiles.length);
     }
 };
 
-DcmViewer.prototype.loadFile = function(rawFile) {
+DcmViewer.prototype.loadFile = function(rawFile, index, end) {
     var _this = this;
-    var tmpPainter = this.painter;
     var reader = new FileReader();
     reader.readAsArrayBuffer(rawFile);
     reader.onload = function(evt) {
@@ -28,6 +29,9 @@ DcmViewer.prototype.loadFile = function(rawFile) {
             var file = parser.parse_file();
             _this.files.push(file);
             var str = '';
+            console.log(file);
+            file.Scale = 1;
+            file.Pan = [0, 0];
 
             if(typeof file.RescaleSlope === 'undefined') {
                 file.RescaleSlope = 1;
@@ -55,8 +59,10 @@ DcmViewer.prototype.loadFile = function(rawFile) {
             }
             str.length > 0 ? console.log(str) : str;
 
-            _this.painter.setFile(file);
-            _this.painter.drawImg();
+            if(index === end - 1) {
+                _this.painter.setFile(file);
+                _this.painter.drawImg();
+            }
         }
     };
 };
@@ -65,7 +71,6 @@ DcmViewer.prototype.eventHandler = function(e) {
     // firefox doesn't have offsetX
     e.x = !e.offsetX ? (e.pageX - $(e.target).offset().left) : e.offsetX;
     e.y = !e.offsetY ? (e.pageY - $(e.target).offset().top) : e.offsetY;
-//    console.log(e.x +' '+ e.y);
 
     // pass the event to the currentTool of the toolbox
     var eventFunc = this.toolbox.currentTool[e.type];
@@ -74,8 +79,33 @@ DcmViewer.prototype.eventHandler = function(e) {
     }
 };
 
-DcmViewer.prototype.scrollHandler = function(e) {
+DcmViewer.prototype.scrollHandler = function(evt) {
     if(this.files.length > 1) {
-        
+        evt.preventDefault();
+        var e = evt.originalEvent;
+
+        if(e.detail) {
+            // Firefox
+            var delta = e.detail * (-1000);
+            this.scrollIndex = (delta <= -1000) ? this.scrollIndex + 1 : this.scrollIndex - 1;
+        } else {
+            // Non firefox browsers
+            var delta = e.wheelDelta;
+            if(delta > 0) {
+                this.scrollIndex = (delta > 25) ? this.scrollIndex + 1 : this.scrollIndex;
+            } else {
+                this.scrollIndex = (delta < -25) ? this.scrollIndex - 1 : this.scrollIndex;
+            }
+        }
+        this.scrollIndex = (this.scrollIndex < 0) ? this.files.length - 1 : (this.scrollIndex > this.files.length - 1) ? 0 : this.scrollIndex;
+
+        // save modified values (wc, ww, pan, scale) of the image
+        this.painter.currentFile.WindowCenter = this.painter.getWindowing()[0];
+        this.painter.currentFile.WindowWidth = this.painter.getWindowing()[1];
+        this.painter.currentFile.Scale = this.painter.getScale();
+        this.painter.currentFile.Pan = this.painter.getPan();
+
+        this.painter.setFile(this.files[this.scrollIndex]);
+        this.painter.drawImg();
     }
 };

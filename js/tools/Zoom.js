@@ -1,6 +1,7 @@
 /*
  * All tools must implement following functions
  * click(x, y, painter)
+ * dblclick(x, y, painter)
  * mousedown(x, y, painter)
  * mouseup(x, y, painter)
  * mousemove(x, y, painter)
@@ -31,7 +32,6 @@ Zoom.prototype.mousemove = function(x, y, painter) {
     if(this.started) {
 //        var deltaX = x - this.curX;
         var deltaY = this.curY - y;
-
         painter.setScale(painter.getScale() + deltaY / 100.0);
         painter.drawImg();
     }

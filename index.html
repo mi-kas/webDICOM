@@ -30,10 +30,6 @@
             $(document).ready(function() {
                 var dcmViewer = new DcmViewer('myCanvas');
 
-                $('#uploadForm').submit(function(e) {
-                    e.preventDefault();
-                });
-
                 $('input').change(function(e) {
                     dcmViewer.loadFiles(e.target.files);
                 });
@@ -61,6 +57,7 @@
                     dcmViewer.eventHandler(e);
                 });
                 $('#myCanvas').bind('mousewheel', function(e) {
+                    e.preventDefault();
                     dcmViewer.scrollHandler(e);
                 });
                 // scroll event for firefox

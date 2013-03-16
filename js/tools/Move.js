@@ -1,6 +1,7 @@
 /*
  * All tools must implement following functions
  * click(x, y, painter)
+ * dblclick(x, y, painter)
  * mousedown(x, y, painter)
  * mouseup(x, y, painter)
  * mousemove(x, y, painter)
