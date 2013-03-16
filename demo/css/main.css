@@ -1,0 +1,16 @@
+/* 
+    Document   : main
+    Created on : 12.03.2013, 09:51:26
+    Author     : michaelkaserer
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+root { 
+    display: block;
+}
+
+#myCanvas {
+    border:#000 1px solid;
+}
+
