@@ -36,6 +36,18 @@
 
                 $('#dicomUpload').change(function(e) {
                     dcmViewer.loadFiles(e.target.files);
+
+                    if(dcmViewer.numFiles > 1) {
+                        $("#slider").slider({
+                            value: 0,
+                            min: 0,
+                            max: dcmViewer.numFiles - 1,
+                            step: 1,
+                            slide: function(e, ui) {
+                                dcmViewer.scrollOne(ui.value);
+                            }
+                        });
+                    }
                 });
 
                 $('#buttonSet').change(function() {
@@ -64,11 +76,14 @@
                 });
                 $('#myCanvas').bind('mousewheel', function(e) {
                     e.preventDefault();
-                    dcmViewer.scrollHandler(e);
+                    var num = dcmViewer.scrollHandler(e);
+                    $('#slider').slider('value', num);
                 });
                 // scroll event for firefox
                 $('#myCanvas').bind('DOMMouseScroll', function(e) {
-                    dcmViewer.scrollHandler(e);
+                    e.preventDefault();
+                    var num = dcmViewer.scrollHandler(e);
+                    $('#slider').slider('value', num);
                 });
 
                 $('#buttonSet').buttonset();
@@ -87,8 +102,11 @@
                 <input type="radio" id="zoom" name="toolbox-buttons" value="Zoom" /><label for="zoom">Zoom</label>
             </span>
 
-            <button type="button" id="resetButton" value="Reset">Reset</button>
+            <button type="button" class="ui-button-text" id="resetButton" value="Reset">Reset</button>
         </div>
         <canvas id="myCanvas" width="512" height="512">Your browser doesn't support HTML5</canvas>
+
+        <div id="slider"></div>
+
     </body>
 </html>

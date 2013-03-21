@@ -1,7 +1,6 @@
 
 function DcmViewer(canvasId) {
     this.canvasId = canvasId;
-    this.files = [];
     this.painter = new CanvasPainter(this.canvasId);
     this.toolbox = new Toolbox(this.painter);
     this.scrollIndex = 0;
@@ -14,14 +13,14 @@ DcmViewer.prototype.setCurrentTool = function(toolName) {
 };
 
 DcmViewer.prototype.loadFiles = function(rawFiles) {
-    this.files = [];
+    var files = [];
     this.numFiles = rawFiles.length;
     for(var i = 0; i < rawFiles.length; i++) {
-        this.loadFile(rawFiles[i], i, rawFiles.length);
+        this.loadFile(rawFiles[i], i, rawFiles.length, files);
     }
 };
 
-DcmViewer.prototype.loadFile = function(rawFile, index, end) {
+DcmViewer.prototype.loadFile = function(rawFile, index, end, files) {
     var _this = this;
     var reader = new FileReader();
     reader.readAsArrayBuffer(rawFile);
@@ -30,7 +29,7 @@ DcmViewer.prototype.loadFile = function(rawFile, index, end) {
             var array = new Uint8Array(evt.target.result);
             var parser = new DicomParser(array);
             var file = parser.parse_file();
-            _this.files.push(file);
+            files.push(file);
             var str = '';
 
             if(typeof file.RescaleSlope === 'undefined') {
@@ -57,17 +56,17 @@ DcmViewer.prototype.loadFile = function(rawFile, index, end) {
                 file.WindowWidth = file.WindowWidth[0];
                 str += 'WindowWidth isArray ';
             }
-            str.length > 0 ? console.log(str) : str;
+//            str.length > 0 ? console.log(str) : str;
 
             if(index === end - 1) {
                 // Sort by InstanceNumber
-                _this.files.sort(function(a, b) {
+                files.sort(function(a, b) {
                     return a.InstanceNumber - b.InstanceNumber;
                 });
-                _this.painter.setSeries(_this.files);
+                _this.painter.setSeries(files);
                 _this.painter.drawImg();
                 _this.eventsEnabled = true;
-                _this.files = null;
+                files = null;
             }
         }
     };
@@ -93,7 +92,7 @@ DcmViewer.prototype.scrollHandler = function(evt) {
         var e = evt.originalEvent;
 
         // Firefox uses detail. Chrome and Safari wheelDelta. Normalizing the different units.
-        var delta = e.detail ? -e.detail : e.wheelDelta / 3.0;
+        var delta = e.detail ? e.detail : -e.wheelDelta / 3.0;
         this.scrollIndex = (delta >= 1) ? this.scrollIndex + 1 : (delta <= -1) ? this.scrollIndex - 1 : this.scrollIndex;
 
         // cyclic scrolling
@@ -101,5 +100,12 @@ DcmViewer.prototype.scrollHandler = function(evt) {
 
         this.painter.currentFile = this.painter.series[this.scrollIndex];
         this.painter.drawImg();
+        return this.scrollIndex;
     }
+};
+
+DcmViewer.prototype.scrollOne = function(num) {
+        this.scrollIndex = num;
+        this.painter.currentFile = this.painter.series[this.scrollIndex];
+        this.painter.drawImg();
 };
