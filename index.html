@@ -3,10 +3,14 @@
     <head>
         <title>webDICOM</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+        <!--CSS-->
         <link rel="stylesheet" href="css/main.css">
+        <link rel="stylesheet" href="css/jquery-ui-1.10.2.custom.css">
 
         <!-- jQuery -->
-        <script type="text/javascript" src="js/libs/jquery-1.9.0/jquery.min.js"></script>
+        <script type="text/javascript" src="js/libs/jquery-1.9.1/jquery.min.js"></script>
+        <script type="text/javascript" src="js/libs/jquery-ui-1.10.2/jquery-ui.custom.min.js"></script>
 
         <!-- External jsdicom-lib -->
         <script type="text/javascript" src="js/libs/jsdicom-lib/src/dcmdict.js"></script>
@@ -30,18 +34,20 @@
             $(document).ready(function() {
                 var dcmViewer = new DcmViewer('myCanvas');
 
-                $('input').change(function(e) {
+                $('#dicomUpload').change(function(e) {
                     dcmViewer.loadFiles(e.target.files);
                 });
 
-                $('.toolbox-buttons').click(function() {
-                    dcmViewer.setCurrentTool((this).value);
+                $('#buttonSet').change(function() {
+                    dcmViewer.setCurrentTool($("input[name='toolbox-buttons']:checked").val());
+                });
+                $('#resetButton').click(function() {
+                    if(dcmViewer.eventsEnabled) {
+                        dcmViewer.painter.reset();
+                    }
                 });
 
                 $('#myCanvas').click(function(e) {
-                    dcmViewer.eventHandler(e);
-                });
-                $('#myCanvas').dblclick(function(e) {
                     dcmViewer.eventHandler(e);
                 });
                 $('#myCanvas').mousemove(function(e) {
@@ -65,18 +71,23 @@
                     dcmViewer.scrollHandler(e);
                 });
 
+                $('#buttonSet').buttonset();
+                $('#resetButton').button();
             });
         </script>
     </head>
     <body>
-
         <form id="uploadForm">
-            <input type="file" accept="application/dicom" id="dicomfiles" multiple /> 
+            <input id="dicomUpload" type="file" accept="application/dicom" multiple /> 
         </form>
         <div id="toolbox">
-            <button type="button" class="toolbox-buttons" value="Window level">Window level</button>
-            <button type="button" class="toolbox-buttons" value="Move">Move</button>
-            <button type="button" class="toolbox-buttons" value="Zoom">Zoom</button>
+            <span id="buttonSet">
+                <input type="radio" id="windowLevel" name="toolbox-buttons" value="Window level" checked="checked" /><label for="windowLevel">Window level</label>
+                <input type="radio" id="move" name="toolbox-buttons" value="Move" /><label for="move">Move</label>
+                <input type="radio" id="zoom" name="toolbox-buttons" value="Zoom" /><label for="zoom">Zoom</label>
+            </span>
+
+            <button type="button" id="resetButton" value="Reset">Reset</button>
         </div>
         <canvas id="myCanvas" width="512" height="512">Your browser doesn't support HTML5</canvas>
     </body>

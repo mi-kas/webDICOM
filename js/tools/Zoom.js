@@ -16,10 +16,6 @@ function Zoom() {
 Zoom.prototype.click = function() {
 };
 
-Zoom.prototype.dblclick = function(x, y, painter) {
-    painter.reset();
-};
-
 Zoom.prototype.mousedown = function() {
     this.started = true;
 };
