@@ -56,8 +56,6 @@ CanvasPainter.prototype.getPan = function() {
 };
 
 CanvasPainter.prototype.reset = function() {
-//    this.wc = this.currentFile.WindowCenter;
-//    this.ww = this.currentFile.WindowWidth;
     this.wc = this.series[0].WindowCenter;
     this.ww = this.series[0].WindowWidth;
     this.scale = 1;

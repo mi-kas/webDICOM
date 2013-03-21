@@ -60,6 +60,10 @@ DcmViewer.prototype.loadFile = function(rawFile, index, end) {
             str.length > 0 ? console.log(str) : str;
 
             if(index === end - 1) {
+                // Sort by InstanceNumber
+                _this.files.sort(function(a, b) {
+                    return a.InstanceNumber - b.InstanceNumber;
+                });
                 _this.painter.setSeries(_this.files);
                 _this.painter.drawImg();
                 _this.eventsEnabled = true;
