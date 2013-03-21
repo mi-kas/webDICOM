@@ -6,6 +6,7 @@ function DcmViewer(canvasId) {
     this.toolbox = new Toolbox(this.painter);
     this.scrollIndex = 0;
     this.eventsEnabled = false;
+    this.numFiles = 0;
 }
 
 DcmViewer.prototype.setCurrentTool = function(toolName) {
@@ -14,6 +15,7 @@ DcmViewer.prototype.setCurrentTool = function(toolName) {
 
 DcmViewer.prototype.loadFiles = function(rawFiles) {
     this.files = [];
+    this.numFiles = rawFiles.length;
     for(var i = 0; i < rawFiles.length; i++) {
         this.loadFile(rawFiles[i], i, rawFiles.length);
     }
@@ -30,9 +32,6 @@ DcmViewer.prototype.loadFile = function(rawFile, index, end) {
             var file = parser.parse_file();
             _this.files.push(file);
             var str = '';
-
-            file.Scale = 1;
-            file.Pan = [0, 0];
 
             if(typeof file.RescaleSlope === 'undefined') {
                 file.RescaleSlope = 1;
@@ -61,9 +60,10 @@ DcmViewer.prototype.loadFile = function(rawFile, index, end) {
             str.length > 0 ? console.log(str) : str;
 
             if(index === end - 1) {
-                _this.painter.setFile(file);
+                _this.painter.setSeries(_this.files);
                 _this.painter.drawImg();
                 _this.eventsEnabled = true;
+                _this.files = null;
             }
         }
     };
@@ -84,7 +84,7 @@ DcmViewer.prototype.eventHandler = function(e) {
 };
 
 DcmViewer.prototype.scrollHandler = function(evt) {
-    if(this.files.length > 1 && this.eventsEnabled) {
+    if(this.numFiles > 1 && this.eventsEnabled) {
         evt.preventDefault();
         var e = evt.originalEvent;
 
@@ -93,15 +93,9 @@ DcmViewer.prototype.scrollHandler = function(evt) {
         this.scrollIndex = (delta >= 1) ? this.scrollIndex + 1 : (delta <= -1) ? this.scrollIndex - 1 : this.scrollIndex;
 
         // cyclic scrolling
-        this.scrollIndex = (this.scrollIndex < 0) ? this.files.length - 1 : (this.scrollIndex > this.files.length - 1) ? 0 : this.scrollIndex;
+        this.scrollIndex = (this.scrollIndex < 0) ? this.numFiles - 1 : (this.scrollIndex > this.numFiles - 1) ? 0 : this.scrollIndex;
 
-        // save modified values (wc, ww, pan, scale) of the image
-        this.painter.currentFile.WindowCenter = this.painter.getWindowing()[0];
-        this.painter.currentFile.WindowWidth = this.painter.getWindowing()[1];
-        this.painter.currentFile.Scale = this.painter.getScale();
-        this.painter.currentFile.Pan = this.painter.getPan();
-
-        this.painter.setFile(this.files[this.scrollIndex]);
+        this.painter.currentFile = this.painter.series[this.scrollIndex];
         this.painter.drawImg();
     }
 };

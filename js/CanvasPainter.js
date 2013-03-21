@@ -3,6 +3,7 @@ function CanvasPainter(canvasId) {
     this.canvas = document.getElementById(canvasId);
     this.context = this.canvas.getContext("2d");
     this.currentFile;
+    this.series;
     this.ww;
     this.wc;
     this.scale;
@@ -15,6 +16,15 @@ CanvasPainter.prototype.setFile = function(file) {
     this.ww = file.WindowWidth;
     this.scale = file.Scale;
     this.pan = file.Pan;
+};
+
+CanvasPainter.prototype.setSeries = function(serie) {
+    this.series = serie;
+    this.currentFile = this.series[0];
+    this.wc = this.series[0].WindowCenter;
+    this.ww = this.series[0].WindowWidth;
+    this.scale = 1;
+    this.pan = [0, 0];
 };
 
 CanvasPainter.prototype.setWindowing = function(wc, ww) {
@@ -46,8 +56,10 @@ CanvasPainter.prototype.getPan = function() {
 };
 
 CanvasPainter.prototype.reset = function() {
-    this.wc = this.currentFile.WindowCenter;
-    this.ww = this.currentFile.WindowWidth;
+//    this.wc = this.currentFile.WindowCenter;
+//    this.ww = this.currentFile.WindowWidth;
+    this.wc = this.series[0].WindowCenter;
+    this.ww = this.series[0].WindowWidth;
     this.scale = 1;
     this.pan = [0, 0];
     this.drawImg();
