@@ -56,7 +56,7 @@ DcmViewer.prototype.loadFile = function(rawFile, index, end, files) {
                 file.WindowWidth = file.WindowWidth[0];
                 str += 'WindowWidth isArray ';
             }
-//            str.length > 0 ? console.log(str) : str;
+            // str.length > 0 ? console.log(str) : str;
 
             if(index === end - 1) {
                 // Sort by InstanceNumber

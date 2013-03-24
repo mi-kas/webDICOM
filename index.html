@@ -11,6 +11,8 @@
         <!-- jQuery -->
         <script type="text/javascript" src="js/libs/jquery-1.9.1/jquery.min.js"></script>
         <script type="text/javascript" src="js/libs/jquery-ui-1.10.2/jquery-ui.custom.min.js"></script>
+        <script type="text/javascript" src="js/libs/jquery.tree.js"></script>
+        <!--<script type="text/javascript" src="js/libs/jsTree-2.0.0/jstree.min.js"></script>-->
 
         <!-- External jsdicom-lib -->
         <script type="text/javascript" src="js/libs/jsdicom-lib/src/dcmdict.js"></script>
@@ -33,22 +35,25 @@
         <script>
             $(document).ready(function() {
                 var dcmViewer = new DcmViewer('myCanvas');
-
-                $('#dicomUpload').change(function(e) {
-                    dcmViewer.loadFiles(e.target.files);
-
-                    if(dcmViewer.numFiles > 1) {
-                        $("#slider").slider({
-                            value: 0,
-                            min: 0,
-                            max: dcmViewer.numFiles - 1,
-                            step: 1,
-                            slide: function(e, ui) {
-                                dcmViewer.scrollOne(ui.value);
-                            }
-                        });
-                    }
-                });
+//                $('#dicomUpload').change(function(e) {
+//                    dcmViewer.loadFiles(e.target.files);
+//                    console.log(e.target.files);
+//                    if(dcmViewer.numFiles > 1) {
+//                        $("#slider").slider({
+//                            value: 0,
+//                            min: 0,
+//                            max: dcmViewer.numFiles - 1,
+//                            step: 1,
+//                            slide: function(e, ui) {
+//                                dcmViewer.scrollOne(ui.value);
+//                            }
+//                        });
+//                    } else {
+//                        if($("#slider").slider()) {
+//                            $("#slider").slider("destroy");
+//                        }
+//                    }
+//                });
 
                 $('#buttonSet').change(function() {
                     dcmViewer.setCurrentTool($("input[name='toolbox-buttons']:checked").val());
@@ -58,7 +63,6 @@
                         dcmViewer.painter.reset();
                     }
                 });
-
                 $('#myCanvas').click(function(e) {
                     dcmViewer.eventHandler(e);
                 });
@@ -75,38 +79,118 @@
                     dcmViewer.eventHandler(e);
                 });
                 $('#myCanvas').bind('mousewheel', function(e) {
-                    e.preventDefault();
-                    var num = dcmViewer.scrollHandler(e);
-                    $('#slider').slider('value', num);
+                    if(dcmViewer.numFiles > 1) {
+                        e.preventDefault();
+                        var num = dcmViewer.scrollHandler(e);
+                        $('#slider').slider('value', num);
+                    }
                 });
                 // scroll event for firefox
                 $('#myCanvas').bind('DOMMouseScroll', function(e) {
-                    e.preventDefault();
-                    var num = dcmViewer.scrollHandler(e);
-                    $('#slider').slider('value', num);
+                    if(dcmViewer.numFiles > 1) {
+                        e.preventDefault();
+                        var num = dcmViewer.scrollHandler(e);
+                        $('#slider').slider('value', num);
+                    }
                 });
-
                 $('#buttonSet').buttonset();
                 $('#resetButton').button();
+//               
+                function Tree(selector) {
+                    this.$el = $(selector);
+                    this.fileList = [];
+                    var html_ = [];
+                    var tree_ = {};
+                    var pathList_ = [];
+                    var self = this;
+                    this.render = function(object) {
+                        if(object) {
+                            for(var folder in object) {
+                                if(!object[folder]) { // file's will have a null value
+                                    html_.push('<li><a href="#" data-type="file">', folder, '</a></li>');
+                                } else {
+                                    html_.push('<li><a href="#" data-type="folder">', folder, '</a>');
+                                    html_.push('<ul>');
+                                    self.render(object[folder]);
+                                    html_.push('</ul>');
+                                }
+                            }
+                        }
+                    };
+                    this.buildFromPathList = function(paths) {
+                        for(var i = 0, path; path = paths[i]; ++i) {
+                            var pathParts = path.split('/');
+                            var subObj = tree_;
+                            for(var j = 0, folderName; folderName = pathParts[j]; ++j) {
+                                if(!subObj[folderName]) {
+                                    subObj[folderName] = j < pathParts.length - 1 ? {} : null;
+                                }
+                                subObj = subObj[folderName];
+                            }
+                        }
+                        return tree_;
+                    }
+
+                    this.init = function(e) {
+                        // Reset
+                        html_ = [];
+                        tree_ = {};
+                        pathList_ = [];
+                        self.fileList = e.target.files;
+                        // TODO: optimize this so we're not going through the file list twice
+                        // (here and in buildFromPathList).
+                        for(var i = 0, file; file = self.fileList[i]; ++i) {
+                            pathList_.push(file.webkitRelativePath);
+                        }
+
+                        self.render(self.buildFromPathList(pathList_));
+                        self.$el.html(html_.join('')).tree({
+                            expanded: 'li:first'
+                        });
+                        // Add full file path to each DOM element.
+                        var fileNodes = self.$el.get(0).querySelectorAll("[data-type='file']");
+                        for(var i = 0, fileNode; fileNode = fileNodes[i]; ++i) {
+                            fileNode.dataset['index'] = i;
+                        }
+                    }
+                };
+                 
+                var tree = new Tree('#fileTree');
+                $('#dicomUpload').change(tree.init);
+
+                tree.$el.dblclick(function(e) {
+                    console.log(e.target.dataset['type']);
+                    if(e.target.nodeName === 'A' && e.target.dataset['type'] === 'file') {
+                        var file = tree.fileList[e.target.dataset['index']];
+                        console.log(file);
+                        dcmViewer.loadFiles([file]);
+                    }
+                });
             });
         </script>
     </head>
     <body>
-        <form id="uploadForm">
-            <input id="dicomUpload" type="file" accept="application/dicom" multiple /> 
-        </form>
-        <div id="toolbox">
-            <span id="buttonSet">
-                <input type="radio" id="windowLevel" name="toolbox-buttons" value="Window level" checked="checked" /><label for="windowLevel">Window level</label>
-                <input type="radio" id="move" name="toolbox-buttons" value="Move" /><label for="move">Move</label>
-                <input type="radio" id="zoom" name="toolbox-buttons" value="Zoom" /><label for="zoom">Zoom</label>
-            </span>
+        <div id="container">
+            <aside id="sidebar">
+                <!--<input id="dicomUpload" type="file" accept="application/dicom" multiple />--> 
+                <!--Only Chrome supports webkitdirectory-->
+                <input id="dicomUpload" type="file" multiple webkitdirectory directory />
 
-            <button type="button" class="ui-button-text" id="resetButton" value="Reset">Reset</button>
+                <ul id="fileTree"></ul>
+            </aside>
+            <div id="viewer">
+                <div id="toolbox">
+                    <span id="buttonSet">
+                        <input type="radio" id="windowLevel" name="toolbox-buttons" value="Window level" checked="checked" /><label for="windowLevel">Window level</label>
+                        <input type="radio" id="move" name="toolbox-buttons" value="Move" /><label for="move">Move</label>
+                        <input type="radio" id="zoom" name="toolbox-buttons" value="Zoom" /><label for="zoom">Zoom</label>
+                    </span>
+                    <button type="button" class="ui-button-text" id="resetButton" value="Reset">Reset</button>
+                </div>
+
+                <canvas id="myCanvas" width="512" height="512">Your browser doesn't support HTML5</canvas>
+                <div id="slider"></div>
+            </div>
         </div>
-        <canvas id="myCanvas" width="512" height="512">Your browser doesn't support HTML5</canvas>
-
-        <div id="slider"></div>
-
     </body>
 </html>
