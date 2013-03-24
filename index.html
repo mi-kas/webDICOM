@@ -106,24 +106,24 @@
                     this.render = function(object) {
                         if(object) {
                             for(var folder in object) {
-                                if(!object[folder]) { // file's will have a null value
-                                    html_.push('<li><a href="#" data-type="file">', folder, '</a></li>');
-                                } else {
+                                if(isNaN(object[folder])) { // files will have a number - folders a string
                                     html_.push('<li><a href="#" data-type="folder">', folder, '</a>');
                                     html_.push('<ul>');
                                     self.render(object[folder]);
                                     html_.push('</ul>');
+                                } else {
+                                    html_.push('<li><a href="#" data-type="file" data-index="' + object[folder] + '" >', folder, '</a></li>');
                                 }
                             }
                         }
                     };
                     this.buildFromPathList = function(paths) {
-                        for(var i = 0, path; path = paths[i]; ++i) {
-                            var pathParts = path.split('/');
+                        for(var i = 0; i < paths.length; i++) {
+                            var pathParts = paths[i].split('/');
                             var subObj = tree_;
-                            for(var j = 0, folderName; folderName = pathParts[j]; ++j) {
+                            for(var j = 0, folderName; folderName = pathParts[j]; j++) {
                                 if(!subObj[folderName]) {
-                                    subObj[folderName] = j < pathParts.length - 1 ? {} : null;
+                                    subObj[folderName] = j < pathParts.length - 1 ? {} : i;
                                 }
                                 subObj = subObj[folderName];
                             }
@@ -139,30 +139,26 @@
                         self.fileList = e.target.files;
                         // TODO: optimize this so we're not going through the file list twice
                         // (here and in buildFromPathList).
-                        for(var i = 0, file; file = self.fileList[i]; ++i) {
-                            pathList_.push(file.webkitRelativePath);
+                        for(var i = 0; i < self.fileList.length; i++) {
+                            // TODO: versteckte files ausblenden
+                            pathList_.push(self.fileList[i].webkitRelativePath);
                         }
 
                         self.render(self.buildFromPathList(pathList_));
+                        console.log(tree_);
                         self.$el.html(html_.join('')).tree({
                             expanded: 'li:first'
                         });
-                        // Add full file path to each DOM element.
-                        var fileNodes = self.$el.get(0).querySelectorAll("[data-type='file']");
-                        for(var i = 0, fileNode; fileNode = fileNodes[i]; ++i) {
-                            fileNode.dataset['index'] = i;
-                        }
                     }
-                };
-                 
+                }
+                ;
+
                 var tree = new Tree('#fileTree');
                 $('#dicomUpload').change(tree.init);
 
-                tree.$el.dblclick(function(e) {
-                    console.log(e.target.dataset['type']);
+                tree.$el.click(function(e) {
                     if(e.target.nodeName === 'A' && e.target.dataset['type'] === 'file') {
                         var file = tree.fileList[e.target.dataset['index']];
-                        console.log(file);
                         dcmViewer.loadFiles([file]);
                     }
                 });
