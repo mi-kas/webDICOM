@@ -14,8 +14,8 @@ html, body {
 }
 #sidebar {
     padding: 5px;
-    xoverflow-y: auto;
-    xoverflow-x: hidden;
+    overflow-y: scroll;
+    overflow-x: hidden;
     width: 300px;
     border-right: 1px solid #ccc;
 }
