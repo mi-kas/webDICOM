@@ -195,10 +195,11 @@
                     console.log(e.target.dataset.index);
                     if(e.target.nodeName === 'A' && e.target.dataset['type'] === 'file') {
                         var serie = [];
-                        for(var i = 0; i < e.target.dataset.index.length; i++) {
+                        var arr = e.target.dataset.index.split(',');
+                        for(var i = 0; i < arr.length; i++) {
                             // TODO: parse Array from String
-                            console.log(e.target.dataset.index[i]);
-                            serie.push(tree.parsedFileList[e.target.dataset.index[i]]);
+                            console.log(arr[i]);
+                            serie.push(tree.parsedFileList[arr[i]]);
                         }
                         dcmViewer.painter.setSeries(serie);
                         dcmViewer.painter.drawImg();
