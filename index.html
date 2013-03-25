@@ -24,6 +24,7 @@
 
         <!--Dicom Viewer-->
         <script type="text/javascript" src="js/DcmViewer.js"></script>
+        <script type="text/javascript" src="js/DcmParser.js"></script>
         <script type="text/javascript" src="js/CanvasPainter.js"></script>
         <script type="text/javascript" src="js/Toolbox.js"></script>
 
@@ -35,6 +36,7 @@
         <script>
             $(document).ready(function() {
                 var dcmViewer = new DcmViewer('myCanvas');
+                var dcmParser = new DcmParser();
 //                $('#dicomUpload').change(function(e) {
 //                    dcmViewer.loadFiles(e.target.files);
 //                    console.log(e.target.files);
@@ -100,71 +102,45 @@
                     this.$el = $(selector);
                     this.fileList = [];
                     var html_ = [];
-                    var tree_ = {};
                     var dcmTree = {};
-                    var pathList_ = [];
-                    var dcmList = new Array();
-                    dcmList[0] = new Array();
-                    dcmList[1] = new Array();
+                    var dcmList = [];
+                    this.parsedFileList = [];
                     var self = this;
-                    this.render = function(object) {
-                        if(object) {
-                            for(var folder in object) {
-                                if(isNaN(object[folder])) { // files have a number - folders a object
-                                    html_.push('<li><a href="#" data-type="folder">', folder, '</a>');
-                                    html_.push('<ul>');
-                                    self.render(object[folder]);
-                                    html_.push('</ul>');
-                                } else {
-                                    html_.push('<li><a href="#" data-type="file" data-index="' + object[folder] + '" >', folder, '</a></li>');
-                                }
-                            }
-                        }
-                    };
-                     this.dcmRender = function(tree) {
+
+                    this.dcmRender = function(tree) {
                         if(tree) {
-                            for(var patient in tree) {
-                                if(isNaN(tree[patient])) { // series have an array - patients a object
-                                    html_.push('<li><a href="#" data-type="folder">', patient, '</a>');
-                                    html_.push('<ul>');
-                                    self.render(tree[patient]);
-                                    html_.push('</ul>');
+                            for(var object in tree) {
+                                if($.isArray(tree[object])) { // series have an array - patients a object
+                                    html_.push('<li><a href="#" data-type="file" data-index="' + tree[object] + '" >', object, '</a></li>');
                                 } else {
-                                    html_.push('<li><a href="#" data-type="file" data-index="' + tree[patient] + '" >', patient, '</a></li>');
+                                    html_.push('<li><a href="#" data-type="folder">', object, '</a>');
+                                    html_.push('<ul>');
+                                    self.dcmRender(tree[object]);
+                                    html_.push('</ul>');
                                 }
                             }
-//                            console.log(html_.join(''));
+
                             $('#fileTree').html(html_.join(''));
+//                                    .tree({
+//                                expanded: 'li:first'
+//                            });
                         }
-                    };
-                    this.buildFromPathList = function(paths) {
-                        for(var i = 0; i < paths.length; i++) {
-                            var pathParts = paths[i][0].split('/');
-                            var subObj = tree_;
-                            for(var j = 0, folderName; folderName = pathParts[j]; j++) {
-                                if(!subObj[folderName]) {
-                                    subObj[folderName] = j < pathParts.length - 1 ? {} : paths[i][1];
-                                }
-                                subObj = subObj[folderName];
-                            }
-                        }
-                        return tree_;
                     };
 
-                    this.buildFromDcmList = function(files, indices) {
+                    this.buildFromDcmList = function(files) {
                         for(var i = 0; i < files.length; i++) {
                             var file = files[i];
-                            var index = indices[i];
+
                             if(!dcmTree[file.PatientsName]) {
                                 dcmTree[file.PatientsName] = {};
                                 dcmTree[file.PatientsName][file.SeriesDescription] = [];
-                                dcmTree[file.PatientsName][file.SeriesDescription].push(index);
+                                dcmTree[file.PatientsName][file.SeriesDescription].push(i);
                             } else {
                                 if(!dcmTree[file.PatientsName][file.SeriesDescription]) {
                                     dcmTree[file.PatientsName][file.SeriesDescription] = [];
-                                    dcmTree[file.PatientsName][file.SeriesDescription].push(index);
+                                    dcmTree[file.PatientsName][file.SeriesDescription].push(i);
                                 } else {
-                                    dcmTree[file.PatientsName][file.SeriesDescription].push(index);
+                                    dcmTree[file.PatientsName][file.SeriesDescription].push(i);
                                 }
                             }
                         }
@@ -176,22 +152,20 @@
                         tree_ = {};
                         dcmTree = {};
                         pathList_ = [];
-                        dcmList = new Array();
-                        dcmList[0] = new Array();
-                        dcmList[1] = new Array();
+                        dcmList = [];
+                        self.parsedFileList = [];
                         self.fileList = e.target.files;
                         // TODO: optimize this so we're not going through the file list twice (here and in buildFromPathList).
                         for(var i = 0; i < self.fileList.length; i++) {
                             if(self.fileList[i].type === "application/dicom") {
-//                                pathList_.push([self.fileList[i].webkitRelativePath, i]);
-                                dcmList[0].push(self.fileList[i]);
-                                dcmList[1].push(i);
+                                dcmList.push(self.fileList[i]);
                             }
 
                         }
-                        dcmViewer.loadFiles(dcmList[0], function(dcmFiles) {
-                            console.log(self.buildFromDcmList(dcmFiles, dcmList[1]));
-                            self.dcmRender(self.buildFromDcmList(dcmFiles, dcmList[1]));
+
+                        dcmParser.parseFiles(dcmList, function(e) {
+                            self.parsedFileList = e; 
+                            self.dcmRender(self.buildFromDcmList(self.parsedFileList));
                         });
 
                         $("#slider").slider({
@@ -218,10 +192,19 @@
                 $('#dicomUpload').change(tree.init);
 
                 tree.$el.click(function(e) {
+                    console.log(e.target.dataset.index);
                     if(e.target.nodeName === 'A' && e.target.dataset['type'] === 'file') {
-                        var file = tree.fileList[e.target.dataset['index']];
-                        console.log(file);
-                        dcmViewer.loadFiles([file], function(){});
+                        var serie = [];
+                        for(var i = 0; i < e.target.dataset.index.length; i++) {
+                            // TODO: parse Array from String
+                            console.log(e.target.dataset.index[i]);
+                            serie.push(tree.parsedFileList[e.target.dataset.index[i]]);
+                        }
+                        dcmViewer.painter.setSeries(serie);
+                        dcmViewer.painter.drawImg();
+                        //var file = tree.fileList[e.target.dataset['index']];
+                        //dcmViewer.loadFiles([file], function() {
+                        //});
                     }
                 });
             });
