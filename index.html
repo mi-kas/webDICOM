@@ -106,7 +106,7 @@
                     this.render = function(object) {
                         if(object) {
                             for(var folder in object) {
-                                if(isNaN(object[folder])) { // files will have a number - folders a string
+                                if(isNaN(object[folder])) { // files have a number - folders a string
                                     html_.push('<li><a href="#" data-type="folder">', folder, '</a>');
                                     html_.push('<ul>');
                                     self.render(object[folder]);
@@ -119,11 +119,11 @@
                     };
                     this.buildFromPathList = function(paths) {
                         for(var i = 0; i < paths.length; i++) {
-                            var pathParts = paths[i].split('/');
+                            var pathParts = paths[i][0].split('/');
                             var subObj = tree_;
                             for(var j = 0, folderName; folderName = pathParts[j]; j++) {
                                 if(!subObj[folderName]) {
-                                    subObj[folderName] = j < pathParts.length - 1 ? {} : i;
+                                    subObj[folderName] = j < pathParts.length - 1 ? {} : paths[i][1];
                                 }
                                 subObj = subObj[folderName];
                             }
@@ -132,16 +132,17 @@
                     }
 
                     this.init = function(e) {
-                        // Reset
                         html_ = [];
                         tree_ = {};
                         pathList_ = [];
                         self.fileList = e.target.files;
-                        // TODO: optimize this so we're not going through the file list twice
-                        // (here and in buildFromPathList).
+                        // TODO: optimize this so we're not going through the file list twice (here and in buildFromPathList).
                         for(var i = 0; i < self.fileList.length; i++) {
                             // TODO: versteckte files ausblenden
-                            pathList_.push(self.fileList[i].webkitRelativePath);
+                            if(self.fileList[i].name.charAt(0) !== '.') {
+                                pathList_.push([self.fileList[i].webkitRelativePath, i]);
+                            }
+
                         }
 
                         self.render(self.buildFromPathList(pathList_));
@@ -159,6 +160,7 @@
                 tree.$el.click(function(e) {
                     if(e.target.nodeName === 'A' && e.target.dataset['type'] === 'file') {
                         var file = tree.fileList[e.target.dataset['index']];
+                        console.log(file);
                         dcmViewer.loadFiles([file]);
                     }
                 });
@@ -172,7 +174,7 @@
                 <!--Only Chrome supports webkitdirectory-->
                 <input id="dicomUpload" type="file" multiple webkitdirectory directory />
 
-                <ul id="fileTree"></ul>
+                <div id="fileTree"></div>
             </aside>
             <div id="viewer">
                 <div id="toolbox">
