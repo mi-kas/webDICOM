@@ -101,13 +101,16 @@
                     this.fileList = [];
                     var html_ = [];
                     var tree_ = {};
+                    var dcmTree = {};
                     var pathList_ = [];
-                    var dcmList = [];
+                    var dcmList = new Array();
+                    dcmList[0] = new Array();
+                    dcmList[1] = new Array();
                     var self = this;
                     this.render = function(object) {
                         if(object) {
                             for(var folder in object) {
-                                if(isNaN(object[folder])) { // files have a number - folders a string
+                                if(isNaN(object[folder])) { // files have a number - folders a object
                                     html_.push('<li><a href="#" data-type="folder">', folder, '</a>');
                                     html_.push('<ul>');
                                     self.render(object[folder]);
@@ -116,6 +119,22 @@
                                     html_.push('<li><a href="#" data-type="file" data-index="' + object[folder] + '" >', folder, '</a></li>');
                                 }
                             }
+                        }
+                    };
+                     this.dcmRender = function(tree) {
+                        if(tree) {
+                            for(var patient in tree) {
+                                if(isNaN(tree[patient])) { // series have an array - patients a object
+                                    html_.push('<li><a href="#" data-type="folder">', patient, '</a>');
+                                    html_.push('<ul>');
+                                    self.render(tree[patient]);
+                                    html_.push('</ul>');
+                                } else {
+                                    html_.push('<li><a href="#" data-type="file" data-index="' + tree[patient] + '" >', patient, '</a></li>');
+                                }
+                            }
+//                            console.log(html_.join(''));
+                            $('#fileTree').html(html_.join(''));
                         }
                     };
                     this.buildFromPathList = function(paths) {
@@ -130,24 +149,51 @@
                             }
                         }
                         return tree_;
-                    }
+                    };
+
+                    this.buildFromDcmList = function(files, indices) {
+                        for(var i = 0; i < files.length; i++) {
+                            var file = files[i];
+                            var index = indices[i];
+                            if(!dcmTree[file.PatientsName]) {
+                                dcmTree[file.PatientsName] = {};
+                                dcmTree[file.PatientsName][file.SeriesDescription] = [];
+                                dcmTree[file.PatientsName][file.SeriesDescription].push(index);
+                            } else {
+                                if(!dcmTree[file.PatientsName][file.SeriesDescription]) {
+                                    dcmTree[file.PatientsName][file.SeriesDescription] = [];
+                                    dcmTree[file.PatientsName][file.SeriesDescription].push(index);
+                                } else {
+                                    dcmTree[file.PatientsName][file.SeriesDescription].push(index);
+                                }
+                            }
+                        }
+                        return dcmTree;
+                    };
 
                     this.init = function(e) {
                         html_ = [];
                         tree_ = {};
+                        dcmTree = {};
                         pathList_ = [];
-                        dcmList = [];
+                        dcmList = new Array();
+                        dcmList[0] = new Array();
+                        dcmList[1] = new Array();
                         self.fileList = e.target.files;
                         // TODO: optimize this so we're not going through the file list twice (here and in buildFromPathList).
                         for(var i = 0; i < self.fileList.length; i++) {
                             if(self.fileList[i].type === "application/dicom") {
-                                //pathList_.push([self.fileList[i].webkitRelativePath, i]);
-                                dcmList.push(self.fileList[i]);
+//                                pathList_.push([self.fileList[i].webkitRelativePath, i]);
+                                dcmList[0].push(self.fileList[i]);
+                                dcmList[1].push(i);
                             }
 
                         }
-                        console.log(dcmList);
-                        dcmViewer.loadFiles(dcmList);
+                        dcmViewer.loadFiles(dcmList[0], function(dcmFiles) {
+                            console.log(self.buildFromDcmList(dcmFiles, dcmList[1]));
+                            self.dcmRender(self.buildFromDcmList(dcmFiles, dcmList[1]));
+                        });
+
                         $("#slider").slider({
                             value: 0,
                             min: 0,
@@ -159,10 +205,12 @@
                         });
 //                        self.render(self.buildFromPathList(pathList_));
 //                        console.log(tree_);
-                        self.$el.html(html_.join('')).tree({
-                            expanded: 'li:first'
-                        });
-                    }
+//                        console.log(self.buildFromFileList(dcmList));
+//                        self.$el.html(html_.join(''));
+//                                .tree({
+//                            expanded: 'li:first'
+//                        });
+                    };
                 }
                 ;
 
@@ -173,7 +221,7 @@
                     if(e.target.nodeName === 'A' && e.target.dataset['type'] === 'file') {
                         var file = tree.fileList[e.target.dataset['index']];
                         console.log(file);
-                        dcmViewer.loadFiles([file]);
+                        dcmViewer.loadFiles([file], function(){});
                     }
                 });
             });
@@ -185,9 +233,9 @@
                 <!--<input id="dicomUpload" type="file" accept="application/dicom" multiple />--> 
                 <!--Only Chrome supports webkitdirectory-->
                 <input id="dicomUpload" type="file" multiple webkitdirectory directory />
-                
+
                 <progress value="0.5"></progress> 
-                
+
                 <div id="fileTree"></div>
             </aside>
             <div id="viewer">

@@ -12,15 +12,18 @@ DcmViewer.prototype.setCurrentTool = function(toolName) {
     this.toolbox.setCurrentTool(toolName);
 };
 
-DcmViewer.prototype.loadFiles = function(rawFiles) {
+DcmViewer.prototype.loadFiles = function(rawFiles, cBack) {
     var files = [];
+    var tmp = [];
     this.numFiles = rawFiles.length;
     for(var i = 0; i < rawFiles.length; i++) {
-        this.loadFile(rawFiles[i], i, rawFiles.length, files);
+        this.loadFile(rawFiles[i], i, rawFiles.length, files, function(e) {
+            cBack(e);
+        });
     }
 };
 
-DcmViewer.prototype.loadFile = function(rawFile, index, end, files) {
+DcmViewer.prototype.loadFile = function(rawFile, index, end, files, callback) {
     var _this = this;
     var reader = new FileReader();
     reader.readAsArrayBuffer(rawFile);
@@ -66,7 +69,9 @@ DcmViewer.prototype.loadFile = function(rawFile, index, end, files) {
                 _this.painter.setSeries(files);
                 _this.painter.drawImg();
                 _this.eventsEnabled = true;
-                files = null;
+//                console.log(files);
+                callback(files);
+//                files = null;
             }
         }
     };
@@ -105,7 +110,7 @@ DcmViewer.prototype.scrollHandler = function(evt) {
 };
 
 DcmViewer.prototype.scrollOne = function(num) {
-        this.scrollIndex = num;
-        this.painter.currentFile = this.painter.series[this.scrollIndex];
-        this.painter.drawImg();
+    this.scrollIndex = num;
+    this.painter.currentFile = this.painter.series[this.scrollIndex];
+    this.painter.drawImg();
 };
