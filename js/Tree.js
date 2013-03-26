@@ -13,7 +13,8 @@ function Tree(selector) {
         dcmList = [];
         self.parsedFileList = [];
         var fileList = e.target.files;
-
+        $('#fileTree').empty();
+        $('#errorMsg').empty();
         // TODO: optimize this so we're not going through the file list twice (here and in buildFromPathList).
         for(var i = 0; i < fileList.length; i++) {
             if(fileList[i].type === "application/dicom") {
@@ -28,17 +29,14 @@ function Tree(selector) {
             $('#fileTree').html(tmpHtml).tree({
                 expanded: 'li:first'
             });
-            //.tree({
-            //expanded: 'li:first'
-            //});
         });
     };
 
     var buildFromDcmList = function(files) {
         for(var i = 0; i < files.length; i++) {
             var file = files[i];
-            var level1 = file.PatientsName; // ? file.PatientsName : 'undefined';
-            var level2 = file.SeriesDescription; //  ? file.SeriesDescription : 'undefined';
+            var level1 = file.PatientsName ? file.PatientsName : 'undefined';
+            var level2 = file.SeriesDescription ? file.SeriesDescription : 'undefined';
 
             if(!dcmTree[level1]) {
                 dcmTree[level1] = {};

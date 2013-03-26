@@ -13,39 +13,64 @@ DcmParser.prototype.parseFiles = function(rawFiles, callback) {
                 var array = new Uint8Array(evt.target.result);
                 var parser = new DicomParser(array);
                 var file = parser.parse_file();
-                var str = '';
 
+                if(typeof file === 'undefined') {
+                    console.log("Can't read file: " + rawFile.name);
+                    $('#errorMsg').append("<p>Can't read file: " + rawFile.name + "</p>");
+                    return;
+                }
                 if(typeof file.RescaleSlope === 'undefined') {
                     file.RescaleSlope = 1;
-                    str += 'RescaleSlope undefined, ';
                 }
                 if(typeof file.RescaleIntercept === 'undefined') {
                     file.RescaleIntercept = 0;
-                    str += 'RescaleIntercept undefined, ';
                 }
                 if(typeof file.WindowCenter === 'undefined') {
                     file.WindowCenter = 85;
-                    str += 'WindowCenter undefined, ';
                 }
                 if(typeof file.WindowWidth === 'undefined') {
                     file.WindowWidth = 171;
-                    str += 'WindowWidth undefined, ';
                 }
                 if($.isArray(file.WindowCenter)) {
                     file.WindowCenter = file.WindowCenter[0];
-                    str += 'WindowCenter isArray, ';
                 }
                 if($.isArray(file.WindowWidth)) {
                     file.WindowWidth = file.WindowWidth[0];
-                    str += 'WindowWidth isArray ';
                 }
-                // file.DataIndex = index;
+
                 self.files.push(file);
-                //str.length > 0 ? console.log(str) : str;
 
                 if(j === (length - 1)) {
                     callback(self.files);
                 }
+            }
+        };
+
+        reader.onprogress = function(evt) {
+
+        };
+
+        reader.onerror = function(e) {
+            e = e || window.event; 
+
+            switch(e.target.error.code) {
+                case e.target.error.NOT_FOUND_ERR:
+                    $('#errorMsg').append("<p>File not found!</p>");
+                    break;
+                case e.target.error.NOT_READABLE_ERR:
+                    $('#errorMsg').append("<p>File not readable</p>");
+                    break;
+                case e.target.error.ABORT_ERR:
+                    $('#errorMsg').append("<p>Read operation was aborted</p>");
+                    break;
+                case e.target.error.SECURITY_ERR:
+                    $('#errorMsg').append("<p>File is in a locked state</p>");
+                    break;
+                case e.target.error.ENCODING_ERR:
+                    $('#errorMsg').append("<p>Encoding error</p>");
+                    break;
+                default:
+                    $('#errorMsg').append("<p>Read error</p>");
             }
         };
     };
