@@ -19,6 +19,10 @@ CanvasPainter.prototype.setFile = function(file) {
 };
 
 CanvasPainter.prototype.setSeries = function(serie) {
+    // Sort by InstanceNumber
+    serie.sort(function(a, b) {
+        return a.InstanceNumber - b.InstanceNumber;
+    });
     this.series = serie;
     this.currentFile = this.series[0];
     this.wc = this.series[0].WindowCenter;
@@ -28,8 +32,6 @@ CanvasPainter.prototype.setSeries = function(serie) {
 };
 
 CanvasPainter.prototype.setWindowing = function(wc, ww) {
-//    var relX = (wc / this.currentFile.Columns) * this.wc + this.wc;
-//    var relY = (ww / this.currentFile.Rows) * this.ww + this.ww;
     this.wc = wc;
     this.ww = ww;
 };
@@ -93,7 +95,7 @@ CanvasPainter.prototype.drawImg = function() {
     var targetHeight = ratio * this.scale * this.currentFile.Columns;
     var xOffset = (this.canvas.width - targetWidth) / 2 + this.pan[0];
     var yOffset = (this.canvas.height - targetHeight) / 2 + this.pan[1];
-    
+
     var tempcanvas = document.createElement("canvas");
     tempcanvas.height = this.currentFile.Rows;
     tempcanvas.width = this.currentFile.Columns;
@@ -104,7 +106,6 @@ CanvasPainter.prototype.drawImg = function() {
 };
 
 calculateRatio = function(srcWidth, srcHeight, maxWidth, maxHeight) {
-
     var ratio = [maxWidth / srcWidth, maxHeight / srcHeight];
     ratio = Math.min(ratio[0], ratio[1]);
 

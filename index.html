@@ -15,18 +15,19 @@
         <!--<script type="text/javascript" src="js/libs/jsTree-2.0.0/jstree.min.js"></script>-->
 
         <!-- External jsdicom-lib -->
-        <script type="text/javascript" src="jsdicom-lib/src/dcmdict.js"></script>
-        <script type="text/javascript" src="jsdicom-lib/src/binutils.js"></script>
-        <script type="text/javascript" src="jsdicom-lib/src/dcmfile.js"></script>
-        <script type="text/javascript" src="jsdicom-lib/src/dicomparser.js"></script>
-        <script type="text/javascript" src="jsdicom-lib/src/transfersyntax.js"></script>
-        <script type="text/javascript" src="jsdicom-lib/src/qr.js"></script>
+        <script type="text/javascript" src="js/libs/jsdicom-lib/src/dcmdict.js"></script>
+        <script type="text/javascript" src="js/libs/jsdicom-lib/src/binutils.js"></script>
+        <script type="text/javascript" src="js/libs/jsdicom-lib/src/dcmfile.js"></script>
+        <script type="text/javascript" src="js/libs/jsdicom-lib/src/dicomparser.js"></script>
+        <script type="text/javascript" src="js/libs/jsdicom-lib/src/transfersyntax.js"></script>
+        <script type="text/javascript" src="js/libs/jsdicom-lib/src/qr.js"></script>
 
         <!--Dicom Viewer-->
         <script type="text/javascript" src="js/DcmViewer.js"></script>
         <script type="text/javascript" src="js/DcmParser.js"></script>
         <script type="text/javascript" src="js/CanvasPainter.js"></script>
         <script type="text/javascript" src="js/Toolbox.js"></script>
+        <script type="text/javascript" src="js/Tree.js"></script>
 
         <!-- Tools -->
         <script type="text/javascript" src="js/tools/WindowLevel.js"></script>
@@ -36,27 +37,19 @@
         <script>
             $(document).ready(function() {
                 var dcmViewer = new DcmViewer('myCanvas');
-                var dcmParser = new DcmParser();
-//                $('#dicomUpload').change(function(e) {
-//                    dcmViewer.loadFiles(e.target.files);
-//                    console.log(e.target.files);
-//                    if(dcmViewer.numFiles > 1) {
-//                        $("#slider").slider({
-//                            value: 0,
-//                            min: 0,
-//                            max: dcmViewer.numFiles - 1,
-//                            step: 1,
-//                            slide: function(e, ui) {
-//                                dcmViewer.scrollOne(ui.value);
-//                            }
-//                        });
-//                    } else {
-//                        if($("#slider").slider()) {
-//                            $("#slider").slider("destroy");
-//                        }
-//                    }
-//                });
-
+                var tree = new Tree('#fileTree');
+                
+                $('#dicomUpload').change(tree.change);
+                $('#fileTree').click(function(e) {
+                    if(e.target.nodeName === 'A' && e.target.dataset.type === 'file') {
+                        var serie = [];
+                        var arr = e.target.dataset.index.split(',');
+                        for(var i = 0; i < arr.length; i++) {
+                            serie.push(tree.parsedFileList[arr[i]]);
+                        }
+                        dcmViewer.setParsedFiles(serie);
+                    }
+                });
                 $('#buttonSet').change(function() {
                     dcmViewer.setCurrentTool($("input[name='toolbox-buttons']:checked").val());
                 });
@@ -97,104 +90,6 @@
                 });
                 $('#buttonSet').buttonset();
                 $('#resetButton').button();
-
-                function Tree(selector) {
-                    this.$el = $(selector);
-                    this.fileList = [];
-                    var html_ = [];
-                    var dcmTree = {};
-                    var dcmList = [];
-                    this.parsedFileList = [];
-                    var self = this;
-
-                    this.dcmRender = function(tree) {
-                        if(tree) {
-                            for(var object in tree) {
-                                if($.isArray(tree[object])) { // series have an array - patients a object
-                                    html_.push('<li><a href="#" data-type="file" data-index="' + tree[object] + '" >', object, '</a></li>');
-                                } else {
-                                    html_.push('<li><a href="#" data-type="folder">', object, '</a>');
-                                    html_.push('<ul>');
-                                    self.dcmRender(tree[object]);
-                                    html_.push('</ul>');
-                                }
-                            }
-
-                            $('#fileTree').html(html_.join('')).tree({
-                                expanded: 'li:first'
-                            });
-                        }
-                    };
-
-                    this.buildFromDcmList = function(files) {
-                        for(var i = 0; i < files.length; i++) {
-                            var file = files[i];
-
-                            if(!dcmTree[file.PatientsName]) {
-                                dcmTree[file.PatientsName] = {};
-                                dcmTree[file.PatientsName][file.SeriesDescription] = [];
-                                dcmTree[file.PatientsName][file.SeriesDescription].push(i);
-                            } else {
-                                if(!dcmTree[file.PatientsName][file.SeriesDescription]) {
-                                    dcmTree[file.PatientsName][file.SeriesDescription] = [];
-                                    dcmTree[file.PatientsName][file.SeriesDescription].push(i);
-                                } else {
-                                    dcmTree[file.PatientsName][file.SeriesDescription].push(i);
-                                }
-                            }
-                        }
-                        return dcmTree;
-                    };
-
-                    this.init = function(e) {
-                        html_ = [];
-                        tree_ = {};
-                        dcmTree = {};
-                        pathList_ = [];
-                        dcmList = [];
-                        self.parsedFileList = [];
-                        self.fileList = e.target.files;
-                        // TODO: optimize this so we're not going through the file list twice (here and in buildFromPathList).
-                        for(var i = 0; i < self.fileList.length; i++) {
-                            if(self.fileList[i].type === "application/dicom") {
-                                dcmList.push(self.fileList[i]);
-                            }
-
-                        }
-
-                        dcmParser.parseFiles(dcmList, function(e) {
-                            self.parsedFileList = e;
-                            self.dcmRender(self.buildFromDcmList(self.parsedFileList));
-                        });
-
-                        $("#slider").slider({
-                            value: 0,
-                            min: 0,
-                            max: dcmViewer.numFiles - 1,
-                            step: 1,
-                            slide: function(e, ui) {
-                                dcmViewer.scrollOne(ui.value);
-                            }
-                        });
-                    };
-                }
-                ;
-
-                var tree = new Tree('#fileTree');
-                $('#dicomUpload').change(tree.init);
-
-                tree.$el.click(function(e) {
-                    console.log(e.target.dataset.index);
-                    if(e.target.nodeName === 'A' && e.target.dataset.type === 'file') {
-                        var serie = [];
-                        var arr = e.target.dataset.index.split(',');
-                        for(var i = 0; i < arr.length; i++) {
-                            serie.push(tree.parsedFileList[arr[i]]);
-                        }
-                        dcmViewer.painter.setSeries(serie);
-                        dcmViewer.painter.drawImg();
-                    }
-                });
             });
         </script>
     </head>
