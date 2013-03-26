@@ -30,8 +30,9 @@ input {
     width: 95%;
 }
 
-progress {
+#progressBar {
     width: 100%;
+    height: 20px;
 }
 
 #errorMsg {

@@ -41,6 +41,15 @@ DcmParser.prototype.parseFiles = function(rawFiles, callback) {
                 self.files.push(file);
 
                 if(j === (length - 1)) {
+                    self.files.sort(function(a, b) {
+                        var A = a.PatientsName.toLowerCase();
+                        var B = b.PatientsName.toLowerCase();
+                        if(A < B)
+                            return -1;
+                        if(A > b)
+                            return 1;
+                        return 0;
+                    });
                     callback(self.files);
                 }
             }
@@ -51,7 +60,7 @@ DcmParser.prototype.parseFiles = function(rawFiles, callback) {
         };
 
         reader.onerror = function(e) {
-            e = e || window.event; 
+            e = e || window.event;
 
             switch(e.target.error.code) {
                 case e.target.error.NOT_FOUND_ERR:
@@ -77,5 +86,6 @@ DcmParser.prototype.parseFiles = function(rawFiles, callback) {
 
     for(var i = 0; i < rawFiles.length; i++) {
         setupReader(rawFiles[i], i, rawFiles.length);
+        $('#progressBar').val((i / (rawFiles.length - 1)) * 0.5);
     }
 };
