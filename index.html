@@ -8,12 +8,11 @@
         <link rel="stylesheet" href="css/main.css">
         <link rel="stylesheet" href="css/jquery-ui-1.10.2.custom.css">
 
-        <!-- jQuery -->
+        <!-- jQuery & Plugins -->
         <script type="text/javascript" src="js/libs/jquery-1.9.1/jquery.min.js"></script>
         <script type="text/javascript" src="js/libs/jquery-ui-1.10.2/jquery-ui.custom.min.js"></script>
-        <script type="text/javascript" src="js/libs/jquery.tree.js"></script>
-        <!--<script type="text/javascript" src="js/libs/jsTree-2.0.0/jstree.min.js"></script>-->
-
+        <script type="text/javascript" src="js/libs/jqueryTree/jquery.tree.js"></script>
+        
         <!-- External jsdicom-lib -->
         <script type="text/javascript" src="js/libs/jsdicom-lib/src/dcmdict.js"></script>
         <script type="text/javascript" src="js/libs/jsdicom-lib/src/binutils.js"></script>
@@ -38,7 +37,7 @@
             $(document).ready(function() {
                 var dcmViewer = new DcmViewer('myCanvas');
                 var tree = new Tree('#fileTree');
-                
+
                 $('#dicomUpload').change(tree.change);
                 $('#fileTree').click(function(e) {
                     if(e.target.nodeName === 'A' && e.target.dataset.type === 'file') {
@@ -98,7 +97,7 @@
             <aside id="sidebar">
                 <!--<input id="dicomUpload" type="file" accept="application/dicom" multiple />--> 
                 <!--Only Chrome supports webkitdirectory-->
-                <input id="dicomUpload" type="file" multiple webkitdirectory directory />
+                <input id="dicomUpload" type="file" webkitdirectory directory multiple />
 
                 <progress value="0.5"></progress> 
 

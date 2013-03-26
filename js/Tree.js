@@ -24,8 +24,10 @@ function Tree(selector) {
         dcmParser.parseFiles(dcmList, function(e) {
             self.parsedFileList = e;
             var tmpHtml = dcmRender(buildFromDcmList(self.parsedFileList));
-            
-            $('#fileTree').html(tmpHtml);
+
+            $('#fileTree').html(tmpHtml).tree({
+                expanded: 'li:first'
+            });
             //.tree({
             //expanded: 'li:first'
             //});
@@ -35,17 +37,19 @@ function Tree(selector) {
     var buildFromDcmList = function(files) {
         for(var i = 0; i < files.length; i++) {
             var file = files[i];
+            var level1 = file.PatientsName; // ? file.PatientsName : 'undefined';
+            var level2 = file.SeriesDescription; //  ? file.SeriesDescription : 'undefined';
 
-            if(!dcmTree[file.PatientsName]) {
-                dcmTree[file.PatientsName] = {};
-                dcmTree[file.PatientsName][file.SeriesDescription] = [];
-                dcmTree[file.PatientsName][file.SeriesDescription].push(i);
+            if(!dcmTree[level1]) {
+                dcmTree[level1] = {};
+                dcmTree[level1][level2] = [];
+                dcmTree[level1][level2].push(i);
             } else {
-                if(!dcmTree[file.PatientsName][file.SeriesDescription]) {
-                    dcmTree[file.PatientsName][file.SeriesDescription] = [];
-                    dcmTree[file.PatientsName][file.SeriesDescription].push(i);
+                if(!dcmTree[level1][level2]) {
+                    dcmTree[level1][level2] = [];
+                    dcmTree[level1][level2].push(i);
                 } else {
-                    dcmTree[file.PatientsName][file.SeriesDescription].push(i);
+                    dcmTree[level1][level2].push(i);
                 }
             }
         }
