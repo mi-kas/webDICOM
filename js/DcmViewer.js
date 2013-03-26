@@ -12,64 +12,21 @@ DcmViewer.prototype.setCurrentTool = function(toolName) {
     this.toolbox.setCurrentTool(toolName);
 };
 
-DcmViewer.prototype.loadFiles = function(rawFiles) {
-    var files = [];
-    this.numFiles = rawFiles.length;
-    for(var i = 0; i < rawFiles.length; i++) {
-        this.loadFile(rawFiles[i], i, rawFiles.length, files);
-    }
-};
-
-DcmViewer.prototype.loadFile = function(rawFile, index, end, files) {
-    var _this = this;
-    var reader = new FileReader();
-    reader.readAsArrayBuffer(rawFile);
-    reader.onload = function(evt) {
-        if(evt.target.readyState === FileReader.DONE) {
-            var array = new Uint8Array(evt.target.result);
-            var parser = new DicomParser(array);
-            var file = parser.parse_file();
-            files.push(file);
-            var str = '';
-
-            if(typeof file.RescaleSlope === 'undefined') {
-                file.RescaleSlope = 1;
-                str += 'RescaleSlope undefined, ';
-            }
-            if(typeof file.RescaleIntercept === 'undefined') {
-                file.RescaleIntercept = 0;
-                str += 'RescaleIntercept undefined, ';
-            }
-            if(typeof file.WindowCenter === 'undefined') {
-                file.WindowCenter = 85;
-                str += 'WindowCenter undefined, ';
-            }
-            if(typeof file.WindowWidth === 'undefined') {
-                file.WindowWidth = 171;
-                str += 'WindowWidth undefined, ';
-            }
-            if($.isArray(file.WindowCenter)) {
-                file.WindowCenter = file.WindowCenter[0];
-                str += 'WindowCenter isArray, ';
-            }
-            if($.isArray(file.WindowWidth)) {
-                file.WindowWidth = file.WindowWidth[0];
-                str += 'WindowWidth isArray ';
-            }
-            // str.length > 0 ? console.log(str) : str;
-
-            if(index === end - 1) {
-                // Sort by InstanceNumber
-                files.sort(function(a, b) {
-                    return a.InstanceNumber - b.InstanceNumber;
-                });
-                _this.painter.setSeries(files);
-                _this.painter.drawImg();
-                _this.eventsEnabled = true;
-                files = null;
-            }
+DcmViewer.prototype.setParsedFiles = function(files) {
+    this.numFiles = files.length;
+    this.painter.setSeries(files);
+    this.painter.drawImg();
+    this.eventsEnabled = true;
+    var self = this;
+    $("#slider").slider({
+        value: 0,
+        min: 0,
+        max: self.numFiles - 1,
+        step: 1,
+        slide: function(e, ui) {
+            self.scrollOne(ui.value);
         }
-    };
+    });
 };
 
 DcmViewer.prototype.eventHandler = function(e) {
@@ -105,7 +62,7 @@ DcmViewer.prototype.scrollHandler = function(evt) {
 };
 
 DcmViewer.prototype.scrollOne = function(num) {
-        this.scrollIndex = num;
-        this.painter.currentFile = this.painter.series[this.scrollIndex];
-        this.painter.drawImg();
+    this.scrollIndex = num;
+    this.painter.currentFile = this.painter.series[this.scrollIndex];
+    this.painter.drawImg();
 };
