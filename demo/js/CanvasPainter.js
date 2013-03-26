@@ -3,6 +3,7 @@ function CanvasPainter(canvasId) {
     this.canvas = document.getElementById(canvasId);
     this.context = this.canvas.getContext("2d");
     this.currentFile;
+    this.series;
     this.ww;
     this.wc;
     this.scale;
@@ -17,9 +18,20 @@ CanvasPainter.prototype.setFile = function(file) {
     this.pan = file.Pan;
 };
 
+CanvasPainter.prototype.setSeries = function(serie) {
+    // Sort by InstanceNumber
+    serie.sort(function(a, b) {
+        return a.InstanceNumber - b.InstanceNumber;
+    });
+    this.series = serie;
+    this.currentFile = this.series[0];
+    this.wc = this.series[0].WindowCenter;
+    this.ww = this.series[0].WindowWidth;
+    this.scale = 1;
+    this.pan = [0, 0];
+};
+
 CanvasPainter.prototype.setWindowing = function(wc, ww) {
-//    var relX = (wc / this.currentFile.Columns) * this.wc + this.wc;
-//    var relY = (ww / this.currentFile.Rows) * this.ww + this.ww;
     this.wc = wc;
     this.ww = ww;
 };
@@ -46,21 +58,21 @@ CanvasPainter.prototype.getPan = function() {
 };
 
 CanvasPainter.prototype.reset = function() {
-    this.wc = this.currentFile.WindowCenter;
-    this.ww = this.currentFile.WindowWidth;
+    this.wc = this.series[0].WindowCenter;
+    this.ww = this.series[0].WindowWidth;
     this.scale = 1;
     this.pan = [0, 0];
     this.drawImg();
 };
 
 CanvasPainter.prototype.drawImg = function() {
-    this.canvas.height = this.currentFile.Rows;
-    this.canvas.width = this.currentFile.Columns;
+//    this.canvas.height = this.currentFile.Rows;
+//    this.canvas.width = this.currentFile.Columns;
     var lowestVisibleValue = this.wc - this.ww / 2.0;
     var highestVisibleValue = this.wc + this.ww / 2.0;
 
-    this.context.fillStyle = "rgb(0,0,0)";
-    this.context.fillRect(0, 0, this.currentFile.Columns, this.currentFile.Rows);
+    this.context.fillStyle = "#000";
+    this.context.fillRect(0, 0, 512, 512);
     var imgData = this.context.createImageData(this.currentFile.Columns, this.currentFile.Rows);
     var pixelData = this.currentFile.PixelData;
 
@@ -78,7 +90,7 @@ CanvasPainter.prototype.drawImg = function() {
         imgData.data[i + 3] = 255;       // alpha
     }
 
-    var ratio = this.currentFile.Columns / this.currentFile.Rows;
+    var ratio = calculateRatio(this.currentFile.Columns, this.currentFile.Rows, 512, 512);
     var targetWidth = ratio * this.scale * this.currentFile.Rows;
     var targetHeight = ratio * this.scale * this.currentFile.Columns;
     var xOffset = (this.canvas.width - targetWidth) / 2 + this.pan[0];
@@ -91,4 +103,11 @@ CanvasPainter.prototype.drawImg = function() {
 
     tempContext.putImageData(imgData, 0, 0);
     this.context.drawImage(tempcanvas, xOffset, yOffset, targetWidth, targetHeight);
+};
+
+calculateRatio = function(srcWidth, srcHeight, maxWidth, maxHeight) {
+    var ratio = [maxWidth / srcWidth, maxHeight / srcHeight];
+    ratio = Math.min(ratio[0], ratio[1]);
+
+    return ratio;
 };

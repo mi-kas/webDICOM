@@ -3,11 +3,16 @@
     <head>
         <title>webDICOM</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+        <!--CSS-->
         <link rel="stylesheet" href="css/main.css">
+        <link rel="stylesheet" href="css/jquery-ui-1.10.2.custom.css">
 
-        <!-- jQuery -->
-        <script type="text/javascript" src="js/libs/jquery-1.9.0/jquery.min.js"></script>
-
+        <!-- jQuery & Plugins -->
+        <script type="text/javascript" src="js/libs/jquery-1.9.1/jquery.min.js"></script>
+        <script type="text/javascript" src="js/libs/jquery-ui-1.10.2/jquery-ui.custom.min.js"></script>
+        <script type="text/javascript" src="js/libs/jqueryTree/jquery.tree.js"></script>
+        
         <!-- External jsdicom-lib -->
         <script type="text/javascript" src="js/libs/jsdicom-lib/src/dcmdict.js"></script>
         <script type="text/javascript" src="js/libs/jsdicom-lib/src/binutils.js"></script>
@@ -18,8 +23,10 @@
 
         <!--Dicom Viewer-->
         <script type="text/javascript" src="js/DcmViewer.js"></script>
+        <script type="text/javascript" src="js/DcmParser.js"></script>
         <script type="text/javascript" src="js/CanvasPainter.js"></script>
         <script type="text/javascript" src="js/Toolbox.js"></script>
+        <script type="text/javascript" src="js/Tree.js"></script>
 
         <!-- Tools -->
         <script type="text/javascript" src="js/tools/WindowLevel.js"></script>
@@ -29,19 +36,28 @@
         <script>
             $(document).ready(function() {
                 var dcmViewer = new DcmViewer('myCanvas');
+                var tree = new Tree('#fileTree');
 
-                $('input').change(function(e) {
-                    dcmViewer.loadFiles(e.target.files);
+                $('#dicomUpload').change(tree.change);
+                $('#fileTree').click(function(e) {
+                    if(e.target.nodeName === 'A' && e.target.dataset.type === 'file') {
+                        var serie = [];
+                        var arr = e.target.dataset.index.split(',');
+                        for(var i = 0; i < arr.length; i++) {
+                            serie.push(tree.parsedFileList[arr[i]]);
+                        }
+                        dcmViewer.setParsedFiles(serie);
+                    }
                 });
-
-                $('.toolbox-buttons').click(function() {
-                    dcmViewer.setCurrentTool((this).value);
+                $('#buttonSet').change(function() {
+                    dcmViewer.setCurrentTool($("input[name='toolbox-buttons']:checked").val());
                 });
-
+                $('#resetButton').click(function() {
+                    if(dcmViewer.eventsEnabled) {
+                        dcmViewer.painter.reset();
+                    }
+                });
                 $('#myCanvas').click(function(e) {
-                    dcmViewer.eventHandler(e);
-                });
-                $('#myCanvas').dblclick(function(e) {
                     dcmViewer.eventHandler(e);
                 });
                 $('#myCanvas').mousemove(function(e) {
@@ -57,27 +73,50 @@
                     dcmViewer.eventHandler(e);
                 });
                 $('#myCanvas').bind('mousewheel', function(e) {
-                    e.preventDefault();
-                    dcmViewer.scrollHandler(e);
+                    if(dcmViewer.numFiles > 1) {
+                        e.preventDefault();
+                        var num = dcmViewer.scrollHandler(e);
+                        $('#slider').slider('value', num);
+                    }
                 });
                 // scroll event for firefox
                 $('#myCanvas').bind('DOMMouseScroll', function(e) {
-                    dcmViewer.scrollHandler(e);
+                    if(dcmViewer.numFiles > 1) {
+                        e.preventDefault();
+                        var num = dcmViewer.scrollHandler(e);
+                        $('#slider').slider('value', num);
+                    }
                 });
-
+                $('#buttonSet').buttonset();
+                $('#resetButton').button();
+                $('#progressBar').hide();
             });
         </script>
     </head>
     <body>
+        <div id="container">
+            <aside id="sidebar">
+                <!--<input id="dicomUpload" type="file" accept="application/dicom" multiple />--> 
+                <!--Only Chrome supports webkitdirectory-->
+                <input id="dicomUpload" type="file" webkitdirectory directory multiple />
+                <progress id="progressBar" value="0"></progress>
+                <div id="errorMsg"></div>
 
-        <form id="uploadForm">
-            <input type="file" accept="application/dicom" id="dicomfiles" multiple /> 
-        </form>
-        <div id="toolbox">
-            <button type="button" class="toolbox-buttons" value="Window level">Window level</button>
-            <button type="button" class="toolbox-buttons" value="Move">Move</button>
-            <button type="button" class="toolbox-buttons" value="Zoom">Zoom</button>
+                <div id="fileTree"></div>
+            </aside>
+            <div id="viewer">
+                <div id="toolbox">
+                    <span id="buttonSet">
+                        <input type="radio" id="windowLevel" name="toolbox-buttons" value="Window level" checked="checked" /><label for="windowLevel">Window level</label>
+                        <input type="radio" id="move" name="toolbox-buttons" value="Move" /><label for="move">Move</label>
+                        <input type="radio" id="zoom" name="toolbox-buttons" value="Zoom" /><label for="zoom">Zoom</label>
+                    </span>
+                    <button type="button" class="ui-button-text" id="resetButton" value="Reset">Reset</button>
+                </div>
+
+                <canvas id="myCanvas" width="512" height="512">Your browser doesn't support HTML5</canvas>
+                <div id="slider"></div>
+            </div>
         </div>
-        <canvas id="myCanvas" width="512" height="512">Your browser doesn't support HTML5</canvas>
     </body>
 </html>
