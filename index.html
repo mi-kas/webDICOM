@@ -15,12 +15,12 @@
         <!--<script type="text/javascript" src="js/libs/jsTree-2.0.0/jstree.min.js"></script>-->
 
         <!-- External jsdicom-lib -->
-        <script type="text/javascript" src="js/libs/jsdicom-lib/src/dcmdict.js"></script>
-        <script type="text/javascript" src="js/libs/jsdicom-lib/src/binutils.js"></script>
-        <script type="text/javascript" src="js/libs/jsdicom-lib/src/dcmfile.js"></script>
-        <script type="text/javascript" src="js/libs/jsdicom-lib/src/dicomparser.js"></script>
-        <script type="text/javascript" src="js/libs/jsdicom-lib/src/transfersyntax.js"></script>
-        <script type="text/javascript" src="js/libs/jsdicom-lib/src/qr.js"></script>
+        <script type="text/javascript" src="jsdicom-lib/src/dcmdict.js"></script>
+        <script type="text/javascript" src="jsdicom-lib/src/binutils.js"></script>
+        <script type="text/javascript" src="jsdicom-lib/src/dcmfile.js"></script>
+        <script type="text/javascript" src="jsdicom-lib/src/dicomparser.js"></script>
+        <script type="text/javascript" src="jsdicom-lib/src/transfersyntax.js"></script>
+        <script type="text/javascript" src="jsdicom-lib/src/qr.js"></script>
 
         <!--Dicom Viewer-->
         <script type="text/javascript" src="js/DcmViewer.js"></script>
@@ -97,7 +97,7 @@
                 });
                 $('#buttonSet').buttonset();
                 $('#resetButton').button();
-//               
+
                 function Tree(selector) {
                     this.$el = $(selector);
                     this.fileList = [];
@@ -120,10 +120,9 @@
                                 }
                             }
 
-                            $('#fileTree').html(html_.join(''));
-//                                    .tree({
-//                                expanded: 'li:first'
-//                            });
+                            $('#fileTree').html(html_.join('')).tree({
+                                expanded: 'li:first'
+                            });
                         }
                     };
 
@@ -164,7 +163,7 @@
                         }
 
                         dcmParser.parseFiles(dcmList, function(e) {
-                            self.parsedFileList = e; 
+                            self.parsedFileList = e;
                             self.dcmRender(self.buildFromDcmList(self.parsedFileList));
                         });
 
@@ -177,13 +176,6 @@
                                 dcmViewer.scrollOne(ui.value);
                             }
                         });
-//                        self.render(self.buildFromPathList(pathList_));
-//                        console.log(tree_);
-//                        console.log(self.buildFromFileList(dcmList));
-//                        self.$el.html(html_.join(''));
-//                                .tree({
-//                            expanded: 'li:first'
-//                        });
                     };
                 }
                 ;
@@ -193,19 +185,14 @@
 
                 tree.$el.click(function(e) {
                     console.log(e.target.dataset.index);
-                    if(e.target.nodeName === 'A' && e.target.dataset['type'] === 'file') {
+                    if(e.target.nodeName === 'A' && e.target.dataset.type === 'file') {
                         var serie = [];
                         var arr = e.target.dataset.index.split(',');
                         for(var i = 0; i < arr.length; i++) {
-                            // TODO: parse Array from String
-                            console.log(arr[i]);
                             serie.push(tree.parsedFileList[arr[i]]);
                         }
                         dcmViewer.painter.setSeries(serie);
                         dcmViewer.painter.drawImg();
-                        //var file = tree.fileList[e.target.dataset['index']];
-                        //dcmViewer.loadFiles([file], function() {
-                        //});
                     }
                 });
             });
