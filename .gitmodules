@@ -1,0 +1,3 @@
+[submodule "js/libs/jsdicom-lib"]
+	path = js/libs/jsdicom-lib
+	url = https://github.com/Infogosoft/jsdicom-lib.git

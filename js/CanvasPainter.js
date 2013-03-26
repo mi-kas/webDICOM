@@ -19,6 +19,10 @@ CanvasPainter.prototype.setFile = function(file) {
 };
 
 CanvasPainter.prototype.setSeries = function(serie) {
+    // Sort by InstanceNumber
+    serie.sort(function(a, b) {
+        return a.InstanceNumber - b.InstanceNumber;
+    });
     this.series = serie;
     this.currentFile = this.series[0];
     this.wc = this.series[0].WindowCenter;
@@ -28,8 +32,6 @@ CanvasPainter.prototype.setSeries = function(serie) {
 };
 
 CanvasPainter.prototype.setWindowing = function(wc, ww) {
-//    var relX = (wc / this.currentFile.Columns) * this.wc + this.wc;
-//    var relY = (ww / this.currentFile.Rows) * this.ww + this.ww;
     this.wc = wc;
     this.ww = ww;
 };
@@ -64,13 +66,13 @@ CanvasPainter.prototype.reset = function() {
 };
 
 CanvasPainter.prototype.drawImg = function() {
-    this.canvas.height = this.currentFile.Rows;
-    this.canvas.width = this.currentFile.Columns;
+//    this.canvas.height = this.currentFile.Rows;
+//    this.canvas.width = this.currentFile.Columns;
     var lowestVisibleValue = this.wc - this.ww / 2.0;
     var highestVisibleValue = this.wc + this.ww / 2.0;
 
-    this.context.fillStyle = "rgb(0,0,0)";
-    this.context.fillRect(0, 0, this.currentFile.Columns, this.currentFile.Rows);
+    this.context.fillStyle = "#000";
+    this.context.fillRect(0, 0, 512, 512);
     var imgData = this.context.createImageData(this.currentFile.Columns, this.currentFile.Rows);
     var pixelData = this.currentFile.PixelData;
 
@@ -88,7 +90,7 @@ CanvasPainter.prototype.drawImg = function() {
         imgData.data[i + 3] = 255;       // alpha
     }
 
-    var ratio = this.currentFile.Columns / this.currentFile.Rows;
+    var ratio = calculateRatio(this.currentFile.Columns, this.currentFile.Rows, 512, 512);
     var targetWidth = ratio * this.scale * this.currentFile.Rows;
     var targetHeight = ratio * this.scale * this.currentFile.Columns;
     var xOffset = (this.canvas.width - targetWidth) / 2 + this.pan[0];
@@ -101,4 +103,11 @@ CanvasPainter.prototype.drawImg = function() {
 
     tempContext.putImageData(imgData, 0, 0);
     this.context.drawImage(tempcanvas, xOffset, yOffset, targetWidth, targetHeight);
+};
+
+calculateRatio = function(srcWidth, srcHeight, maxWidth, maxHeight) {
+    var ratio = [maxWidth / srcWidth, maxHeight / srcHeight];
+    ratio = Math.min(ratio[0], ratio[1]);
+
+    return ratio;
 };

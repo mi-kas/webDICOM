@@ -11,19 +11,33 @@ html, body {
     display: -webkit-box;    
     -webkit-box-orient: horizontal;
     height: 100%;
+    width: 100%;
 }
 #sidebar {
-    padding: 5px;
+    padding: 15px;
     overflow-y: scroll;
     overflow-x: hidden;
-    width: 300px;
+    /*width: 300px;*/
+    width: 25%;
     border-right: 1px solid #ccc;
+}
+
+input {
+    border: 2px solid #eee;
+    border-radius: 10px;
+    padding: 5px;
+    width: 95%;
+}
+
+progress {
+    width: 100%;
 }
 
 #viewer {
     xborder: 2px solid #00F;
+    width: 75%;
     padding: 5px 15px 5px 10px;
-    overflow-y: auto;
+    overflow-y: scroll;
     overflow-x: hidden;
     /*-webkit-box-flex: 1;*/
 }
@@ -45,13 +59,6 @@ html, body {
 
 #slider {
     width: 512px;
-}
-
-input[type='file'] {
-    border: 2px solid #eee;
-    border-radius: 10px;
-    padding: 5px;
-    width: 95%;
 }
 
 #files { margin:2em 0 5em; width:400px; }

@@ -24,8 +24,10 @@
 
         <!--Dicom Viewer-->
         <script type="text/javascript" src="js/DcmViewer.js"></script>
+        <script type="text/javascript" src="js/DcmParser.js"></script>
         <script type="text/javascript" src="js/CanvasPainter.js"></script>
         <script type="text/javascript" src="js/Toolbox.js"></script>
+        <script type="text/javascript" src="js/Tree.js"></script>
 
         <!-- Tools -->
         <script type="text/javascript" src="js/tools/WindowLevel.js"></script>
@@ -35,26 +37,19 @@
         <script>
             $(document).ready(function() {
                 var dcmViewer = new DcmViewer('myCanvas');
-//                $('#dicomUpload').change(function(e) {
-//                    dcmViewer.loadFiles(e.target.files);
-//                    console.log(e.target.files);
-//                    if(dcmViewer.numFiles > 1) {
-//                        $("#slider").slider({
-//                            value: 0,
-//                            min: 0,
-//                            max: dcmViewer.numFiles - 1,
-//                            step: 1,
-//                            slide: function(e, ui) {
-//                                dcmViewer.scrollOne(ui.value);
-//                            }
-//                        });
-//                    } else {
-//                        if($("#slider").slider()) {
-//                            $("#slider").slider("destroy");
-//                        }
-//                    }
-//                });
-
+                var tree = new Tree('#fileTree');
+                
+                $('#dicomUpload').change(tree.change);
+                $('#fileTree').click(function(e) {
+                    if(e.target.nodeName === 'A' && e.target.dataset.type === 'file') {
+                        var serie = [];
+                        var arr = e.target.dataset.index.split(',');
+                        for(var i = 0; i < arr.length; i++) {
+                            serie.push(tree.parsedFileList[arr[i]]);
+                        }
+                        dcmViewer.setParsedFiles(serie);
+                    }
+                });
                 $('#buttonSet').change(function() {
                     dcmViewer.setCurrentTool($("input[name='toolbox-buttons']:checked").val());
                 });
@@ -95,75 +90,6 @@
                 });
                 $('#buttonSet').buttonset();
                 $('#resetButton').button();
-//               
-                function Tree(selector) {
-                    this.$el = $(selector);
-                    this.fileList = [];
-                    var html_ = [];
-                    var tree_ = {};
-                    var pathList_ = [];
-                    var self = this;
-                    this.render = function(object) {
-                        if(object) {
-                            for(var folder in object) {
-                                if(isNaN(object[folder])) { // files have a number - folders a string
-                                    html_.push('<li><a href="#" data-type="folder">', folder, '</a>');
-                                    html_.push('<ul>');
-                                    self.render(object[folder]);
-                                    html_.push('</ul>');
-                                } else {
-                                    html_.push('<li><a href="#" data-type="file" data-index="' + object[folder] + '" >', folder, '</a></li>');
-                                }
-                            }
-                        }
-                    };
-                    this.buildFromPathList = function(paths) {
-                        for(var i = 0; i < paths.length; i++) {
-                            var pathParts = paths[i][0].split('/');
-                            var subObj = tree_;
-                            for(var j = 0, folderName; folderName = pathParts[j]; j++) {
-                                if(!subObj[folderName]) {
-                                    subObj[folderName] = j < pathParts.length - 1 ? {} : paths[i][1];
-                                }
-                                subObj = subObj[folderName];
-                            }
-                        }
-                        return tree_;
-                    }
-
-                    this.init = function(e) {
-                        html_ = [];
-                        tree_ = {};
-                        pathList_ = [];
-                        self.fileList = e.target.files;
-                        // TODO: optimize this so we're not going through the file list twice (here and in buildFromPathList).
-                        for(var i = 0; i < self.fileList.length; i++) {
-                            // TODO: versteckte files ausblenden
-                            if(self.fileList[i].name.charAt(0) !== '.') {
-                                pathList_.push([self.fileList[i].webkitRelativePath, i]);
-                            }
-
-                        }
-
-                        self.render(self.buildFromPathList(pathList_));
-                        console.log(tree_);
-                        self.$el.html(html_.join('')).tree({
-                            expanded: 'li:first'
-                        });
-                    }
-                }
-                ;
-
-                var tree = new Tree('#fileTree');
-                $('#dicomUpload').change(tree.init);
-
-                tree.$el.click(function(e) {
-                    if(e.target.nodeName === 'A' && e.target.dataset['type'] === 'file') {
-                        var file = tree.fileList[e.target.dataset['index']];
-                        console.log(file);
-                        dcmViewer.loadFiles([file]);
-                    }
-                });
             });
         </script>
     </head>
@@ -173,6 +99,8 @@
                 <!--<input id="dicomUpload" type="file" accept="application/dicom" multiple />--> 
                 <!--Only Chrome supports webkitdirectory-->
                 <input id="dicomUpload" type="file" multiple webkitdirectory directory />
+
+                <progress value="0.5"></progress> 
 
                 <div id="fileTree"></div>
             </aside>
