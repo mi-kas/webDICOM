@@ -76,7 +76,7 @@ CanvasPainter.prototype.drawImg = function() {
     var imgData = this.context.createImageData(this.currentFile.Columns, this.currentFile.Rows);
     var pixelData = this.currentFile.PixelData;
 
-    for(var i = 0; i < imgData.data.length; i += 4) {
+    for(var i = 0, len = imgData.data.length; i < len; i += 4) {
         var intensity = pixelData[(i / 4)];
         intensity = intensity * this.currentFile.RescaleSlope + this.currentFile.RescaleIntercept;
         intensity = (intensity - lowestVisibleValue) / (highestVisibleValue - lowestVisibleValue);

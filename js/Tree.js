@@ -17,7 +17,7 @@ function Tree(selector) {
         $('#errorMsg').empty();
         $('#progressBar').show();
         // TODO: optimize this so we're not going through the file list twice (here and in buildFromPathList).
-        for(var i = 0; i < fileList.length; i++) {
+        for(var i = 0, len = fileList.length; i < len; i++) {
             if(fileList[i].type === "application/dicom") {
                 dcmList.push(fileList[i]);
             }
@@ -38,7 +38,7 @@ function Tree(selector) {
     };
 
     var buildFromDcmList = function(files) {
-        for(var i = 0; i < files.length; i++) {
+        for(var i = 0, len = files.length; i < len; i++) {
             var file = files[i];
             var level1 = file.PatientsName ? file.PatientsName : 'undefined';
             var level2 = file.SeriesDescription ? file.SeriesDescription : 'undefined';
@@ -64,6 +64,7 @@ function Tree(selector) {
 
     var dcmRender = function(tree) {
         if(tree) {
+            // TODO: optimize for in loop
             for(var object in tree) {
                 if($.isArray(tree[object])) { // series have an array - patients a object
                     _html.push('<li><a href="#" data-type="file" data-index="' + tree[object] + '" >', object, '</a></li>');
