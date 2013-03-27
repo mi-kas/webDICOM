@@ -12,7 +12,7 @@
         <script type="text/javascript" src="js/libs/jquery-1.9.1/jquery.min.js"></script>
         <script type="text/javascript" src="js/libs/jquery-ui-1.10.2/jquery-ui.custom.min.js"></script>
         <script type="text/javascript" src="js/libs/jqueryTree/jquery.tree.js"></script>
-        
+
         <!-- External jsdicom-lib -->
         <script type="text/javascript" src="js/libs/jsdicom-lib/src/dcmdict.js"></script>
         <script type="text/javascript" src="js/libs/jsdicom-lib/src/binutils.js"></script>
@@ -54,6 +54,8 @@
                 });
                 $('#resetButton').click(function() {
                     if(dcmViewer.eventsEnabled) {
+                        $('#resizableDiv').css('width', '512px');
+                        $('#resizableDiv').css('height', '512px');
                         dcmViewer.painter.reset();
                     }
                 });
@@ -90,6 +92,7 @@
                 $('#buttonSet').buttonset();
                 $('#resetButton').button();
                 $('#progressBar').hide();
+                $('#resizableDiv').resizable({aspectRatio: true});
             });
         </script>
     </head>
@@ -113,9 +116,12 @@
                     </span>
                     <button type="button" class="ui-button-text" id="resetButton" value="Reset">Reset</button>
                 </div>
+                <div id="resizableDiv">
+                    <canvas id="myCanvas" width="512" height="512">Your browser doesn't support HTML5</canvas>
+                    <div id="slider"></div>
+                </div>
 
-                <canvas id="myCanvas" width="512" height="512">Your browser doesn't support HTML5</canvas>
-                <div id="slider"></div>
+
             </div>
         </div>
     </body>

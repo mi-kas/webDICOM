@@ -85,7 +85,7 @@ DcmParser.prototype.parseFiles = function(rawFiles, callback) {
     };
 
     for(var i = 0, len = rawFiles.length; i < len; i++) {
-        setupReader(rawFiles[i], i, len);
         $('#progressBar').val((i / (len - 1)) * 0.5);
+        setupReader(rawFiles[i], i, len);
     }
 };
