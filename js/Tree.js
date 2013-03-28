@@ -16,6 +16,7 @@ function Tree(selector) {
         $('#fileTree').empty();
         $('#errorMsg').empty();
         $('#progressBar').show();
+
         // TODO: optimize this so we're not going through the file list twice (here and in buildFromPathList).
         for(var i = 0, len = fileList.length; i < len; i++) {
             if(fileList[i].type === "application/dicom") {
@@ -25,15 +26,17 @@ function Tree(selector) {
 
         dcmParser.parseFiles(dcmList, function(e) {
             self.parsedFileList = e;
-            var tmpHtml = dcmRender(buildFromDcmList(self.parsedFileList));
-            $('#progressBar').val(0.9);
-            $('#fileTree').html(tmpHtml).tree({
+            //var tmpHtml = dcmRender(buildFromDcmList(self.parsedFileList));
+            var tmpTree = $('#fileTree').html(dcmRender(buildFromDcmList(self.parsedFileList))).hide().tree({
                 expanded: 'li:first'
             });
-            $('#progressBar').val(1);
+            
+            // Small delay to layout the tree correctly
             setTimeout(function() {
-                $('#progressBar').hide();
-            },500);
+                tmpTree.show();
+            }, 100);
+
+            $('#progressBar').hide();
         });
     };
 
@@ -55,9 +58,6 @@ function Tree(selector) {
                     dcmTree[level1][level2].push(i);
                 }
             }
-            $('#progressBar').val(function(){
-                return 0.5 + (i / (files.length - 1)) * 0.25;
-            });
         }
         return dcmTree;
     };

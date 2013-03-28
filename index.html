@@ -66,6 +66,7 @@
                     dcmViewer.eventHandler(e);
                 });
                 $('#myCanvas').mousedown(function(e) {
+                    e.preventDefault();
                     dcmViewer.eventHandler(e);
                 });
                 $('#myCanvas').mouseup(function(e) {
@@ -91,9 +92,28 @@
                 });
                 $('#buttonSet').buttonset();
                 $('#resetButton').button();
-                $('#progressBar').hide();
+                $('#metaButton').button();
                 $('#resizableDiv').resizable({aspectRatio: true});
+                $('#progressBar').hide();
             });
+            
+            var progress = function(max) {
+                var progressbar = $('#progressBar'),
+                        time = 10,
+                        value = progressbar.val();
+                progressbar.attr('max', max);
+                progressbar.show();
+
+                var animate = setInterval(function() {
+                    value += 1;
+                    if(value === max) {
+                        clearInterval(animate);
+                        progressbar.hide();
+                    } else {
+                        progressbar.val(value);
+                    }
+                }, time);
+            };
         </script>
     </head>
     <body>
@@ -115,9 +135,26 @@
                         <input type="radio" id="zoom" name="toolbox-buttons" value="Zoom" /><label for="zoom">Zoom</label>
                     </span>
                     <button type="button" class="ui-button-text" id="resetButton" value="Reset">Reset</button>
+                    <button type="button" class="ui-button-text" id="metaButton" value="Meta-Daten">Meta-Daten</button>
                 </div>
                 <div id="resizableDiv">
-                    <canvas id="myCanvas" width="512" height="512">Your browser doesn't support HTML5</canvas>
+                    <div id="canvasDiv">
+                        <canvas id="myCanvas" style="cursor:default" width="512" height="512">Your browser doesn't support HTML5</canvas>
+                        <div id="patientInfo">
+                            <ul>
+                                <li id="patientsName">Patientenname</li>
+                                <li id="age">Datum</li>
+                                <li id="wCenter">Window center</li>
+                                <li id="wWidth">Window with</li>
+                            </ul>
+                        </div>
+                        <div id="studyInfo">
+                            <ul>
+                                <li id="studyDate">Studie Datum</li>
+                                <li id="studyDescription">Studie Beschreibung</li>
+                            </ul>
+                        </div>
+                    </div>
                     <div id="slider"></div>
                 </div>
 
