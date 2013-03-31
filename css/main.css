@@ -104,6 +104,17 @@ input {
     margin: 10px 0 0 0;
 }
 
+#metaDialog {
+    font-size: 0.8em;
+}
+#metaDialog table {
+    overflow-y: scroll;
+    overflow-x: auto;
+}
+#metaDialog thead {
+    font-weight: bold;
+}
+
 .tree,.tree ul,.tree li {
     list-style:none; 
     margin:0; 
