@@ -33,8 +33,8 @@ WindowLevel.prototype.mousemove = function(x, y, painter) {
         var newY = curWindowing[1] + deltaY;
         painter.setWindowing(newX, newY);
         painter.drawImg();
-        $('#wCenter').text(newX.toFixed(0));
-        $('#wWidth').text(newY.toFixed(0));
+        $('#wCenter').text('WC: ' + newX.toFixed(0));
+        $('#wWidth').text('WW: ' + newY.toFixed(0));
     }
     this.curX = x;
     this.curY = y;

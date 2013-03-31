@@ -50,8 +50,6 @@ input {
     padding: 15px;
     overflow-y: scroll;
     overflow-x: hidden;
-    xmargin: 0 auto;
-    /*-webkit-box-flex: 1;*/
 }
 #resizableDiv {
     height: 512px;
@@ -59,7 +57,12 @@ input {
 }
 
 #patientInfo {
-    border: 2px solid #F00;
+    color: #fff;
+    font-size: 0.8em;
+    text-align: right;
+    position: absolute;
+    top: 5px;
+    right: 5px;
 }
 #patientInfo ul {
     list-style: none;
@@ -67,7 +70,12 @@ input {
     padding: 0;
 }
 #studyInfo {
-    border: 2px solid #F00;
+    color: #fff;
+    font-size: 0.8em;
+    text-align: left;
+    position: absolute;
+    top: 5px;
+    left: 5px;
 }
 #studyInfo ul {
     list-style: none;

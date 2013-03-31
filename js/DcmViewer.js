@@ -70,16 +70,22 @@ DcmViewer.prototype.scrollOne = function(num) {
 };
 
 var updateInfo = function(_this) {
+    var isValidDate = function(d) {
+        if(Object.prototype.toString.call(d) !== "[object Date]")
+            return false;
+        return !isNaN(d.getTime());
+    };
+
     var pName = _this.currentFile.PatientsName ? _this.currentFile.PatientsName : ' - ';
     var pSex = _this.currentFile.PatientsSex ? ' (' + _this.currentFile.PatientsSex + ') ' : ' ';
     var pID = _this.currentFile.PatientID ? _this.currentFile.PatientID : ' - ';
     var x = _this.currentFile.PatientsBirthDate;
     var pDate = '';
-    
+
     if(x) {
-        // TODO: check if valid date.
-        if(new Date(x.slice(0, 4) + "/" + x.slice(4, 6) + "/" + x.slice(6, 8))) {
-            pDate = new Date(x.slice(0, 4) + "/" + x.slice(4, 6) + "/" + x.slice(6, 8)).toLocaleDateString();
+        var d = new Date(x.slice(0, 4) + "/" + x.slice(4, 6) + "/" + x.slice(6, 8));
+        if(isValidDate(d)) {
+            pDate = d.toLocaleDateString();
             if(_this.currentFile.PatientsAge) {
                 pDate += '  ' + _this.currentFile.PatientsAge;
             }
@@ -88,14 +94,23 @@ var updateInfo = function(_this) {
 
     x = _this.currentFile.SeriesDate;
     var time = _this.currentFile.SeriesTime;
-    var sDate = x ? new Date(x.slice(0, 4) + "/" + x.slice(4, 6) + "/" + x.slice(6, 8)).toLocaleDateString() : ' - ';
-    sDate += time ? '  ' + time.slice(0, 2) + ':' + time.slice(2, 4) + ':' + time.slice(4, 6) : '';
+    var sDate = '';
+    if(x) {
+        var d = new Date(x.slice(0, 4) + "/" + x.slice(4, 6) + "/" + x.slice(6, 8));
+        if(isValidDate(d)) {
+            sDate = d.toLocaleDateString();
+            if(time) {
+                sDate += '  ' + time.slice(0, 2) + ':' + time.slice(2, 4) + ':' + time.slice(4, 6);
+            }
+        }
+    }
+
     var sDesc = _this.currentFile.StudyDescription ? _this.currentFile.StudyDescription : ' - ';
 
     $('#patientsName').text(pName + pSex + pID);
     $('#age').text(pDate);
-    $('#wCenter').text(_this.wc.toFixed(0));
-    $('#wWidth').text(_this.ww.toFixed(0));
+    $('#wCenter').text('WC: ' + _this.wc.toFixed(0));
+    $('#wWidth').text('WW: ' + _this.ww.toFixed(0));
     $('#studyDate').text(sDate);
     $('#studyDescription').text(sDesc);
 };
