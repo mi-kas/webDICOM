@@ -5,13 +5,20 @@ html, body {
     height: 100%;
     width: 100%;
     overflow: hidden;
-    font-family: Helvetica;
+    font-family: Helvetica, Arial, sans-serif;
     font-size: 1em;
 }
 
 #container {
     display: -webkit-box;    
     -webkit-box-orient: horizontal;
+
+    display: -moz-box;
+    -moz-box-orient: horizontal;
+
+    display: box;
+    box-orient: horizontal;
+
     height: 100%;
     width: 100%;
 }
@@ -19,7 +26,7 @@ html, body {
     padding: 15px;
     overflow-y: scroll;
     overflow-x: hidden;
-    width: 25%;
+    width: 300px;
     border-right: 1px solid #ccc;
 }
 
@@ -46,7 +53,10 @@ input {
 }
 
 #viewer {
-    width: 75%;
+    width: 100%;
+    -webkit-box-flex: 1;
+    -moz-box-flex: 1;
+    box-flex: 1;
     padding: 15px;
     overflow-y: scroll;
     overflow-x: hidden;
