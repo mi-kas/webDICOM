@@ -13,9 +13,14 @@ function Tree(selector) {
         dcmList = [];
         self.parsedFileList = [];
         var fileList = e.target.files;
+        // detect 'cancel' or no files in fileList
+        if(fileList.length === 0) {
+            return;
+        }
         $('#fileTree').empty();
         $('#errorMsg').empty();
         $('#progressBar').show();
+        $('body').css('cursor', 'wait');
 
         // TODO: optimize this so we're not going through the file list twice (here and in buildFromPathList).
         for(var i = 0, len = fileList.length; i < len; i++) {
@@ -26,17 +31,17 @@ function Tree(selector) {
 
         dcmParser.parseFiles(dcmList, function(e) {
             self.parsedFileList = e;
-            //var tmpHtml = dcmRender(buildFromDcmList(self.parsedFileList));
             var tmpTree = $('#fileTree').html(dcmRender(buildFromDcmList(self.parsedFileList))).hide().tree({
                 expanded: 'li:first'
             });
-            
+
             // Small delay to layout the tree correctly
             setTimeout(function() {
                 tmpTree.show();
             }, 100);
 
             $('#progressBar').hide();
+            $('body').css('cursor', 'default');
         });
     };
 
