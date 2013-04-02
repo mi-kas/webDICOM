@@ -3,6 +3,8 @@ function DcmParser() {
 }
 
 DcmParser.prototype.parseFiles = function(rawFiles, callback) {
+    // Reset array
+    this.files = [];
     var self = this;
 
     var setupReader = function(rawFile, j, length) {

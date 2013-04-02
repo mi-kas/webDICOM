@@ -8,16 +8,17 @@ function Tree(selector) {
     var self = this;
 
     this.change = function(e) {
-        _html = [];
+        // detect 'cancel' or no files in fileList
+        if(e.target.files.length === 0) {
+            return;
+        }
+        
         dcmTree = {};
+        _html = [];
         dcmList = [];
         self.parsedFileList = [];
         var fileList = e.target.files;
-        // detect 'cancel' or no files in fileList
-        if(fileList.length === 0) {
-            return;
-        }
-        $('#fileTree').empty();
+        
         $('#errorMsg').empty();
         $('#progressBar').show();
         $('body').css('cursor', 'wait');
@@ -69,7 +70,6 @@ function Tree(selector) {
 
     var dcmRender = function(tree) {
         if(tree) {
-            // TODO: optimize for in loop
             for(var object in tree) {
                 if($.isArray(tree[object])) { // series have an array - patients a object
                     _html.push('<li><a href="#" data-type="file" data-index="' + tree[object] + '" >', object, '</a></li>');

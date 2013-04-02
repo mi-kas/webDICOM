@@ -78,9 +78,13 @@ CanvasPainter.prototype.drawImg = function() {
 
     this.context.fillStyle = "#000";
     this.context.fillRect(0, 0, 512, 512);
-    // var imgData = this.context.createImageData(this.currentFile.Columns, this.currentFile.Rows);
     var imgData = tempContext.createImageData(this.currentFile.Columns, this.currentFile.Rows);
     var pixelData = this.currentFile.PixelData;
+    if(typeof pixelData === 'undefined' || pixelData.length === 0) {
+        console.log('PixelData undefined');
+        $('#errorMsg').append("<p>PixelData undefined: "+ this.currentFile.PatientsName +" "+ this.currentFile.SeriesDescription +"</p>");
+        return;
+    }
 
     for(var i = 0, len = imgData.data.length; i < len; i += 4) {
         var intensity = pixelData[(i / 4)];
