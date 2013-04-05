@@ -3,6 +3,8 @@ function DcmParser() {
 }
 
 DcmParser.prototype.parseFiles = function(rawFiles, callback) {
+    // Reset array
+    this.files = [];
     var self = this;
 
     var setupReader = function(rawFile, j, length) {
@@ -84,8 +86,7 @@ DcmParser.prototype.parseFiles = function(rawFiles, callback) {
         };
     };
 
-    for(var i = 0; i < rawFiles.length; i++) {
-        setupReader(rawFiles[i], i, rawFiles.length);
-        $('#progressBar').val((i / (rawFiles.length - 1)) * 0.5);
+    for(var i = 0, len = rawFiles.length; i < len; i++) {
+        setupReader(rawFiles[i], i, len);
     }
 };

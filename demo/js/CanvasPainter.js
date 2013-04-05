@@ -66,6 +66,11 @@ CanvasPainter.prototype.reset = function() {
 };
 
 CanvasPainter.prototype.drawImg = function() {
+    var tempcanvas = document.createElement("canvas");
+    tempcanvas.height = this.currentFile.Rows;
+    tempcanvas.width = this.currentFile.Columns;
+    var tempContext = tempcanvas.getContext("2d");
+
 //    this.canvas.height = this.currentFile.Rows;
 //    this.canvas.width = this.currentFile.Columns;
     var lowestVisibleValue = this.wc - this.ww / 2.0;
@@ -73,10 +78,15 @@ CanvasPainter.prototype.drawImg = function() {
 
     this.context.fillStyle = "#000";
     this.context.fillRect(0, 0, 512, 512);
-    var imgData = this.context.createImageData(this.currentFile.Columns, this.currentFile.Rows);
+    var imgData = tempContext.createImageData(this.currentFile.Columns, this.currentFile.Rows);
     var pixelData = this.currentFile.PixelData;
+    if(typeof pixelData === 'undefined' || pixelData.length === 0) {
+        console.log('PixelData undefined');
+        $('#errorMsg').append("<p>PixelData undefined: "+ this.currentFile.PatientsName +" "+ this.currentFile.SeriesDescription +"</p>");
+        return;
+    }
 
-    for(var i = 0; i < imgData.data.length; i += 4) {
+    for(var i = 0, len = imgData.data.length; i < len; i += 4) {
         var intensity = pixelData[(i / 4)];
         intensity = intensity * this.currentFile.RescaleSlope + this.currentFile.RescaleIntercept;
         intensity = (intensity - lowestVisibleValue) / (highestVisibleValue - lowestVisibleValue);
@@ -95,11 +105,6 @@ CanvasPainter.prototype.drawImg = function() {
     var targetHeight = ratio * this.scale * this.currentFile.Columns;
     var xOffset = (this.canvas.width - targetWidth) / 2 + this.pan[0];
     var yOffset = (this.canvas.height - targetHeight) / 2 + this.pan[1];
-
-    var tempcanvas = document.createElement("canvas");
-    tempcanvas.height = this.currentFile.Rows;
-    tempcanvas.width = this.currentFile.Columns;
-    var tempContext = tempcanvas.getContext("2d");
 
     tempContext.putImageData(imgData, 0, 0);
     this.context.drawImage(tempcanvas, xOffset, yOffset, targetWidth, targetHeight);

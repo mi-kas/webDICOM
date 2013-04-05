@@ -5,13 +5,20 @@ html, body {
     height: 100%;
     width: 100%;
     overflow: hidden;
-    font-family: Helvetica;
+    font-family: Helvetica, Arial, sans-serif;
     font-size: 1em;
 }
 
 #container {
     display: -webkit-box;    
     -webkit-box-orient: horizontal;
+
+    display: -moz-box;
+    -moz-box-orient: horizontal;
+
+    display: box;
+    box-orient: horizontal;
+
     height: 100%;
     width: 100%;
 }
@@ -19,7 +26,7 @@ html, body {
     padding: 15px;
     overflow-y: scroll;
     overflow-x: hidden;
-    width: 25%;
+    width: 300px;
     border-right: 1px solid #ccc;
 }
 
@@ -32,7 +39,7 @@ input {
 
 #progressBar {
     width: 100%;
-    height: 20px;
+    height: 18px;
 }
 
 #errorMsg {
@@ -46,22 +53,56 @@ input {
 }
 
 #viewer {
-    width: 75%;
+    width: 100%;
+    -webkit-box-flex: 1;
+    -moz-box-flex: 1;
+    box-flex: 1;
     padding: 15px;
     overflow-y: scroll;
     overflow-x: hidden;
-    /*-webkit-box-flex: 1;*/
+}
+#resizableDiv {
+    height: 512px;
+    width: 512px;
 }
 
+#patientInfo {
+    color: #fff;
+    font-size: 0.8em;
+    text-align: right;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+}
+#patientInfo ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+#studyInfo {
+    color: #fff;
+    font-size: 0.8em;
+    text-align: left;
+    position: absolute;
+    top: 5px;
+    left: 5px;
+}
+#studyInfo ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
 #myCanvas {
     border:#000 1px solid;
+    width: 100%;
+    height: 100%;
 }
 
 #toolbox {
 }
 
 .ui-button-text {
-    font-size: 0.91em !important;
+    font-size: 0.908em !important;
 }
 
 .ui-buttonset {
@@ -69,7 +110,19 @@ input {
 }
 
 #slider {
-    width: 512px;
+    width: 100%;
+    margin: 10px 0 0 0;
+}
+
+#metaDialog {
+    font-size: 0.8em;
+}
+#metaDialog table {
+    overflow-y: scroll;
+    overflow-x: auto;
+}
+#metaDialog thead {
+    font-weight: bold;
 }
 
 .tree,.tree ul,.tree li {

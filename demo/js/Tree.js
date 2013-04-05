@@ -8,16 +8,23 @@ function Tree(selector) {
     var self = this;
 
     this.change = function(e) {
-        _html = [];
+        // detect 'cancel' or no files in fileList
+        if(e.target.files.length === 0) {
+            return;
+        }
+        
         dcmTree = {};
+        _html = [];
         dcmList = [];
         self.parsedFileList = [];
         var fileList = e.target.files;
-        $('#fileTree').empty();
+        
         $('#errorMsg').empty();
         $('#progressBar').show();
+        $('body').css('cursor', 'wait');
+
         // TODO: optimize this so we're not going through the file list twice (here and in buildFromPathList).
-        for(var i = 0; i < fileList.length; i++) {
+        for(var i = 0, len = fileList.length; i < len; i++) {
             if(fileList[i].type === "application/dicom") {
                 dcmList.push(fileList[i]);
             }
@@ -25,20 +32,22 @@ function Tree(selector) {
 
         dcmParser.parseFiles(dcmList, function(e) {
             self.parsedFileList = e;
-            var tmpHtml = dcmRender(buildFromDcmList(self.parsedFileList));
-            $('#progressBar').val(0.9);
-            $('#fileTree').html(tmpHtml).tree({
+            var tmpTree = $('#fileTree').html(dcmRender(buildFromDcmList(self.parsedFileList))).hide().tree({
                 expanded: 'li:first'
             });
-            $('#progressBar').val(1);
+
+            // Small delay to layout the tree correctly
             setTimeout(function() {
-                $('#progressBar').hide();
-            },500);
+                tmpTree.show();
+            }, 100);
+
+            $('#progressBar').hide();
+            $('body').css('cursor', 'default');
         });
     };
 
     var buildFromDcmList = function(files) {
-        for(var i = 0; i < files.length; i++) {
+        for(var i = 0, len = files.length; i < len; i++) {
             var file = files[i];
             var level1 = file.PatientsName ? file.PatientsName : 'undefined';
             var level2 = file.SeriesDescription ? file.SeriesDescription : 'undefined';
@@ -55,9 +64,6 @@ function Tree(selector) {
                     dcmTree[level1][level2].push(i);
                 }
             }
-            $('#progressBar').val(function(){
-                return 0.5 + (i / (files.length - 1)) * 0.25;
-            });
         }
         return dcmTree;
     };
