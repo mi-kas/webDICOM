@@ -1,38 +1,40 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
   <head>
-    <meta charset='utf-8'>
+    <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <link href='https://fonts.googleapis.com/css?family=Chivo:900' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
-    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
-    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+    <title>webDICOM by mi-kas</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="javascripts/scale.fix.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     <!--[if lt IE 9]>
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
-    <title>webDICOM</title>
   </head>
-
   <body>
-    <div id="container">
-      <div class="inner">
+    <div class="wrapper">
+      <header>
+        <h1 class="header">webDICOM</h1>
+        <p class="header">HTML5 and JavaScript based DICOM viewer</p>
 
-        <header>
-          <h1>webDICOM</h1>
-          <h2>HTML5 and JavaScript based DICOM viewer</h2>
-        </header>
+        <ul>
+          <li class="download"><a class="buttons" href="https://github.com/mi-kas/webDICOM/zipball/master">Download ZIP</a></li>
+          <li class="download"><a class="buttons" href="https://github.com/mi-kas/webDICOM/tarball/master">Download TAR</a></li>
+          <li><a class="buttons github" href="https://github.com/mi-kas/webDICOM">View On GitHub</a></li>
+        </ul>
 
-        <section id="downloads" class="clearfix">
-          <a href="https://github.com/mi-kas/webDICOM/zipball/master" id="download-zip" class="button"><span>Download .zip</span></a>
-          <a href="https://github.com/mi-kas/webDICOM/tarball/master" id="download-tar-gz" class="button"><span>Download .tar.gz</span></a>
-          <a href="https://github.com/mi-kas/webDICOM" id="view-on-github" class="button"><span>View on GitHub</span></a>
-        </section>
+        <p class="header">This project is maintained by <a class="header name" href="https://github.com/mi-kas">mi-kas</a></p>
 
-        <hr>
 
-        <section id="main_content">
+      </header>
+      <section>
+        <h1>webDICOM</h1>
 
-<p>webDICOM is a web-based DICOM viewer and part of my Bachelor's thesis. Following features will be implemented:</p>
+<p>Implementation of a web-based (JavaScript and HTML5 only) DICOM viewer as part of my Bachelor's thesis. 
+Following features will be implemented:</p>
+
 <ul>
 <li>Loading and displaying DICOM images by specifying files or a directory</li>
 <li>Scrolling through the images</li>
@@ -40,38 +42,46 @@
 <li>Zoom</li>
 <li>Move</li>
 <li>Panning </li>
-<li>Gallery view as a ribbon on the bottom</li>
 <li>Displaying patient information in the corners</li>
-<li>3D view with webGL</li>
-</ul><h2>Visualization</h2>
+</ul><p>The user can upload a folder with DICOM images. The files are then parsed and sorted by patient's name &amp; 
+series description and viewed in a tree view. By clicking on a series, the images are displayed in the viewer.</p>
 
-<p>The visualisation of DICOM images is done with HTML5  and WebGL. </p>
+<h2>Visualization</h2>
+
+<p>The visualisation of DICOM images is done with the HTML5  element. </p>
 
 <h2>Browser support</h2>
 
-<p>Any WebGL and HTML5 enabled browser should work. Tested with Chrome, Firefox and Safari (Mac OS X). But best performance and user expierence with Google Chrome v25.</p>
+<p>Best performance and user expierence with Google Chrome. HTML5 Upload Folder (webkitdirectory) works only with Chrome. 
+Other browsers accept multiple files.</p>
 
 <h2>Status</h2>
 
 <p>There is still work in progress, but basic functionality is in place. TODOs include:</p>
+
 <ul>
 <li>compressed DICOMs (JPEG, JPEG2000, JPEG-LS)</li>
 <li>WebGL visualisation</li>
-<li>Patient data</li>
 <li>Gallery view</li>
-</ul>
+</ul><h2>Demo</h2>
 
-<h2>Demo</h2>
-<p>A demo of my work so far can be found <a href="http://mi-kas.github.com/webDICOM/demo/index.html">here</a>.</p>
-        </section>
-
-        <footer>
-          webDICOM is maintained by <a href="https://github.com/mi-kas">mi-kas</a><br>
-          Tactile theme by <a href="http://twitter.com/jasonlong">Jason Long</a>.
-        </footer>
-
-        
-      </div>
+<p><a href="http://mi-kas.github.com/webDICOM/demo/index.html">Here</a></p>
+      </section>
+      <footer>
+        <p><small>Hosted on <a href="https://pages.github.com">GitHub Pages</a> using the Dinky theme</small></p>
+      </footer>
     </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+		          <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-39899942-1");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
   </body>
 </html>
