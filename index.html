@@ -43,6 +43,8 @@
                     if(e.target.nodeName === 'A' && e.target.dataset.type === 'file') {
                         var serie = [];
                         var arr = e.target.dataset.index.split(',');
+                        console.log(arr.length);
+                        console.log(arr);
                         for(var i = 0; i < arr.length; i++) {
                             serie.push(tree.parsedFileList[arr[i]]);
                         }

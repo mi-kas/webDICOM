@@ -1,29 +1,30 @@
 # webDICOM
 
-Implementation of a web-based DICOM viewer as part of my Bachelor's thesis. Following features will be implemented:
+Implementation of a web-based (JavaScript and HTML5 only) DICOM viewer as part of my Bachelor's thesis. 
+Following features will be implemented:
 - Loading and displaying DICOM images by specifying files or a directory
 - Scrolling through the images
 - Changing the windowing function
 - Zoom
 - Move
 - Panning 
-- Gallery view as a ribbon on the bottom
 - Displaying patient information in the corners
-- 3D view with webGL
 
+The user can upload a folder with DICOM images. The files are then parsed and sorted by patient's name & 
+series description and viewed in a tree view. By clicking on a series, the images are displayed in the viewer.
 
 ##Visualization
-The visualisation of DICOM images is done with HTML5 <canvas> and WebGL. 
+The visualisation of DICOM images is done with the HTML5 <canvas> element. 
 
 ##Browser support
-Any WebGL and HTML5 enabled browser should work. Tested with Chrome, Firefox and Safari (Mac OS X). But best performance and user expierence with Google Chrome v25.
+Best performance and user expierence with Google Chrome. HTML5 Upload Folder (webkitdirectory) works only with Chrome. 
+Other browsers accept multiple files.
 
 ##Status
 There is still work in progress, but basic functionality is in place. TODOs include:
 - compressed DICOMs (JPEG, JPEG2000, JPEG-LS)
 - WebGL visualisation
-- Patient data
 - Gallery view
 
 ##Demo
-A demo of my work so far can be found [here](http://mi-kas.github.com/webDICOM/).
+A demo can be found [here](http://mi-kas.github.com/webDICOM/).
