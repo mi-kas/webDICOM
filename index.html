@@ -43,8 +43,8 @@
                     if(e.target.nodeName === 'A' && e.target.dataset.type === 'file') {
                         var serie = [];
                         var arr = e.target.dataset.index.split(',');
-                        console.log(arr.length);
-                        console.log(arr);
+//                        console.log(arr.length);
+//                        console.log(arr);
                         for(var i = 0; i < arr.length; i++) {
                             serie.push(tree.parsedFileList[arr[i]]);
                         }
@@ -154,6 +154,8 @@
                             <ul>
                                 <li id="wCenter"></li>
                                 <li id="wWidth"></li>
+                                <li id="xPos"></li>
+                                <li id="yPos"></li>
                             </ul>
                         </div>
                         <div id="patientInfo">

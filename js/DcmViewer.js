@@ -37,6 +37,10 @@ DcmViewer.prototype.eventHandler = function(e) {
         e.x = !e.offsetX ? (e.pageX - $(e.target).offset().left) : e.offsetX;
         e.y = !e.offsetY ? (e.pageY - $(e.target).offset().top) : e.offsetY;
 
+        //Update X & Y values
+        $('#xPos').text('X: ' + e.x);
+        $('#yPos').text('Y: ' + e.y);
+
         // pass the event to the currentTool of the toolbox
         var eventFunc = this.toolbox.currentTool[e.type];
         if(eventFunc) {
@@ -166,6 +170,8 @@ var updateInfo = function(_this) {
     $('#age').text(pDate);
     $('#wCenter').text('WC: ' + _this.wc.toFixed(0));
     $('#wWidth').text('WW: ' + _this.ww.toFixed(0));
+    $('#xPos').text('X: 0');
+    $('#yPos').text('Y: 0');
     $('#studyDate').text(sDate);
     $('#studyDescription').text(sDesc);
 };
@@ -175,6 +181,8 @@ var clearInfo = function() {
     $('#age').text('');
     $('#wCenter').text('');
     $('#wWidth').text('');
+    $('#xPos').text('');
+    $('#yPos').text('');
     $('#studyDate').text('');
     $('#studyDescription').text('');
 };
