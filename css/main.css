@@ -7,6 +7,9 @@ html, body {
     overflow: hidden;
     font-family: Helvetica, Arial, sans-serif;
     font-size: 1em;
+    -webkit-user-select: none; 
+    -moz-user-select: none;   
+    user-select: none; 
 }
 
 #container {

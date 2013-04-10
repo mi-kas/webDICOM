@@ -12,7 +12,7 @@ function Tree(selector) {
         if(e.target.files.length === 0) {
             return;
         }
-        
+
         dcmTree = {};
         _html = [];
         dcmList = [];
