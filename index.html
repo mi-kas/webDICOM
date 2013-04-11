@@ -5,13 +5,19 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
         <!--CSS-->
+        <link rel="stylesheet" href="css/bootstrap.min.css" />
+        <!--<link rel="stylesheet" href="css/jquery-ui-1.10.2.custom.css">-->
+        <link rel="stylesheet" href="css/jquery-ui-bootstrap-1.10.0.custom.css">
         <link rel="stylesheet" href="css/main.css">
-        <link rel="stylesheet" href="css/jquery-ui-1.10.2.custom.css">
+        <link rel="stylesheet" href="js/libs/jQuery-UI-FileInput/css/enhanced.css">
 
         <!-- jQuery & Plugins -->
         <script type="text/javascript" src="js/libs/jquery-1.9.1/jquery.min.js"></script>
         <script type="text/javascript" src="js/libs/jquery-ui-1.10.2/jquery-ui.custom.min.js"></script>
         <script type="text/javascript" src="js/libs/jqueryTree/jquery.tree.js"></script>
+        <!-- FileInput -->
+        <script src="js/libs/jQuery-UI-FileInput/js/enhance.min.js" type="text/javascript"></script>
+        <script src="js/libs/jQuery-UI-FileInput/js/fileinput.jquery.js" type="text/javascript"></script>
 
         <!-- External jsdicom-lib -->
         <script type="text/javascript" src="js/libs/jsdicom-lib/src/dcmdict.js"></script>
@@ -38,6 +44,9 @@
                 var dcmViewer = new DcmViewer('myCanvas');
                 var tree = new Tree('#fileTree');
 
+                $('#dicomUpload').customFileInput({
+                    button_position: 'right'
+                });
                 $('#dicomUpload').change(tree.change);
                 $('#fileTree').click(function(e) {
                     if(e.target.nodeName === 'A' && e.target.dataset.type === 'file') {
@@ -103,8 +112,13 @@
                 $('#buttonSet').buttonset();
                 $('#resetButton').button();
                 $('#metaButton').button();
+                $("#slider").slider({
+                    disabled: true
+                });
                 $('#resizableDiv').resizable({aspectRatio: true});
-                $('#progressBar').hide();
+                $('#progressBar').progressbar({
+                    value: 0
+                }).hide();
             });
 
             var progress = function(max) {
@@ -131,21 +145,27 @@
             <aside id="sidebar">
                 <!--<input id="dicomUpload" type="file" accept="application/dicom" multiple />--> 
                 <!--Only Chrome supports webkitdirectory-->
-                <input id="dicomUpload" type="file" webkitdirectory directory multiple />
-                <progress id="progressBar" value="0"></progress>
+                <div id="inputContainer" class="ui-toolbar ui-widget-header ui-corner-all">
+                    <input id="dicomUpload" type="file" value="Upload file" webkitdirectory multiple />
+                </div>
+                <div id="progressBar"></div>
                 <div id="errorMsg"></div>
 
                 <div id="fileTree"></div>
             </aside>
             <div id="viewer">
-                <div id="toolbox">
-                    <span id="buttonSet">
+                <div id="toolbox" class="ui-toolbar ui-widget-header ui-corner-all clearfix">
+                    <div id="buttonSet">
                         <input type="radio" id="windowLevel" name="toolbox-buttons" value="Window level" checked="checked" /><label for="windowLevel">Window level</label>
                         <input type="radio" id="move" name="toolbox-buttons" value="Move" /><label for="move">Move</label>
                         <input type="radio" id="zoom" name="toolbox-buttons" value="Zoom" /><label for="zoom">Zoom</label>
-                    </span>
-                    <button type="button" class="ui-button-text" id="resetButton" value="Reset">Reset</button>
-                    <button type="button" class="ui-button-text" id="metaButton" value="Meta-Daten">Meta-Daten</button>
+                    </div>
+
+                    <div id="singleButtons">
+                        <button type="button" id="resetButton" value="Reset">Reset</button>
+                        <button type="button" id="metaButton" value="Meta-Daten">Meta-Daten</button>
+                    </div>
+                    <div id="slider"></div>
                 </div>
                 <div id="resizableDiv">
                     <div id="canvasDiv">
@@ -167,7 +187,6 @@
                             </ul>
                         </div>
                     </div>
-                    <div id="slider"></div>
                 </div>
 
                 <div id="metaDialog" title="Meta-Daten">

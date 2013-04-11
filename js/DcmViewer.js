@@ -20,11 +20,9 @@ DcmViewer.prototype.setParsedFiles = function(files) {
     var self = this;
     clearInfo();
     updateInfo(this.painter);
-    $("#slider").slider({
-        value: 0,
-        min: 0,
+    $("#slider").slider('option', {
         max: self.numFiles - 1,
-        step: 1,
+        disabled: false,
         slide: function(e, ui) {
             self.scrollOne(ui.value);
         }
