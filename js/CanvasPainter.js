@@ -82,7 +82,7 @@ CanvasPainter.prototype.drawImg = function() {
     var pixelData = this.currentFile.PixelData;
     if(typeof pixelData === 'undefined' || pixelData.length === 0) {
         console.log('PixelData undefined');
-        $('#errorMsg').append("<p>PixelData undefined: "+ this.currentFile.PatientsName +" "+ this.currentFile.SeriesDescription +"</p>");
+        $('#errorMsg').append("<p class='ui-state-error ui-corner-all' style='margin:2px 10px 0 10px'><span class='ui-icon ui-icon-alert' style='float: left; margin-right: .3em;'></span>Can't read file: "+ this.currentFile.PatientsName +" "+ this.currentFile.SeriesDescription +"</p>");
         return;
     }
 

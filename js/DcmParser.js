@@ -18,7 +18,7 @@ DcmParser.prototype.parseFiles = function(rawFiles, callback) {
 
                 if(typeof file === 'undefined') {
                     console.log("Can't read file: " + rawFile.name);
-                    $('#errorMsg').append("<p>Can't read file: " + rawFile.name + "</p>");
+                    $('#errorMsg').append("<p class='ui-state-error ui-corner-all' style='margin:2px 10px 0 10px'><span class='ui-icon ui-icon-alert' style='float: left; margin-right: .3em;'></span>Can't read file: " + rawFile.name + "</p>");
                     return;
                 }
                 if(typeof file.RescaleSlope === 'undefined') {

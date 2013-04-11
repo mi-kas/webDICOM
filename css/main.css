@@ -87,6 +87,7 @@ html, body {
     -ms-box-flex: 1;
     overflow-y: scroll;
     overflow-x: hidden;
+    /*background-color: #000;*/
 }
 #resizableDiv {
     margin: 10px;
