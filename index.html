@@ -117,7 +117,7 @@
                 });
                 $('#resizableDiv').resizable({aspectRatio: true});
                 $('#progressBar').progressbar({
-                    value: 0
+                    value: 50
                 }).hide();
             });
 
@@ -149,6 +149,7 @@
                     <input id="dicomUpload" type="file" value="Upload file" webkitdirectory multiple />
                 </div>
                 <div id="progressBar"></div>
+                <img id="loadingIndicator" src="img/loading.gif" style="display:none" />
                 <div id="errorMsg"></div>
 
                 <div id="fileTree"></div>

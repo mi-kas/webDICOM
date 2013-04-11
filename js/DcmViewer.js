@@ -36,8 +36,8 @@ DcmViewer.prototype.eventHandler = function(e) {
         e.y = !e.offsetY ? (e.pageY - $(e.target).offset().top) : e.offsetY;
 
         //Update X & Y values
-        $('#xPos').text('X: ' + e.x);
-        $('#yPos').text('Y: ' + e.y);
+        $('#xPos').text('X: ' + e.x.toFixed(0));
+        $('#yPos').text('Y: ' + e.y.toFixed(0));
 
         // pass the event to the currentTool of the toolbox
         var eventFunc = this.toolbox.currentTool[e.type];

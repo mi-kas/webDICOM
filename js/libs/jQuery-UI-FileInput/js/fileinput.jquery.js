@@ -101,8 +101,13 @@
         },
 
         onChange : function() {
+            if(this.$element.val() === '') {
+                // No files selected
+                return;
+            }
             //get folder name
-            var fileName = this.$element.context.files[0].webkitRelativePath.split('/')[0]; //this.$element.val().split(/\\/).pop();
+            var tmp = this.$element.context.files[0].webkitRelativePath;
+            var fileName = tmp ? tmp.split('/')[0] : this.$element.val().split(/\\/).pop();
             if (!fileName) {
                 this.$uploadFeedback
                     .val(this.options.feedback_text) //set feedback text to filename
@@ -120,20 +125,20 @@
     $.fn.customFileInput = function(option){
         return this.each(function () {
             var $this = $(this);
-            var data = $this.data('customFileInput')
+            var data = $this.data('customFileInput');
             var options = $.extend({}, $.fn.customFileInput.defaults, $this.data(), typeof option == 'object' && option);
             if (!data) {
                 $this.data('customFileInput', (data = new CustomFileInput(this, options)));
             }
-        })
+        });
     };
 
     $.fn.customFileInput.defaults = {
         button_position 	: 'right',
         feedback_text		: 'No file selected...',
-        button_text			: 'Browse',
+        button_text		: 'Browse',
         button_change_text	: 'Change'
-    }
+    };
 
 }(window.jQuery);
 
