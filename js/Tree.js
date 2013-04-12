@@ -21,8 +21,8 @@ function Tree(selector) {
 
         $('#errorMsg').empty();
         $('#fileTree').empty();
-//        $('#progressBar').show();
-        $('#loadingIndicator').show();
+        $('#progressBar').show();
+//        $('#loadingIndicator').show();
         $('*').css('cursor', 'wait');
 
         // TODO: optimize this so we're not going through the file list twice (here and in buildFromPathList).
@@ -38,8 +38,8 @@ function Tree(selector) {
                 expanded: 'li:first'
             });
 
-//            $('#progressBar').hide();
-            $('#loadingIndicator').hide();
+            $('#progressBar').hide();
+//            $('#loadingIndicator').hide();
             $('*').css('cursor', 'default');
         });
     };

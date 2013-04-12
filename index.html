@@ -121,7 +121,7 @@
                 });
                 $('#resizableDiv').resizable({aspectRatio: true});
                 $('#progressBar').progressbar({
-                    value: 50
+                    value: 100
                 }).hide();
             });
 
@@ -151,8 +151,8 @@
                 <!--Only Chrome supports webkitdirectory-->
                 <div id="inputContainer" class="ui-toolbar ui-widget-header ui-corner-all">
                     <input id="dicomUpload" type="file" value="Upload file" webkitdirectory multiple />
+                    <div id="progressBar"></div>
                 </div>
-                <div id="progressBar"></div>
                 <img id="loadingIndicator" src="img/loading.gif" style="display:none" />
                 <div id="errorMsg"></div>
 
@@ -178,7 +178,9 @@
                     </div>
                     <div id="slider"></div>
                 </div>
-                <div id="resizableDiv">
+                
+                <div id="viewerScreen">
+                    <div id="resizableDiv">
                     <div id="canvasDiv">
                         <canvas id="myCanvas" style="cursor:default" width="512" height="512">Your browser doesn't support HTML5</canvas>
                         <div id="studyInfo">
@@ -198,6 +200,7 @@
                             </ul>
                         </div>
                     </div>
+                </div>
                 </div>
 
                 <div id="metaDialog" title="Meta-Daten">
