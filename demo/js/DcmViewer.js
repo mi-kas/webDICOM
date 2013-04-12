@@ -20,11 +20,9 @@ DcmViewer.prototype.setParsedFiles = function(files) {
     var self = this;
     clearInfo();
     updateInfo(this.painter);
-    $("#slider").slider({
-        value: 0,
-        min: 0,
+    $("#slider").slider('option', {
         max: self.numFiles - 1,
-        step: 1,
+        disabled: false,
         slide: function(e, ui) {
             self.scrollOne(ui.value);
         }
@@ -36,6 +34,10 @@ DcmViewer.prototype.eventHandler = function(e) {
         // Firefox doesn't have the offsetX/offsetY properties -> own calculation
         e.x = !e.offsetX ? (e.pageX - $(e.target).offset().left) : e.offsetX;
         e.y = !e.offsetY ? (e.pageY - $(e.target).offset().top) : e.offsetY;
+
+        //Update X & Y values
+        $('#xPos').text('X: ' + e.x.toFixed(0));
+        $('#yPos').text('Y: ' + e.y.toFixed(0));
 
         // pass the event to the currentTool of the toolbox
         var eventFunc = this.toolbox.currentTool[e.type];
@@ -166,6 +168,8 @@ var updateInfo = function(_this) {
     $('#age').text(pDate);
     $('#wCenter').text('WC: ' + _this.wc.toFixed(0));
     $('#wWidth').text('WW: ' + _this.ww.toFixed(0));
+    $('#xPos').text('X: 0');
+    $('#yPos').text('Y: 0');
     $('#studyDate').text(sDate);
     $('#studyDescription').text(sDesc);
 };
@@ -175,6 +179,8 @@ var clearInfo = function() {
     $('#age').text('');
     $('#wCenter').text('');
     $('#wWidth').text('');
+    $('#xPos').text('');
+    $('#yPos').text('');
     $('#studyDate').text('');
     $('#studyDescription').text('');
 };
