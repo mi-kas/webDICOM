@@ -6,8 +6,9 @@ html, body {
     height: 100%;
     width: 100%;
     overflow: hidden;
-    font-family: Helvetica, Arial, sans-serif;
+    font-family: "Helvetica Neue",Helvetica,Arial, sans-serif;
     font-size: 1em;
+    color: #333;
     -webkit-user-select: none; 
     -moz-user-select: none; 
     -ms-user-select: none;
@@ -179,7 +180,7 @@ html, body {
     margin-left:8px; 
 }
 .tree li a {
-    color:#555; 
+    color:#333; 
     padding:.1em 7px .1em 27px; 
     display:block; 
     text-decoration:none; 
@@ -193,8 +194,7 @@ html, body {
     background:url(../img/icon-folder.gif) 5px 50% no-repeat; 
 }
 .tree li a:hover,.tree li a.tree-parent:hover,.tree li a:focus,.tree li a.tree-parent:focus,.tree li a.tree-item-active { 
-    color:#000; 
-    border:1px solid#eee; 
+    border:1px solid #eee; 
     background-color:#fafafa;
     -webkit-border-radius:4px; 
     -moz-border-radius:4px; 
@@ -202,7 +202,7 @@ html, body {
     border-radius:4px; 
 }
 .tree li a:focus,.tree li a.tree-parent:focus,.tree li a.tree-item-active { 
-    border:1px solid #e2f3fb; 
+    border:1px solid #e2f3fb;
     background-color:#f2fafd; 
 }
 .tree ul.tree-group-collapsed { 

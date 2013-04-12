@@ -128,23 +128,23 @@
                 }).hide();
             });
 
-            var progress = function(max) {
-                var progressbar = $('#progressBar'),
-                        time = 10,
-                        value = progressbar.val();
-                progressbar.attr('max', max);
-                progressbar.show();
-
-                var animate = setInterval(function() {
-                    value += 1;
-                    if(value === max) {
-                        clearInterval(animate);
-                        progressbar.hide();
-                    } else {
-                        progressbar.val(value);
-                    }
-                }, time);
-            };
+//            var progress = function(max) {
+//                var progressbar = $('#progressBar'),
+//                        time = 10,
+//                        value = progressbar.val();
+//                progressbar.attr('max', max);
+//                progressbar.show();
+//
+//                var animate = setInterval(function() {
+//                    value += 1;
+//                    if(value === max) {
+//                        clearInterval(animate);
+//                        progressbar.hide();
+//                    } else {
+//                        progressbar.val(value);
+//                    }
+//                }, time);
+//            };
         </script>
     </head>
     <body>
