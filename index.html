@@ -66,6 +66,9 @@
                 $('#buttonSet').change(function() {
                     dcmViewer.setCurrentTool($("input[name='toolbox-buttons']:checked").val());
                 });
+                $('#matrixView').change(function() {
+                    console.log(this.value.split(','));
+                });
                 $('#resetButton').click(function() {
                     if(dcmViewer.eventsEnabled) {
                         $('#resizableDiv').css('width', '512px');

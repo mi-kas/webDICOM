@@ -33,7 +33,7 @@
 /* IE7 hack */
 *+html .customfile-feedback { margin-top: 1px;}
 /* EO Hack */
-.customfile-feedback-populated { padding-left: 25px; background: url(../images/icon-generic.gif) 5px center no-repeat; white-space: nowrap; text-overflow: ellipsis; -o-text-overflow: ellipsis; overflow: hidden; }
+.customfile-feedback-populated { padding-left: 25px; background: url(../images/icon-generic.gif) 5px center no-repeat; white-space: normal; text-overflow: ellipsis; -o-text-overflow: ellipsis; overflow: hidden; }
 
 .customfile-button { /* IE7 and bellow hack*/ *margin-top: -1px; /* EO Hack */}
 .customfile:hover .customfile-button, .customfile-focus .customfile-button  { background-position: 0 -15px; color: #333; text-decoration: none;}

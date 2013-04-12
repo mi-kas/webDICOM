@@ -47,13 +47,22 @@ html, body {
     border-right: 1px solid #ccc;
 }
 
+.input-append.customfile {
+    width: 100%;
+    white-space: normal;
+}
+
 .customfile.input-append .customfile-feedback {
     border-radius: 3px 0 0 3px;
     padding-left: 25px;
-    width: 185px;
+    width: 167px;
+}
+.add-on.customfile-button {
+    width: 61px;
 }
 #inputContainer {
     height: 60px;
+    width: 270px;
 }
 
 #progressBar {
