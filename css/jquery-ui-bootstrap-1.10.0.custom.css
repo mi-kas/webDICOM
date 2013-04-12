@@ -261,9 +261,13 @@
  }
 
 .ui-state-hover a, .ui-state-hover a:hover, .ui-state-hover a:link, .ui-state-hover a:visited { color: #212121; text-decoration: none; }
-.ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active { border: 1px solid #aaaaaa;  font-weight: normal; color: #212121; }
+.ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active { 
+    border: 1px solid #aaaaaa;  font-weight: normal; color: #212121; 
+}
 .ui-state-active a, .ui-state-active a:link, .ui-state-active a:visited { color: #212121; text-decoration: none; }
-.ui-widget :active { outline: none; }
+.ui-widget :active { 
+    outline: none; 
+}
 
 /* Interaction Cues
 ----------------------------------*/
