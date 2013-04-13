@@ -46,6 +46,7 @@
             $(document).ready(function() {
                 var dcmViewer = new DcmViewer('myCanvas');
                 var tree = new Tree('#fileTree');
+                dcmViewer.matrixHandler($('#matrixView').val());
 
                 $('#dicomUpload').customFileInput({
                     button_position: 'right'
@@ -67,7 +68,7 @@
                     dcmViewer.setCurrentTool($("input[name='toolbox-buttons']:checked").val());
                 });
                 $('#matrixView').change(function(e) {
-                        dcmViewer.matrixHandler(e);
+                        dcmViewer.matrixHandler(e.target.value);
                 });
                 $('#resetButton').click(function() {
                     if(dcmViewer.eventsEnabled) {

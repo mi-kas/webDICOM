@@ -79,8 +79,8 @@ DcmViewer.prototype.scrollOne = function(num) {
 };
 
 DcmViewer.prototype.matrixHandler = function(e) {
-    var rows = e.target.value.split(',')[0];
-    var columns = e.target.value.split(',')[1];
+    var rows = e.split(',')[0];
+    var columns = e.split(',')[1];
     var width = parseInt($('#viewer').width());
     var height = parseInt($('#viewer').height()) - 72;
     var cellWidth = (width - 2*rows) / columns;

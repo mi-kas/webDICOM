@@ -98,12 +98,23 @@ html, body {
     height: 100%;
 }
 
+.viewerRows .viewerCells {
+     border-bottom: 1px solid #ddd;
+     border-right: 1px solid #ddd;
+}
+.viewerRows:last-child .viewerCells {
+     border-bottom: none;
+}
+.viewerRows .viewerCells:last-child {
+     border-right: none;
+}
+
 .viewerRows {
     display: table-row;
 }
 .viewerCells {
     display: table-cell;
-    border: 1px solid #ddd; 
+/*    border: 1px solid #ddd; */
 }
 
 #canvasDiv {
