@@ -66,8 +66,8 @@
                 $('#buttonSet').change(function() {
                     dcmViewer.setCurrentTool($("input[name='toolbox-buttons']:checked").val());
                 });
-                $('#matrixView').change(function() {
-                    console.log(this.value.split(','));
+                $('#matrixView').change(function(e) {
+                        dcmViewer.matrixHandler(e);
                 });
                 $('#resetButton').click(function() {
                     if(dcmViewer.eventsEnabled) {
@@ -84,23 +84,55 @@
                         });
                     }
                 });
-                $('#myCanvas').click(function(e) {
+//                $('#myCanvas').click(function(e) {
+//                    dcmViewer.eventHandler(e);
+//                });
+//                $('#myCanvas').mousemove(function(e) {
+//                    dcmViewer.eventHandler(e);
+//                });
+//                $('#myCanvas').mousedown(function(e) {
+//                    e.preventDefault();
+//                    dcmViewer.eventHandler(e);
+//                });
+//                $('#myCanvas').mouseup(function(e) {
+//                    dcmViewer.eventHandler(e);
+//                });
+//                $('#myCanvas').mouseout(function(e) {
+//                    dcmViewer.eventHandler(e);
+//                });
+//                $('#myCanvas').bind('mousewheel', function(e) {
+//                    if(dcmViewer.numFiles > 1) {
+//                        e.preventDefault();
+//                        var num = dcmViewer.scrollHandler(e);
+//                        $('#slider').slider('value', num);
+//                    }
+//                });
+//                // scroll event for firefox
+//                $('#myCanvas').bind('DOMMouseScroll', function(e) {
+//                    if(dcmViewer.numFiles > 1) {
+//                        e.preventDefault();
+//                        var num = dcmViewer.scrollHandler(e);
+//                        $('#slider').slider('value', num);
+//                    }
+//                });
+
+                $('#canvasDiv').click(function(e) {
                     dcmViewer.eventHandler(e);
                 });
-                $('#myCanvas').mousemove(function(e) {
+                $('#canvasDiv').mousemove(function(e) {
                     dcmViewer.eventHandler(e);
                 });
-                $('#myCanvas').mousedown(function(e) {
+                $('#canvasDiv').mousedown(function(e) {
                     e.preventDefault();
                     dcmViewer.eventHandler(e);
                 });
-                $('#myCanvas').mouseup(function(e) {
+                $('#canvasDiv').mouseup(function(e) {
                     dcmViewer.eventHandler(e);
                 });
-                $('#myCanvas').mouseout(function(e) {
+                $('#canvasDiv').mouseout(function(e) {
                     dcmViewer.eventHandler(e);
                 });
-                $('#myCanvas').bind('mousewheel', function(e) {
+                $('#canvasDiv').bind('mousewheel', function(e) {
                     if(dcmViewer.numFiles > 1) {
                         e.preventDefault();
                         var num = dcmViewer.scrollHandler(e);
@@ -108,13 +140,14 @@
                     }
                 });
                 // scroll event for firefox
-                $('#myCanvas').bind('DOMMouseScroll', function(e) {
+                $('#canvasDiv').bind('DOMMouseScroll', function(e) {
                     if(dcmViewer.numFiles > 1) {
                         e.preventDefault();
                         var num = dcmViewer.scrollHandler(e);
                         $('#slider').slider('value', num);
                     }
                 });
+
                 $('#buttonSet').buttonset();
                 $('#resetButton').button();
                 $('#metaButton').button();
@@ -152,7 +185,7 @@
             <aside id="sidebar">
                 <!--<input id="dicomUpload" type="file" accept="application/dicom" multiple />--> 
                 <!--Only Chrome supports webkitdirectory-->
-                <div id="inputContainer" class="ui-toolbar ui-widget-header ui-corner-all">
+                <div id="inputContainer" class="ui-toolbar ui-widget-header">
                     <input id="dicomUpload" type="file" value="Upload file" webkitdirectory multiple />
                     <div id="progressBar"></div>
                 </div>
@@ -162,7 +195,7 @@
                 <div id="fileTree"></div>
             </aside>
             <div id="viewer">
-                <div id="toolbox" class="ui-toolbar ui-widget-header ui-corner-all clearfix">
+                <div id="toolbox" class="ui-toolbar ui-widget-header clearfix">
                     <div id="buttonSet">
                         <input type="radio" id="windowLevel" name="toolbox-buttons" value="Window level" checked="checked" /><label for="windowLevel">Window level</label>
                         <input type="radio" id="move" name="toolbox-buttons" value="Move" /><label for="move">Move</label>
@@ -181,17 +214,18 @@
                     </div>
                     <div id="slider"></div>
                 </div>
-                
+
                 <div id="viewerScreen">
-                    <div id="resizableDiv">
+                    <!--<div id="resizableDiv">-->
                     <div id="canvasDiv">
-                        <canvas id="myCanvas" style="cursor:default" width="512" height="512">Your browser doesn't support HTML5</canvas>
+                        <canvas id="myCanvas" width="512" height="512">Your browser does not support HTML5 canvas</canvas>
                         <div id="studyInfo">
                             <ul>
                                 <li id="wCenter"></li>
                                 <li id="wWidth"></li>
                                 <li id="xPos"></li>
                                 <li id="yPos"></li>
+                                <li id="instanceNum"></li>
                             </ul>
                         </div>
                         <div id="patientInfo">
@@ -203,7 +237,7 @@
                             </ul>
                         </div>
                     </div>
-                </div>
+                    <!--</div>-->
                 </div>
 
                 <div id="metaDialog" title="Meta-Daten">

@@ -61,6 +61,10 @@ DcmViewer.prototype.scrollHandler = function(evt) {
 
         this.painter.currentFile = this.painter.series[this.scrollIndex];
         this.painter.drawImg();
+
+        var instanceNum = this.painter.currentFile.InstanceNumber ? this.painter.currentFile.InstanceNumber : ' - ';
+        $('#instanceNum').text(instanceNum + ' / ' + this.numFiles);
+
         return this.scrollIndex;
     }
 };
@@ -69,6 +73,39 @@ DcmViewer.prototype.scrollOne = function(num) {
     this.scrollIndex = num;
     this.painter.currentFile = this.painter.series[this.scrollIndex];
     this.painter.drawImg();
+
+    var instanceNum = this.painter.currentFile.InstanceNumber ? this.painter.currentFile.InstanceNumber : ' - ';
+    $('#instanceNum').text(instanceNum + ' / ' + this.numFiles);
+};
+
+DcmViewer.prototype.matrixHandler = function(e) {
+    var rows = e.target.value.split(',')[0];
+    var columns = e.target.value.split(',')[1];
+    var width = parseInt($('#viewer').width());
+    var height = parseInt($('#viewer').height()) - 72;
+    var cellWidth = (width - 2*rows) / columns;
+    var cellHeight = (height - 2*columns) / rows;
+
+//    console.log(rows + ' x ' + columns);
+//    console.log('Width: ' + width + ' ' + cellWidth + ' Height: ' + height + ' ' + cellHeight);
+
+    $('#viewerScreen').empty();
+
+    for(var y = 0; y < rows; y++) {
+        var rowName = 'row' + y;
+        $('#viewerScreen').append('<div id="' + rowName + '" class="viewerRows"></div>');
+        for(var x = 0; x < columns; x++) {
+            $('#' + rowName).append('<div id="column' + x + '" class="viewerCells" style="width:' + cellWidth + 'px; height:' + cellHeight + 'px;"></div>');
+            var newSize = Math.min(cellWidth, cellHeight);
+            var tmpId = '#' + rowName + ' #column' + x;
+            var newId = 'canvas' + x + '' + y;
+            $(tmpId).append('<canvas id="' + newId + '" width="' + newSize + '" height="' + newSize + '">Your browser does not support HTML5 canvas</canvas>');
+            this.painter.setCanvasId(newId);
+            if(this.eventsEnabled) {
+                this.painter.drawImg();
+            }
+        }
+    }
 };
 
 DcmViewer.prototype.openMetaDialog = function() {
@@ -149,6 +186,8 @@ var updateInfo = function(_this) {
         }
     }
 
+    var instanceNum = _this.currentFile.InstanceNumber ? _this.currentFile.InstanceNumber : ' - ';
+
     x = _this.currentFile.SeriesDate;
     var time = _this.currentFile.SeriesTime;
     var sDate = '';
@@ -170,6 +209,7 @@ var updateInfo = function(_this) {
     $('#wWidth').text('WW: ' + _this.ww.toFixed(0));
     $('#xPos').text('X: 0');
     $('#yPos').text('Y: 0');
+    $('#instanceNum').text(instanceNum + ' / ' + _this.series.length);
     $('#studyDate').text(sDate);
     $('#studyDescription').text(sDesc);
 };
@@ -181,6 +221,7 @@ var clearInfo = function() {
     $('#wWidth').text('');
     $('#xPos').text('');
     $('#yPos').text('');
+    $('#instanceNum').text('');
     $('#studyDate').text('');
     $('#studyDescription').text('');
 };

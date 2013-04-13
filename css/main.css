@@ -91,14 +91,24 @@ html, body {
     -ms-box-flex: 1;
     overflow-y: scroll;
     overflow-x: hidden;
-}
-/*#viewerScreen {
     background-color: #000;
-}*/
-#resizableDiv {
+}
+#viewerScreen {
+    display: table;
+    height: 100%;
+}
+
+.viewerRows {
+    display: table-row;
+}
+.viewerCells {
+    display: table-cell;
+    border: 1px solid #ddd; 
+}
+
+#canvasDiv {
+    position: relative;
     margin: 10px;
-    height: 512px;
-    width: 512px;
 }
 
 #patientInfo {
@@ -127,16 +137,15 @@ html, body {
     margin: 0;
     padding: 0;
 }
-#myCanvas {
-    border:#000 1px solid;
-    width: 100%;
-    height: 100%;
+canvas {
+    cursor:default;
+    display: block;
+    margin: auto;
 }
 
 #toolbox {
     margin: 0;
     padding: 10px;
-    /*height: 70px;*/
 }
 #toolbox div{
     float:left;
