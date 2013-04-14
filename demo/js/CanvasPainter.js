@@ -10,14 +10,6 @@ function CanvasPainter(canvasId) {
     this.pan; //[panX, panY]
 }
 
-CanvasPainter.prototype.setFile = function(file) {
-    this.currentFile = file;
-    this.wc = file.WindowCenter;
-    this.ww = file.WindowWidth;
-    this.scale = file.Scale;
-    this.pan = file.Pan;
-};
-
 CanvasPainter.prototype.setSeries = function(serie) {
     // Sort by InstanceNumber
     serie.sort(function(a, b) {
@@ -66,18 +58,19 @@ CanvasPainter.prototype.reset = function() {
 };
 
 CanvasPainter.prototype.drawImg = function() {
+    //Change here width and height of the new canvas
+    var width = this.canvas.width;
+    var height = this.canvas.height;
     var tempcanvas = document.createElement("canvas");
     tempcanvas.height = this.currentFile.Rows;
     tempcanvas.width = this.currentFile.Columns;
     var tempContext = tempcanvas.getContext("2d");
 
-//    this.canvas.height = this.currentFile.Rows;
-//    this.canvas.width = this.currentFile.Columns;
     var lowestVisibleValue = this.wc - this.ww / 2.0;
     var highestVisibleValue = this.wc + this.ww / 2.0;
 
     this.context.fillStyle = "#000";
-    this.context.fillRect(0, 0, 512, 512);
+    this.context.fillRect(0, 0, width, height);
     var imgData = tempContext.createImageData(this.currentFile.Columns, this.currentFile.Rows);
     var pixelData = this.currentFile.PixelData;
     if(typeof pixelData === 'undefined' || pixelData.length === 0) {
@@ -100,11 +93,11 @@ CanvasPainter.prototype.drawImg = function() {
         imgData.data[i + 3] = 255;       // alpha
     }
 
-    var ratio = calculateRatio(this.currentFile.Columns, this.currentFile.Rows, 512, 512);
+    var ratio = calculateRatio(this.currentFile.Columns, this.currentFile.Rows, width, height);
     var targetWidth = ratio * this.scale * this.currentFile.Rows;
     var targetHeight = ratio * this.scale * this.currentFile.Columns;
-    var xOffset = (this.canvas.width - targetWidth) / 2 + this.pan[0];
-    var yOffset = (this.canvas.height - targetHeight) / 2 + this.pan[1];
+    var xOffset = (width - targetWidth) / 2 + this.pan[0];
+    var yOffset = (height - targetHeight) / 2 + this.pan[1];
 
     tempContext.putImageData(imgData, 0, 0);
     this.context.drawImage(tempcanvas, xOffset, yOffset, targetWidth, targetHeight);

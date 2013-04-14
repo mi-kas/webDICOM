@@ -55,7 +55,7 @@ function findImagesInSeries(pacsname, patientid, studyinstanceuid, seriesinstanc
     $.getJSON('/' + pacsname + '/find/image?PatientID=' + patientid + '&StudyInstanceUID=' + studyinstanceuid + '&SeriesInstanceUID=' + seriesinstanceuid + '&SOPInstanceUID', function(data) {
         success($.map(getTagsInArray(data['datasets'], ['SOP Instance UID']), 
                       function(t) { 
-                          return '/' + pacsname + '/get/image?PatientID=' + patientid + '&StudyInstanceUID=' + studyinstanceuid + '&SeriesInstanceUID=' + seriesinstanceuid + '&SOPInstanceUID=' + t['SOP Instance UID']
+                          return '/' + pacsname + '/get/image?PatientID=' + patientid + '&StudyInstanceUID=' + studyinstanceuid + '&SeriesInstanceUID=' + seriesinstanceuid + '&SOPInstanceUID=' + t['SOP Instance UID'];
                       }));
     });
 }

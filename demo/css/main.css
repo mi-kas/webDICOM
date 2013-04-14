@@ -1,4 +1,3 @@
-
 html, body {
     display: inline;
     padding: 0;
@@ -13,7 +12,6 @@ html, body {
     -moz-user-select: none; 
     -ms-user-select: none;
 }
-
 .clearfix:after {
     visibility: hidden;
     display: block;
@@ -27,32 +25,142 @@ html, body {
 *:first-child+html .clearfix{ 
     zoom: 1; /* IE7 */
 } 
-
 #container {
     display: -webkit-box;    
     -webkit-box-orient: horizontal;
-
     display: -moz-box;
     -moz-box-orient: horizontal;
-
     display: -ms-box;
     -ms-box-orient: horizontal;
-
     height: 100%;
     width: 100%;
 }
+
+/*Viewer*/
+
+#viewer {
+    width: 100%;
+    -webkit-box-flex: 1;
+    -moz-box-flex: 1;
+    -ms-box-flex: 1;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    background-color: #000;
+}
+#viewerScreen {
+    display: table;
+    height: 100%;
+}
+.viewerRows .viewerCells {
+     border-bottom: 1px solid #ddd;
+     border-right: 1px solid #ddd;
+}
+.viewerRows:last-child .viewerCells {
+     border-bottom: none;
+}
+.viewerRows .viewerCells:last-child {
+     border-right: none;
+}
+.viewerRows {
+    display: table-row;
+}
+.viewerCells {
+    display: table-cell;
+    position:relative;
+}
+canvas {
+    cursor:default;
+    display: block;
+    margin: auto;
+}
+
+/*Patient infos*/
+
+.patientInfo {
+    color: #fff;
+    font-size: 0.8em;
+    text-align: right;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+}
+.patientInfo ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.studyInfo {
+    color: #fff;
+    font-size: 0.8em;
+    text-align: left;
+    position: absolute;
+    top: 5px;
+    left: 5px;
+}
+.studyInfo ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+/*Toolbox*/
+
+#toolbox {
+    margin-left: -1px;
+    padding: 10px;
+    margin-bottom: 0;
+}
+#toolbox div{
+    float:left;
+}
+#toolboxHeader {
+    background-color: #fff;
+}
+#matrixViewSelectBoxItText {
+    padding-left:7px;
+}
+#singleButtons {
+    margin-left: 3px;
+}
+#slider {
+    width: 100%;
+    margin: 10px 0 0 0;
+    height: .6em;
+}
+#slider .ui-slider-handle {
+    width: 1em;
+    height: 1em;
+}
+
+/*Meta-Daten dialog*/
+
+#metaDialog th, td {
+    overflow-y: scroll;
+    overflow-x: auto;
+    padding-left: 5px;
+    border-collapse: collapse;
+    border-right: 1px solid #333;
+}
+#metaDialog th:last-child, td:last-child {
+    border: none;
+}
+#metaDialog thead {
+    font-weight: bold;
+    border-bottom: 1px solid #333;
+}
+
+/*SideBar*/
+
 #sidebar {
     overflow-y: scroll;
     overflow-x: hidden;
     width: 300px;
     border-right: 1px solid #ccc;
 }
-
 .input-append.customfile {
     width: 100%;
     white-space: normal;
 }
-
 .customfile.input-append .customfile-feedback {
     border-radius: 3px 0 0 3px;
     padding-left: 25px;
@@ -65,12 +173,29 @@ html, body {
     height: 60px;
     width: 270px;
 }
-
 #progressBar {
     margin-top: 5px;
     height: .6em;
 }
-
+.progress.active .bar {
+    -webkit-animation: progress-bar-stripes 2s linear infinite;
+    -moz-animation: progress-bar-stripes 2s linear infinite;
+    -ms-animation: progress-bar-stripes 2s linear infinite;
+    -o-animation: progress-bar-stripes 2s linear infinite;
+    animation: progress-bar-stripes 2s linear infinite;
+}
+.progress-striped .bar {
+    background-color: #149bdf;
+    background-image: -webkit-gradient(linear, 0 100%, 100% 0, color-stop(0.25, rgba(255, 255, 255, 0.15)), color-stop(0.25, transparent), color-stop(0.5, transparent), color-stop(0.5, rgba(255, 255, 255, 0.15)), color-stop(0.75, rgba(255, 255, 255, 0.15)), color-stop(0.75, transparent), to(transparent));
+    background-image: -webkit-linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
+    background-image: -moz-linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
+    background-image: -o-linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
+    background-image: linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
+    -webkit-background-size: 40px 40px;
+    -moz-background-size: 40px 40px;
+    -o-background-size: 40px 40px;
+    background-size: 40px 40px;
+}
 #errorMsg {
     color: #f00;
     font-size: 0.7em;
@@ -80,96 +205,12 @@ html, body {
     margin: 0;
     padding: 0;
 }
+
+/*File tree*/
+
 #fileTree {
     padding: 0px 10px;
 }
-
-#viewer {
-    width: 100%;
-    -webkit-box-flex: 1;
-    -moz-box-flex: 1;
-    -ms-box-flex: 1;
-    overflow-y: scroll;
-    overflow-x: hidden;
-}
-/*#viewerScreen {
-    background-color: #000;
-}*/
-#resizableDiv {
-    margin: 10px;
-    height: 512px;
-    width: 512px;
-}
-
-#patientInfo {
-    color: #fff;
-    font-size: 0.8em;
-    text-align: right;
-    position: absolute;
-    top: 5px;
-    right: 5px;
-}
-#patientInfo ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-}
-#studyInfo {
-    color: #fff;
-    font-size: 0.8em;
-    text-align: left;
-    position: absolute;
-    top: 5px;
-    left: 5px;
-}
-#studyInfo ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-}
-#myCanvas {
-    border:#000 1px solid;
-    width: 100%;
-    height: 100%;
-}
-
-#toolbox {
-    margin: 0;
-    padding: 10px;
-    /*height: 70px;*/
-}
-#toolbox div{
-    float:left;
-}
-#matrixViewSelectBoxItText {
-    padding-left:7px;
-}
-#singleButtons {
-    margin-left: 3px;
-}
-
-#slider {
-    width: 100%;
-    margin: 10px 0 0 0;
-    height: .6em;
-}
-#slider .ui-slider-handle {
-    width: 1em;
-    height: 1em;
-}
-
-
-#metaDialog {
-    font-size: 0.8em;
-}
-#metaDialog table {
-    overflow-y: scroll;
-    overflow-x: auto;
-}
-#metaDialog thead {
-    font-weight: bold;
-}
-
 .tree,.tree ul,.tree li {
     list-style:none; 
     margin:0; 
@@ -207,24 +248,4 @@ html, body {
 }
 .tree ul.tree-group-collapsed { 
     display:none; 
-}
-
-.progress.active .bar {
-    -webkit-animation: progress-bar-stripes 2s linear infinite;
-    -moz-animation: progress-bar-stripes 2s linear infinite;
-    -ms-animation: progress-bar-stripes 2s linear infinite;
-    -o-animation: progress-bar-stripes 2s linear infinite;
-    animation: progress-bar-stripes 2s linear infinite;
-}
-.progress-striped .bar {
-    background-color: #149bdf;
-    background-image: -webkit-gradient(linear, 0 100%, 100% 0, color-stop(0.25, rgba(255, 255, 255, 0.15)), color-stop(0.25, transparent), color-stop(0.5, transparent), color-stop(0.5, rgba(255, 255, 255, 0.15)), color-stop(0.75, rgba(255, 255, 255, 0.15)), color-stop(0.75, transparent), to(transparent));
-    background-image: -webkit-linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
-    background-image: -moz-linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
-    background-image: -o-linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
-    background-image: linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
-    -webkit-background-size: 40px 40px;
-    -moz-background-size: 40px 40px;
-    -o-background-size: 40px 40px;
-    background-size: 40px 40px;
 }

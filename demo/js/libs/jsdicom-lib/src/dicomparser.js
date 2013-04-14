@@ -23,36 +23,36 @@ DicomParser.prototype.read_number = function(offset, length) {
         n = n*256 + this.buffer[it];
     }
     return n;
-}
+};
 
 
 DicomParser.prototype.read_string = function(start, len) {
-    var s = ""
+    var s = "";
     var end = start+len;
     for(var i=start;i<end;++i) {
         s += String.fromCharCode(this.buffer[i]);
     }
     return s;
-}
+};
 
 DicomParser.prototype.read_VR = function(offset) {
     return this.read_string(offset, 2);
-}
+};
 
 DicomParser.prototype.read_tag = function(offset) {
     var vl = this.buffer[offset+1]*256*256*256 + this.buffer[offset]*256*256 +
              this.buffer[offset+3]*256 + this.buffer[offset+2];
     return vl;
-}
+};
 
 DicomParser.prototype.parse_file = function() {
     var file = new DcmFile();
     // Look for DICM at pos 128
     var magicword = this.read_string(128, 4);
-    if(magicword != "DICM")
+    if(magicword !== "DICM")
     {
         //log("DICM key NOT found, aborting");
-        console.log("no magic word found");
+        //console.log("no magic word found");
         return;
     }
     // File Meta Information should always use Explicit VR Little Endian(1.2.840.10008.1.2.1)
@@ -96,15 +96,15 @@ DicomParser.prototype.parse_file = function() {
     }
 
     if(element_reader._implicit && 'PixelData' in file && file.PixelData == undefined) {
-        if(file.BitsStored == 16) {
+        if(file.BitsStored === 16) {
             data_element = file.data_elements[dcmdict['PixelData']];
             data_element.vr = "OW";
             file[dcmdict[data_element.tag][1]] = data_element.get_value(); 
-        } else if(file.BitsStored == 8) {
+        } else if(file.BitsStored === 8) {
             data_element = file.data_elements[dcmdict['PixelData']];
             data_element.vr = "OB";
             file[dcmdict[data_element.tag][1]] = data_element.get_value(); 
         }
     }
     return file;
-}
+};

@@ -12,7 +12,7 @@
 function buffer_to_string(buffer, len)
 {
     // Check for zeroes?
-    var s = ""
+    var s = "";
     for(var i=0;i<len;++i) {
         if(buffer[i] == 0)
             break;
@@ -91,7 +91,7 @@ var element_to_repr_le = {
     "US": buffer_to_unsigned_le,
     "UL": buffer_to_unsigned_le,
     "IS": buffer_to_integer_string
-}
+};
 
 var element_to_repr_be = {
     "AE": buffer_to_string,
@@ -106,7 +106,7 @@ var element_to_repr_be = {
     "US": buffer_to_unsigned_be,
     "UL": buffer_to_unsigned_be,
     "IS": buffer_to_integer_string
-}
+};
 
 var element_to_value_le = {
     "AE": buffer_to_string,
@@ -124,7 +124,7 @@ var element_to_value_le = {
     "IS": buffer_to_integer_string,
     "OW": buffer_to_uint16array_le,
     "OB": buffer_to_uint8array
-}
+};
 
 var element_to_value_be = {
     "AE": buffer_to_string,
@@ -141,8 +141,8 @@ var element_to_value_be = {
     "UL": buffer_to_unsigned_be,
     "IS": buffer_to_integer_string,
     "OW": buffer_to_uint16array_be,
-    "OB": buffer_to_uint8array,
-}
+    "OB": buffer_to_uint8array
+};
 
 function tag_repr(tag) {
     var t = tag.toString(16).toUpperCase();
