@@ -66,6 +66,7 @@ html, body {
 }
 .viewerCells {
     display: table-cell;
+    position:relative;
 }
 canvas {
     cursor:default;
@@ -75,7 +76,7 @@ canvas {
 
 /*Patient infos*/
 
-#patientInfo {
+.patientInfo {
     color: #fff;
     font-size: 0.8em;
     text-align: right;
@@ -83,12 +84,12 @@ canvas {
     top: 5px;
     right: 5px;
 }
-#patientInfo ul {
+.patientInfo ul {
     list-style: none;
     margin: 0;
     padding: 0;
 }
-#studyInfo {
+.studyInfo {
     color: #fff;
     font-size: 0.8em;
     text-align: left;
@@ -96,7 +97,7 @@ canvas {
     top: 5px;
     left: 5px;
 }
-#studyInfo ul {
+.studyInfo ul {
     list-style: none;
     margin: 0;
     padding: 0;
@@ -105,11 +106,15 @@ canvas {
 /*Toolbox*/
 
 #toolbox {
-    margin: 0;
+    margin-left: -1px;
     padding: 10px;
+    margin-bottom: 0;
 }
 #toolbox div{
     float:left;
+}
+#toolboxHeader {
+    background-color: #fff;
 }
 #matrixViewSelectBoxItText {
     padding-left:7px;

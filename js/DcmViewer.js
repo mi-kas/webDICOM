@@ -23,10 +23,10 @@ DcmViewer.prototype.setParsedFiles = function(files) {
         var index = (this.scrollIndex + i) % this.numFiles;
         this.painters[i].currentFile = this.painters[i].series[index];
         this.painters[i].drawImg();
+        // update info
+        updateInfo(this.painters[i], getSelector(this.painters[i]));
     }
     this.eventsEnabled = true;
-//    clearInfo();
-//    updateInfo(this.painter);
     if(this.numFiles > 1) {
         var self = this;
         $("#slider").slider('option', {
@@ -37,7 +37,6 @@ DcmViewer.prototype.setParsedFiles = function(files) {
             }
         });
     }
-    //console.log(this.numFiles);
 };
 
 DcmViewer.prototype.eventHandler = function(e) {
@@ -46,9 +45,8 @@ DcmViewer.prototype.eventHandler = function(e) {
         e.x = !e.offsetX ? (e.pageX - $(e.target).offset().left) : e.offsetX;
         e.y = !e.offsetY ? (e.pageY - $(e.target).offset().top) : e.offsetY;
 
-        //Update X & Y values
-        $('#xPos').text('X: ' + e.x.toFixed(0));
-        $('#yPos').text('Y: ' + e.y.toFixed(0));
+        $('.xPos').text('X: ' + e.x.toFixed(0));
+        $('.yPos').text('Y: ' + e.y.toFixed(0));
 
         // pass the event to the currentTool of the toolbox
         var eventFunc = this.toolbox.currentTool[e.type];
@@ -75,10 +73,10 @@ DcmViewer.prototype.scrollHandler = function(evt) {
             tmp.push(index);
             this.painters[i].currentFile = this.painters[i].series[index];
             this.painters[i].drawImg();
+            // Update instance number
+            var instanceNum = this.painters[i].currentFile.InstanceNumber ? this.painters[i].currentFile.InstanceNumber : ' - ';
+            $(getSelector(this.painters[i]) + ' #instanceNum').text(instanceNum + ' / ' + this.numFiles);
         }
-        //console.log(tmp);
-//        var instanceNum = this.painter.currentFile.InstanceNumber ? this.painter.currentFile.InstanceNumber : ' - ';
-//        $('#instanceNum').text(instanceNum + ' / ' + this.numFiles);
 
         return this.scrollIndex;
     }
@@ -90,10 +88,10 @@ DcmViewer.prototype.scrollOne = function(num) {
         var index = (this.scrollIndex + i) % this.numFiles;
         this.painters[i].currentFile = this.painters[i].series[index];
         this.painters[i].drawImg();
+        // Update instance number
+        var instanceNum = this.painters[i].currentFile.InstanceNumber ? this.painters[i].currentFile.InstanceNumber : ' - ';
+        $(getSelector(this.painters[i])  + ' #instanceNum').text(instanceNum + ' / ' + this.numFiles);
     }
-
-//    var instanceNum = this.painter.currentFile.InstanceNumber ? this.painter.currentFile.InstanceNumber : ' - ';
-//    $('#instanceNum').text(instanceNum + ' / ' + this.numFiles);
 };
 
 DcmViewer.prototype.matrixHandler = function(e) {
@@ -116,7 +114,9 @@ DcmViewer.prototype.matrixHandler = function(e) {
             var tmpId = '#' + rowName + ' #column' + x;
             var newId = 'canvas' + x + '' + y;
             $(tmpId).append('<canvas id="' + newId + '" width="' + cellWidth + '" height="' + cellHeight + '">Your browser does not support HTML5 canvas</canvas>');
-            
+            $(tmpId).append('<div class="studyInfo"></div>');
+            $(tmpId).append('<div class="patientInfo"></div>');
+
             var tmpPainter = new CanvasPainter(newId);
             newPainters.push(tmpPainter);
             if(this.eventsEnabled) {
@@ -125,6 +125,7 @@ DcmViewer.prototype.matrixHandler = function(e) {
                 tmpPainter.setSeries(this.painters[0].series);
                 tmpPainter.currentFile = tmpPainter.series[index];
                 tmpPainter.drawImg();
+                updateInfo(tmpPainter, getSelector(tmpPainter));
             }
         }
     }
@@ -194,7 +195,7 @@ DcmViewer.prototype.openMetaDialog = function() {
     return table;
 };
 
-var updateInfo = function(_this) {
+var updateInfo = function(_this, selector) {
     var isValidDate = function(d) {
         if(Object.prototype.toString.call(d) !== "[object Date]")
             return false;
@@ -234,25 +235,47 @@ var updateInfo = function(_this) {
 
     var sDesc = _this.currentFile.StudyDescription ? _this.currentFile.StudyDescription : ' - ';
 
-    $('#patientsName').text(pName + pSex + pID);
-    $('#age').text(pDate);
-    $('#wCenter').text('WC: ' + _this.wc.toFixed(0));
-    $('#wWidth').text('WW: ' + _this.ww.toFixed(0));
-    $('#xPos').text('X: 0');
-    $('#yPos').text('Y: 0');
-    $('#instanceNum').text(instanceNum + ' / ' + _this.series.length);
-    $('#studyDate').text(sDate);
-    $('#studyDescription').text(sDesc);
+    var ul1 = document.createElement('ul');
+    var li11 = document.createElement('li');
+    li11.appendChild(document.createTextNode(pName + pSex + pID));
+    var li12 = document.createElement('li');
+    li12.appendChild(document.createTextNode(pDate));
+    var li13 = document.createElement('li');
+    li13.appendChild(document.createTextNode(sDesc));
+    var li14 = document.createElement('li');
+    li14.appendChild(document.createTextNode(sDate));
+    ul1.appendChild(li11);
+    ul1.appendChild(li12);
+    ul1.appendChild(li13);
+    ul1.appendChild(li14);
+    var ul2 = document.createElement('ul');
+    var li21 = document.createElement('li');
+    li21.appendChild(document.createTextNode('WC: ' + _this.wc.toFixed(0)));
+    li21.setAttribute("class", "wCenter");
+    var li22 = document.createElement('li');
+    li22.appendChild(document.createTextNode('WW: ' + _this.ww.toFixed(0)));
+    li22.setAttribute("class", "wWidth");
+    var li23 = document.createElement('li');
+    li23.appendChild(document.createTextNode('X: 0'));
+    li23.setAttribute("class", "xPos");
+    var li24 = document.createElement('li');
+    li24.appendChild(document.createTextNode('Y: 0'));
+    li24.setAttribute("class", "yPos");
+    var li25 = document.createElement('li');
+    li25.appendChild(document.createTextNode(instanceNum + ' / ' + _this.series.length));
+    li25.setAttribute("id", "instanceNum");
+    ul2.appendChild(li21);
+    ul2.appendChild(li22);
+    ul2.appendChild(li23);
+    ul2.appendChild(li24);
+    ul2.appendChild(li25);
+
+    $(selector + ' .studyInfo').empty().append(ul2);
+    $(selector + ' .patientInfo').empty().append(ul1);
 };
 
-var clearInfo = function() {
-    $('#patientsName').text('');
-    $('#age').text('');
-    $('#wCenter').text('');
-    $('#wWidth').text('');
-    $('#xPos').text('');
-    $('#yPos').text('');
-    $('#instanceNum').text('');
-    $('#studyDate').text('');
-    $('#studyDescription').text('');
+var getSelector = function(painter) {
+    var row = painter.canvas.id.charAt(7);
+    var column = painter.canvas.id.charAt(6);
+    return '#row' + row + ' #column' + column;
 };
