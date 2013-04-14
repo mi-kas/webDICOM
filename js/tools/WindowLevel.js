@@ -31,8 +31,6 @@ WindowLevel.prototype.mousemove = function(x, y, painters) {
         var deltaY = this.curY - y;
         var newX = curWindowing[0] + deltaX;
         var newY = curWindowing[1] + deltaY;
-//        painter.setWindowing(newX, newY);
-//        painter.drawImg();
         
         for(var i = 0, len = painters.length; i < len; i++) {
             painters[i].setWindowing(newX, newY);

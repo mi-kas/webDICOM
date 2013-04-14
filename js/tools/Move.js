@@ -35,8 +35,6 @@ Move.prototype.mousemove = function(x, y, painters) {
             painters[i].setPan(newPanX, newPanY);
             painters[i].drawImg();
         }
-//        painter.setPan(painter.getPan()[0] + deltaX, painter.getPan()[1] + deltaY);
-//        painter.drawImg();
     }
     this.curX = x;
     this.curY = y;

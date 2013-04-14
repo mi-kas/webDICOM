@@ -157,15 +157,15 @@ DcmViewer.prototype.openMetaDialog = function() {
         }
         return sorted;
     };
-    var file = sortObject(this.painter.currentFile);
+    var file = sortObject(this.painters[0].currentFile);
     var table = document.createElement('table');
 
     var head = document.createElement('thead');
     var headRow = document.createElement("tr");
-    var headCell1 = document.createElement("td");
+    var headCell1 = document.createElement("th");
     var headText1 = document.createTextNode('Feldname');
     headCell1.appendChild(headText1);
-    var headCell2 = document.createElement("td");
+    var headCell2 = document.createElement("th");
     var headText2 = document.createTextNode('Inhalt');
     headCell2.appendChild(headText2);
     headRow.appendChild(headCell1);

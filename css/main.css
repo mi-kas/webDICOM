@@ -1,4 +1,3 @@
-
 html, body {
     display: inline;
     padding: 0;
@@ -13,7 +12,6 @@ html, body {
     -moz-user-select: none; 
     -ms-user-select: none;
 }
-
 .clearfix:after {
     visibility: hidden;
     display: block;
@@ -27,62 +25,18 @@ html, body {
 *:first-child+html .clearfix{ 
     zoom: 1; /* IE7 */
 } 
-
 #container {
     display: -webkit-box;    
     -webkit-box-orient: horizontal;
-
     display: -moz-box;
     -moz-box-orient: horizontal;
-
     display: -ms-box;
     -ms-box-orient: horizontal;
-
     height: 100%;
     width: 100%;
 }
-#sidebar {
-    overflow-y: scroll;
-    overflow-x: hidden;
-    width: 300px;
-    border-right: 1px solid #ccc;
-}
 
-.input-append.customfile {
-    width: 100%;
-    white-space: normal;
-}
-
-.customfile.input-append .customfile-feedback {
-    border-radius: 3px 0 0 3px;
-    padding-left: 25px;
-    width: 167px;
-}
-.add-on.customfile-button {
-    width: 61px;
-}
-#inputContainer {
-    height: 60px;
-    width: 270px;
-}
-
-#progressBar {
-    margin-top: 5px;
-    height: .6em;
-}
-
-#errorMsg {
-    color: #f00;
-    font-size: 0.7em;
-    margin: 5px 0 5px 0;
-}
-#errorMsg p {
-    margin: 0;
-    padding: 0;
-}
-#fileTree {
-    padding: 0px 10px;
-}
+/*Viewer*/
 
 #viewer {
     width: 100%;
@@ -97,7 +51,6 @@ html, body {
     display: table;
     height: 100%;
 }
-
 .viewerRows .viewerCells {
      border-bottom: 1px solid #ddd;
      border-right: 1px solid #ddd;
@@ -108,19 +61,19 @@ html, body {
 .viewerRows .viewerCells:last-child {
      border-right: none;
 }
-
 .viewerRows {
     display: table-row;
 }
 .viewerCells {
     display: table-cell;
-/*    border: 1px solid #ddd; */
+}
+canvas {
+    cursor:default;
+    display: block;
+    margin: auto;
 }
 
-#canvasDiv {
-    position: relative;
-    margin: 10px;
-}
+/*Patient infos*/
 
 #patientInfo {
     color: #fff;
@@ -148,12 +101,8 @@ html, body {
     margin: 0;
     padding: 0;
 }
-canvas {
-    cursor:default;
-    display: block;
-    margin: auto;
-    /*border: 1px solid #fff;*/
-}
+
+/*Toolbox*/
 
 #toolbox {
     margin: 0;
@@ -168,7 +117,6 @@ canvas {
 #singleButtons {
     margin-left: 3px;
 }
-
 #slider {
     width: 100%;
     margin: 10px 0 0 0;
@@ -179,18 +127,85 @@ canvas {
     height: 1em;
 }
 
+/*Meta-Daten dialog*/
 
-#metaDialog {
-    font-size: 0.8em;
-}
-#metaDialog table {
+#metaDialog th, td {
     overflow-y: scroll;
     overflow-x: auto;
+    padding-left: 5px;
+    border-collapse: collapse;
+    border-right: 1px solid #333;
+}
+#metaDialog th:last-child, td:last-child {
+    border: none;
 }
 #metaDialog thead {
     font-weight: bold;
+    border-bottom: 1px solid #333;
 }
 
+/*SideBar*/
+
+#sidebar {
+    overflow-y: scroll;
+    overflow-x: hidden;
+    width: 300px;
+    border-right: 1px solid #ccc;
+}
+.input-append.customfile {
+    width: 100%;
+    white-space: normal;
+}
+.customfile.input-append .customfile-feedback {
+    border-radius: 3px 0 0 3px;
+    padding-left: 25px;
+    width: 167px;
+}
+.add-on.customfile-button {
+    width: 61px;
+}
+#inputContainer {
+    height: 60px;
+    width: 270px;
+}
+#progressBar {
+    margin-top: 5px;
+    height: .6em;
+}
+.progress.active .bar {
+    -webkit-animation: progress-bar-stripes 2s linear infinite;
+    -moz-animation: progress-bar-stripes 2s linear infinite;
+    -ms-animation: progress-bar-stripes 2s linear infinite;
+    -o-animation: progress-bar-stripes 2s linear infinite;
+    animation: progress-bar-stripes 2s linear infinite;
+}
+.progress-striped .bar {
+    background-color: #149bdf;
+    background-image: -webkit-gradient(linear, 0 100%, 100% 0, color-stop(0.25, rgba(255, 255, 255, 0.15)), color-stop(0.25, transparent), color-stop(0.5, transparent), color-stop(0.5, rgba(255, 255, 255, 0.15)), color-stop(0.75, rgba(255, 255, 255, 0.15)), color-stop(0.75, transparent), to(transparent));
+    background-image: -webkit-linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
+    background-image: -moz-linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
+    background-image: -o-linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
+    background-image: linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
+    -webkit-background-size: 40px 40px;
+    -moz-background-size: 40px 40px;
+    -o-background-size: 40px 40px;
+    background-size: 40px 40px;
+}
+#errorMsg {
+    color: #f00;
+    font-size: 0.7em;
+    margin: 5px 0 5px 0;
+}
+#errorMsg p {
+    margin: 0;
+    padding: 0;
+}
+
+/*File tree*/
+
+#fileTree {
+    padding: 0px 10px;
+}
 .tree,.tree ul,.tree li {
     list-style:none; 
     margin:0; 
@@ -228,24 +243,4 @@ canvas {
 }
 .tree ul.tree-group-collapsed { 
     display:none; 
-}
-
-.progress.active .bar {
-    -webkit-animation: progress-bar-stripes 2s linear infinite;
-    -moz-animation: progress-bar-stripes 2s linear infinite;
-    -ms-animation: progress-bar-stripes 2s linear infinite;
-    -o-animation: progress-bar-stripes 2s linear infinite;
-    animation: progress-bar-stripes 2s linear infinite;
-}
-.progress-striped .bar {
-    background-color: #149bdf;
-    background-image: -webkit-gradient(linear, 0 100%, 100% 0, color-stop(0.25, rgba(255, 255, 255, 0.15)), color-stop(0.25, transparent), color-stop(0.5, transparent), color-stop(0.5, rgba(255, 255, 255, 0.15)), color-stop(0.75, rgba(255, 255, 255, 0.15)), color-stop(0.75, transparent), to(transparent));
-    background-image: -webkit-linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
-    background-image: -moz-linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
-    background-image: -o-linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
-    background-image: linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
-    -webkit-background-size: 40px 40px;
-    -moz-background-size: 40px 40px;
-    -o-background-size: 40px 40px;
-    background-size: 40px 40px;
 }
