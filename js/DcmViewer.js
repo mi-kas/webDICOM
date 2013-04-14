@@ -20,7 +20,7 @@ DcmViewer.prototype.setParsedFiles = function(files) {
     for(var i = 0, len = this.painters.length; i < len; i++) {
         this.painters[i].setSeries(files);
         // setting files shifted to the painters
-        var index = (this.scrollIndex + i > this.numFiles - 1) ? 0 : this.scrollIndex + i;
+        var index = (this.scrollIndex + i) % this.numFiles;
         this.painters[i].currentFile = this.painters[i].series[index];
         this.painters[i].drawImg();
     }
@@ -37,6 +37,7 @@ DcmViewer.prototype.setParsedFiles = function(files) {
             }
         });
     }
+    console.log(this.numFiles);
 };
 
 DcmViewer.prototype.eventHandler = function(e) {
@@ -68,13 +69,14 @@ DcmViewer.prototype.scrollHandler = function(evt) {
 
         // cyclic scrolling
         this.scrollIndex = (this.scrollIndex < 0) ? this.numFiles - 1 : (this.scrollIndex > this.numFiles - 1) ? 0 : this.scrollIndex;
-
+        var tmp = [];
         for(var i = 0, len = this.painters.length; i < len; i++) {
-            var index = (this.scrollIndex + i > this.numFiles - 1) ? 0 : this.scrollIndex + i;
+            var index = (this.scrollIndex + i) % this.numFiles;
+            tmp.push(index);
             this.painters[i].currentFile = this.painters[i].series[index];
             this.painters[i].drawImg();
         }
-
+        console.log(tmp);
 //        var instanceNum = this.painter.currentFile.InstanceNumber ? this.painter.currentFile.InstanceNumber : ' - ';
 //        $('#instanceNum').text(instanceNum + ' / ' + this.numFiles);
 
@@ -118,7 +120,7 @@ DcmViewer.prototype.matrixHandler = function(e) {
             newPainters.push(tmpPainter);
             if(this.eventsEnabled) {
                 // setting files shifted to the painters
-                var index = (this.scrollIndex + x + y > this.numFiles - 1) ? 0 : this.scrollIndex + x + y;
+                var index = (this.scrollIndex + x + y) % this.numFiles;
                 tmpPainter.setSeries(this.painters[0].series);
                 tmpPainter.currentFile = tmpPainter.series[index];
                 tmpPainter.drawImg();
