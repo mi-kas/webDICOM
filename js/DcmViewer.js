@@ -37,7 +37,7 @@ DcmViewer.prototype.setParsedFiles = function(files) {
             }
         });
     }
-    console.log(this.numFiles);
+    //console.log(this.numFiles);
 };
 
 DcmViewer.prototype.eventHandler = function(e) {
@@ -76,7 +76,7 @@ DcmViewer.prototype.scrollHandler = function(evt) {
             this.painters[i].currentFile = this.painters[i].series[index];
             this.painters[i].drawImg();
         }
-        console.log(tmp);
+        //console.log(tmp);
 //        var instanceNum = this.painter.currentFile.InstanceNumber ? this.painter.currentFile.InstanceNumber : ' - ';
 //        $('#instanceNum').text(instanceNum + ' / ' + this.numFiles);
 
@@ -112,10 +112,11 @@ DcmViewer.prototype.matrixHandler = function(e) {
         $('#viewerScreen').append('<div id="' + rowName + '" class="viewerRows"></div>');
         for(var x = 0; x < columns; x++) {
             $('#' + rowName).append('<div id="column' + x + '" class="viewerCells" style="width:' + cellWidth + 'px; height:' + cellHeight + 'px;"></div>');
-            var newSize = Math.min(cellWidth, cellHeight);
+            //var newSize = Math.min(cellWidth, cellHeight);
             var tmpId = '#' + rowName + ' #column' + x;
             var newId = 'canvas' + x + '' + y;
-            $(tmpId).append('<canvas id="' + newId + '" width="' + newSize + '" height="' + newSize + '">Your browser does not support HTML5 canvas</canvas>');
+            $(tmpId).append('<canvas id="' + newId + '" width="' + cellWidth + '" height="' + cellHeight + '">Your browser does not support HTML5 canvas</canvas>');
+            
             var tmpPainter = new CanvasPainter(newId);
             newPainters.push(tmpPainter);
             if(this.eventsEnabled) {

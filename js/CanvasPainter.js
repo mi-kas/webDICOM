@@ -70,7 +70,7 @@ CanvasPainter.prototype.drawImg = function() {
     var highestVisibleValue = this.wc + this.ww / 2.0;
 
     this.context.fillStyle = "#000";
-    this.context.fillRect(0, 0, 512, 512);
+    this.context.fillRect(0, 0, width, height);
     var imgData = tempContext.createImageData(this.currentFile.Columns, this.currentFile.Rows);
     var pixelData = this.currentFile.PixelData;
     if(typeof pixelData === 'undefined' || pixelData.length === 0) {
