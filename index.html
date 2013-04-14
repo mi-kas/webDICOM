@@ -44,9 +44,9 @@
 
         <script>
             $(document).ready(function() {
-                var dcmViewer = new DcmViewer('myCanvas');
+                var dcmViewer = new DcmViewer();
+                dcmViewer.init();
                 var tree = new Tree('#fileTree');
-                dcmViewer.matrixHandler($('#matrixView').val());
 
                 $('#dicomUpload').customFileInput({
                     button_position: 'right'
@@ -56,8 +56,6 @@
                     if(e.target.nodeName === 'A' && e.target.dataset.type === 'file') {
                         var serie = [];
                         var arr = e.target.dataset.index.split(',');
-//                        console.log(arr.length);
-//                        console.log(arr);
                         for(var i = 0; i < arr.length; i++) {
                             serie.push(tree.parsedFileList[arr[i]]);
                         }
@@ -68,14 +66,10 @@
                     dcmViewer.setCurrentTool($("input[name='toolbox-buttons']:checked").val());
                 });
                 $('#matrixView').change(function(e) {
-                        dcmViewer.matrixHandler(e.target.value);
+                    dcmViewer.matrixHandler(e.target.value);
                 });
                 $('#resetButton').click(function() {
-                    if(dcmViewer.eventsEnabled) {
-                        $('#resizableDiv').css('width', '512px');
-                        $('#resizableDiv').css('height', '512px');
-                        dcmViewer.painter.reset();
-                    }
+                    dcmViewer.resetHandler();
                 });
                 $('#metaButton').click(function() {
                     if(dcmViewer.eventsEnabled) {
@@ -85,55 +79,35 @@
                         });
                     }
                 });
-//                $('#myCanvas').click(function(e) {
-//                    dcmViewer.eventHandler(e);
-//                });
-//                $('#myCanvas').mousemove(function(e) {
-//                    dcmViewer.eventHandler(e);
-//                });
-//                $('#myCanvas').mousedown(function(e) {
-//                    e.preventDefault();
-//                    dcmViewer.eventHandler(e);
-//                });
-//                $('#myCanvas').mouseup(function(e) {
-//                    dcmViewer.eventHandler(e);
-//                });
-//                $('#myCanvas').mouseout(function(e) {
-//                    dcmViewer.eventHandler(e);
-//                });
-//                $('#myCanvas').bind('mousewheel', function(e) {
-//                    if(dcmViewer.numFiles > 1) {
-//                        e.preventDefault();
-//                        var num = dcmViewer.scrollHandler(e);
-//                        $('#slider').slider('value', num);
-//                    }
-//                });
-//                // scroll event for firefox
-//                $('#myCanvas').bind('DOMMouseScroll', function(e) {
-//                    if(dcmViewer.numFiles > 1) {
-//                        e.preventDefault();
-//                        var num = dcmViewer.scrollHandler(e);
-//                        $('#slider').slider('value', num);
-//                    }
-//                });
+                $('#showStudyData').click(function() {
+                    if($('.studyInfo').is(':visible')) {
+                        $('.studyInfo').hide();
+                        $('.patientInfo').hide();
+                        $('#showStudyData').text('Show Infos');
+                    } else {
+                        $('.studyInfo').show();
+                        $('.patientInfo').show();
+                        $('#showStudyData').text('Hide Infos');
+                    }
+                });
 
-                $('#canvasDiv').click(function(e) {
+                $('#viewerScreen').click(function(e) {
                     dcmViewer.eventHandler(e);
                 });
-                $('#canvasDiv').mousemove(function(e) {
+                $('#viewerScreen').mousemove(function(e) {
                     dcmViewer.eventHandler(e);
                 });
-                $('#canvasDiv').mousedown(function(e) {
+                $('#viewerScreen').mousedown(function(e) {
                     e.preventDefault();
                     dcmViewer.eventHandler(e);
                 });
-                $('#canvasDiv').mouseup(function(e) {
+                $('#viewerScreen').mouseup(function(e) {
                     dcmViewer.eventHandler(e);
                 });
-                $('#canvasDiv').mouseout(function(e) {
+                $('#viewerScreen').mouseout(function(e) {
                     dcmViewer.eventHandler(e);
                 });
-                $('#canvasDiv').bind('mousewheel', function(e) {
+                $('#viewerScreen').bind('mousewheel', function(e) {
                     if(dcmViewer.numFiles > 1) {
                         e.preventDefault();
                         var num = dcmViewer.scrollHandler(e);
@@ -141,7 +115,7 @@
                     }
                 });
                 // scroll event for firefox
-                $('#canvasDiv').bind('DOMMouseScroll', function(e) {
+                $('#viewerScreen').bind('DOMMouseScroll', function(e) {
                     if(dcmViewer.numFiles > 1) {
                         e.preventDefault();
                         var num = dcmViewer.scrollHandler(e);
@@ -152,6 +126,7 @@
                 $('#buttonSet').buttonset();
                 $('#resetButton').button();
                 $('#metaButton').button();
+                $('#showStudyData').button();
                 $('#matrixView').selectBoxIt();
                 $("#slider").slider({
                     disabled: true
@@ -196,54 +171,32 @@
                 <div id="fileTree"></div>
             </aside>
             <div id="viewer">
-                <div id="toolbox" class="ui-toolbar ui-widget-header clearfix">
-                    <div id="buttonSet">
-                        <input type="radio" id="windowLevel" name="toolbox-buttons" value="Window level" checked="checked" /><label for="windowLevel">Window level</label>
-                        <input type="radio" id="move" name="toolbox-buttons" value="Move" /><label for="move">Move</label>
-                        <input type="radio" id="zoom" name="toolbox-buttons" value="Zoom" /><label for="zoom">Zoom</label>
-                    </div>
-
-                    <div id="singleButtons">
-                        <select id="matrixView" name="matrixView">
-                            <option value="1,1" selected>1 x 1</option>
-                            <option value="1,2">1 x 2</option>
-                            <option value="2,2">2 x 2</option>
-                            <option value="4,4">4 x 4</option>
-                        </select>
-                        <button type="button" id="resetButton" value="Reset">Reset</button>
-                        <button type="button" id="metaButton" value="Meta-Daten">Meta-Daten</button>
-                    </div>
-                    <div id="slider"></div>
-                </div>
-
-                <div id="viewerScreen">
-                    <!--<div id="resizableDiv">-->
-                    <div id="canvasDiv">
-                        <canvas id="myCanvas" width="512" height="512">Your browser does not support HTML5 canvas</canvas>
-                        <div id="studyInfo">
-                            <ul>
-                                <li id="wCenter"></li>
-                                <li id="wWidth"></li>
-                                <li id="xPos"></li>
-                                <li id="yPos"></li>
-                                <li id="instanceNum"></li>
-                            </ul>
+                <div id="toolboxHeader">
+                    <div id="toolbox" class="ui-toolbar ui-widget-header clearfix">
+                        <div id="buttonSet">
+                            <input type="radio" id="windowLevel" name="toolbox-buttons" value="Window level" checked="checked" /><label for="windowLevel">Window level</label>
+                            <input type="radio" id="move" name="toolbox-buttons" value="Move" /><label for="move">Move</label>
+                            <input type="radio" id="zoom" name="toolbox-buttons" value="Zoom" /><label for="zoom">Zoom</label>
                         </div>
-                        <div id="patientInfo">
-                            <ul>
-                                <li id="patientsName"></li>
-                                <li id="age"></li>
-                                <li id="studyDescription"></li>
-                                <li id="studyDate"></li>
-                            </ul>
+
+                        <div id="singleButtons">
+                            <select id="matrixView" name="matrixView">
+                                <option value="1,1" selected>1 x 1</option>
+                                <option value="1,2">1 x 2</option>
+                                <option value="2,2">2 x 2</option>
+                                <option value="4,4">4 x 4</option>
+                            </select>
+                            <button type="button" id="metaButton" value="Meta-Daten">Meta-Data</button>
+                            <button type="button" id="resetButton" value="Reset">Reset</button>
+                            <button type="button" id="showStudyData">Hide Infos</button>
                         </div>
+                        <div id="slider"></div>
                     </div>
-                    <!--</div>-->
                 </div>
 
-                <div id="metaDialog" title="Meta-Daten">
+                <div id="viewerScreen"></div>
 
-                </div>
+                <div id="metaDialog" title="Meta-Daten"></div>
             </div>
         </div>
     </body>
