@@ -87,7 +87,7 @@ DcmViewer.prototype.scrollHandler = function(evt) {
 DcmViewer.prototype.scrollOne = function(num) {
     this.scrollIndex = num;
     for(var i = 0, len = this.painters.length; i < len; i++) {
-        var index = (this.scrollIndex + i > this.numFiles - 1) ? 0 : this.scrollIndex + i;
+        var index = (this.scrollIndex + i) % this.numFiles;
         this.painters[i].currentFile = this.painters[i].series[index];
         this.painters[i].drawImg();
     }
@@ -101,8 +101,8 @@ DcmViewer.prototype.matrixHandler = function(e) {
     var columns = e.split(',')[1];
     var width = parseInt($('#viewer').width());
     var height = parseInt($('#viewer').height()) - 72;
-    var cellWidth = (width - 2 * rows) / columns;
-    var cellHeight = (height - 2 * columns) / rows;
+    var cellWidth = width / columns;
+    var cellHeight = height / rows;
 
     $('#viewerScreen').empty();
     var newPainters = [];
