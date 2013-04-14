@@ -1,11 +1,11 @@
 /*
  * All tools must implement following functions
- * click(x, y, painter)
- * dblclick(x, y, painter)
- * mousedown(x, y, painter)
- * mouseup(x, y, painter)
- * mousemove(x, y, painter)
- * mouseout(x, y, painter)
+ * click(x, y, painters)
+ * dblclick(x, y, painters)
+ * mousedown(x, y, painters)
+ * mouseup(x, y, painters)
+ * mousemove(x, y, painters)
+ * mouseout(x, y, painters)
  */
 function WindowLevel() {
     this.started = false;
