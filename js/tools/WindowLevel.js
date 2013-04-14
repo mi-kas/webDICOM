@@ -24,15 +24,20 @@ WindowLevel.prototype.mouseup = function() {
     this.started = false;
 };
 
-WindowLevel.prototype.mousemove = function(x, y, painter) {
+WindowLevel.prototype.mousemove = function(x, y, painters) {
     if(this.started) {
-        var curWindowing = painter.getWindowing();
+        var curWindowing = painters[0].getWindowing();
         var deltaX = x - this.curX;
         var deltaY = this.curY - y;
         var newX = curWindowing[0] + deltaX;
         var newY = curWindowing[1] + deltaY;
-        painter.setWindowing(newX, newY);
-        painter.drawImg();
+//        painter.setWindowing(newX, newY);
+//        painter.drawImg();
+        
+        for(var i = 0, len = painters.length; i < len; i++) {
+            painters[i].setWindowing(newX, newY);
+            painters[i].drawImg();
+        }
         $('#wCenter').text('WC: ' + newX.toFixed(0));
         $('#wWidth').text('WW: ' + newY.toFixed(0));
     }

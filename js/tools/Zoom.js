@@ -24,12 +24,18 @@ Zoom.prototype.mouseup = function() {
     this.started = false;
 };
 
-Zoom.prototype.mousemove = function(x, y, painter) {
+Zoom.prototype.mousemove = function(x, y, painters) {
     if(this.started) {
 //        var deltaX = x - this.curX;
         var deltaY = this.curY - y;
-        painter.setScale(painter.getScale() + deltaY / 100.0);
-        painter.drawImg();
+//        painter.setScale(painter.getScale() + deltaY / 100.0);
+//        painter.drawImg();
+        var newDeltaY = painters[0].getScale() + deltaY / 100.0;
+        
+        for(var i = 0, len = painters.length; i < len; i++) {
+            painters[i].setScale(newDeltaY);
+            painters[i].drawImg();
+        }
     }
 //    this.curX = x;
     this.curY = y;

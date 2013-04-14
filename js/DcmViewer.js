@@ -1,12 +1,15 @@
 
-function DcmViewer(canvasId) {
-    this.canvasId = canvasId;
-    this.painter = new CanvasPainter(this.canvasId);
+function DcmViewer() {
     this.toolbox = new Toolbox(this.painter);
     this.scrollIndex = 0;
     this.eventsEnabled = false;
     this.numFiles = 0;
+    this.painters = [];
 }
+
+DcmViewer.prototype.init = function() {
+    this.matrixHandler($('#matrixView').val());
+};
 
 DcmViewer.prototype.setCurrentTool = function(toolName) {
     this.toolbox.setCurrentTool(toolName);
@@ -14,19 +17,26 @@ DcmViewer.prototype.setCurrentTool = function(toolName) {
 
 DcmViewer.prototype.setParsedFiles = function(files) {
     this.numFiles = files.length;
-    this.painter.setSeries(files);
-    this.painter.drawImg();
+    for(var i = 0, len = this.painters.length; i < len; i++) {
+        this.painters[i].setSeries(files);
+        // setting files shifted to the painters
+        var index = (this.scrollIndex + i > this.numFiles - 1) ? 0 : this.scrollIndex + i;
+        this.painters[i].currentFile = this.painters[i].series[index];
+        this.painters[i].drawImg();
+    }
     this.eventsEnabled = true;
-    var self = this;
-    clearInfo();
-    updateInfo(this.painter);
-    $("#slider").slider('option', {
-        max: self.numFiles - 1,
-        disabled: false,
-        slide: function(e, ui) {
-            self.scrollOne(ui.value);
-        }
-    });
+//    clearInfo();
+//    updateInfo(this.painter);
+    if(this.numFiles > 1) {
+        var self = this;
+        $("#slider").slider('option', {
+            max: self.numFiles - 1,
+            disabled: false,
+            slide: function(e, ui) {
+                self.scrollOne(ui.value);
+            }
+        });
+    }
 };
 
 DcmViewer.prototype.eventHandler = function(e) {
@@ -42,7 +52,7 @@ DcmViewer.prototype.eventHandler = function(e) {
         // pass the event to the currentTool of the toolbox
         var eventFunc = this.toolbox.currentTool[e.type];
         if(eventFunc) {
-            eventFunc(e.x, e.y, this.painter);
+            eventFunc(e.x, e.y, this.painters);
         }
     }
 };
@@ -59,11 +69,14 @@ DcmViewer.prototype.scrollHandler = function(evt) {
         // cyclic scrolling
         this.scrollIndex = (this.scrollIndex < 0) ? this.numFiles - 1 : (this.scrollIndex > this.numFiles - 1) ? 0 : this.scrollIndex;
 
-        this.painter.currentFile = this.painter.series[this.scrollIndex];
-        this.painter.drawImg();
+        for(var i = 0, len = this.painters.length; i < len; i++) {
+            var index = (this.scrollIndex + i > this.numFiles - 1) ? 0 : this.scrollIndex + i;
+            this.painters[i].currentFile = this.painters[i].series[index];
+            this.painters[i].drawImg();
+        }
 
-        var instanceNum = this.painter.currentFile.InstanceNumber ? this.painter.currentFile.InstanceNumber : ' - ';
-        $('#instanceNum').text(instanceNum + ' / ' + this.numFiles);
+//        var instanceNum = this.painter.currentFile.InstanceNumber ? this.painter.currentFile.InstanceNumber : ' - ';
+//        $('#instanceNum').text(instanceNum + ' / ' + this.numFiles);
 
         return this.scrollIndex;
     }
@@ -71,11 +84,14 @@ DcmViewer.prototype.scrollHandler = function(evt) {
 
 DcmViewer.prototype.scrollOne = function(num) {
     this.scrollIndex = num;
-    this.painter.currentFile = this.painter.series[this.scrollIndex];
-    this.painter.drawImg();
+    for(var i = 0, len = this.painters.length; i < len; i++) {
+        var index = (this.scrollIndex + i > this.numFiles - 1) ? 0 : this.scrollIndex + i;
+        this.painters[i].currentFile = this.painters[i].series[index];
+        this.painters[i].drawImg();
+    }
 
-    var instanceNum = this.painter.currentFile.InstanceNumber ? this.painter.currentFile.InstanceNumber : ' - ';
-    $('#instanceNum').text(instanceNum + ' / ' + this.numFiles);
+//    var instanceNum = this.painter.currentFile.InstanceNumber ? this.painter.currentFile.InstanceNumber : ' - ';
+//    $('#instanceNum').text(instanceNum + ' / ' + this.numFiles);
 };
 
 DcmViewer.prototype.matrixHandler = function(e) {
@@ -83,13 +99,11 @@ DcmViewer.prototype.matrixHandler = function(e) {
     var columns = e.split(',')[1];
     var width = parseInt($('#viewer').width());
     var height = parseInt($('#viewer').height()) - 72;
-    var cellWidth = (width - 2*rows) / columns;
-    var cellHeight = (height - 2*columns) / rows;
-
-//    console.log(rows + ' x ' + columns);
-//    console.log('Width: ' + width + ' ' + cellWidth + ' Height: ' + height + ' ' + cellHeight);
+    var cellWidth = (width - 2 * rows) / columns;
+    var cellHeight = (height - 2 * columns) / rows;
 
     $('#viewerScreen').empty();
+    var newPainters = [];
 
     for(var y = 0; y < rows; y++) {
         var rowName = 'row' + y;
@@ -100,10 +114,24 @@ DcmViewer.prototype.matrixHandler = function(e) {
             var tmpId = '#' + rowName + ' #column' + x;
             var newId = 'canvas' + x + '' + y;
             $(tmpId).append('<canvas id="' + newId + '" width="' + newSize + '" height="' + newSize + '">Your browser does not support HTML5 canvas</canvas>');
-            this.painter.setCanvasId(newId);
+            var tmpPainter = new CanvasPainter(newId);
+            newPainters.push(tmpPainter);
             if(this.eventsEnabled) {
-                this.painter.drawImg();
+                // setting files shifted to the painters
+                var index = (this.scrollIndex + x + y > this.numFiles - 1) ? 0 : this.scrollIndex + x + y;
+                tmpPainter.setSeries(this.painters[0].series);
+                tmpPainter.currentFile = tmpPainter.series[index];
+                tmpPainter.drawImg();
             }
+        }
+    }
+    this.painters = newPainters;
+};
+
+DcmViewer.prototype.resetHandler = function() {
+    if(this.eventsEnabled) {
+        for(var i = 0, len = this.painters.length; i < len; i++) {
+            this.painters[i].reset();
         }
     }
 };

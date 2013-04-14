@@ -10,19 +10,6 @@ function CanvasPainter(canvasId) {
     this.pan; //[panX, panY]
 }
 
-CanvasPainter.prototype.setCanvasId = function(canvasId) {
-    this.canvas = document.getElementById(canvasId);
-    this.context = this.canvas.getContext("2d");
-};
-
-CanvasPainter.prototype.setFile = function(file) {
-    this.currentFile = file;
-    this.wc = file.WindowCenter;
-    this.ww = file.WindowWidth;
-    this.scale = file.Scale;
-    this.pan = file.Pan;
-};
-
 CanvasPainter.prototype.setSeries = function(serie) {
     // Sort by InstanceNumber
     serie.sort(function(a, b) {

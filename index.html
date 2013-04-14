@@ -44,9 +44,9 @@
 
         <script>
             $(document).ready(function() {
-                var dcmViewer = new DcmViewer('myCanvas');
+                var dcmViewer = new DcmViewer();
+                dcmViewer.init();
                 var tree = new Tree('#fileTree');
-                dcmViewer.matrixHandler($('#matrixView').val());
 
                 $('#dicomUpload').customFileInput({
                     button_position: 'right'
@@ -71,11 +71,7 @@
                         dcmViewer.matrixHandler(e.target.value);
                 });
                 $('#resetButton').click(function() {
-                    if(dcmViewer.eventsEnabled) {
-                        $('#resizableDiv').css('width', '512px');
-                        $('#resizableDiv').css('height', '512px');
-                        dcmViewer.painter.reset();
-                    }
+                    dcmViewer.resetHandler();
                 });
                 $('#metaButton').click(function() {
                     if(dcmViewer.eventsEnabled) {
@@ -85,55 +81,24 @@
                         });
                     }
                 });
-//                $('#myCanvas').click(function(e) {
-//                    dcmViewer.eventHandler(e);
-//                });
-//                $('#myCanvas').mousemove(function(e) {
-//                    dcmViewer.eventHandler(e);
-//                });
-//                $('#myCanvas').mousedown(function(e) {
-//                    e.preventDefault();
-//                    dcmViewer.eventHandler(e);
-//                });
-//                $('#myCanvas').mouseup(function(e) {
-//                    dcmViewer.eventHandler(e);
-//                });
-//                $('#myCanvas').mouseout(function(e) {
-//                    dcmViewer.eventHandler(e);
-//                });
-//                $('#myCanvas').bind('mousewheel', function(e) {
-//                    if(dcmViewer.numFiles > 1) {
-//                        e.preventDefault();
-//                        var num = dcmViewer.scrollHandler(e);
-//                        $('#slider').slider('value', num);
-//                    }
-//                });
-//                // scroll event for firefox
-//                $('#myCanvas').bind('DOMMouseScroll', function(e) {
-//                    if(dcmViewer.numFiles > 1) {
-//                        e.preventDefault();
-//                        var num = dcmViewer.scrollHandler(e);
-//                        $('#slider').slider('value', num);
-//                    }
-//                });
 
-                $('#canvasDiv').click(function(e) {
+                $('#viewerScreen').click(function(e) {
                     dcmViewer.eventHandler(e);
                 });
-                $('#canvasDiv').mousemove(function(e) {
+                $('#viewerScreen').mousemove(function(e) {
                     dcmViewer.eventHandler(e);
                 });
-                $('#canvasDiv').mousedown(function(e) {
+                $('#viewerScreen').mousedown(function(e) {
                     e.preventDefault();
                     dcmViewer.eventHandler(e);
                 });
-                $('#canvasDiv').mouseup(function(e) {
+                $('#viewerScreen').mouseup(function(e) {
                     dcmViewer.eventHandler(e);
                 });
-                $('#canvasDiv').mouseout(function(e) {
+                $('#viewerScreen').mouseout(function(e) {
                     dcmViewer.eventHandler(e);
                 });
-                $('#canvasDiv').bind('mousewheel', function(e) {
+                $('#viewerScreen').bind('mousewheel', function(e) {
                     if(dcmViewer.numFiles > 1) {
                         e.preventDefault();
                         var num = dcmViewer.scrollHandler(e);
@@ -141,7 +106,7 @@
                     }
                 });
                 // scroll event for firefox
-                $('#canvasDiv').bind('DOMMouseScroll', function(e) {
+                $('#viewerScreen').bind('DOMMouseScroll', function(e) {
                     if(dcmViewer.numFiles > 1) {
                         e.preventDefault();
                         var num = dcmViewer.scrollHandler(e);
@@ -218,7 +183,7 @@
 
                 <div id="viewerScreen">
                     <!--<div id="resizableDiv">-->
-                    <div id="canvasDiv">
+<!--                    <div id="canvasDiv">
                         <canvas id="myCanvas" width="512" height="512">Your browser does not support HTML5 canvas</canvas>
                         <div id="studyInfo">
                             <ul>
@@ -237,7 +202,7 @@
                                 <li id="studyDate"></li>
                             </ul>
                         </div>
-                    </div>
+                    </div>-->
                     <!--</div>-->
                 </div>
 
