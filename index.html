@@ -46,7 +46,7 @@
             $(document).ready(function() {
                 var dcmViewer = new DcmViewer();
                 dcmViewer.init();
-                var tree = new Tree('#fileTree');
+                var tree = new Tree();
 
                 $('#dicomUpload').customFileInput({
                     button_position: 'right'
@@ -133,7 +133,7 @@
                 });
                 $('#resizableDiv').resizable({aspectRatio: true});
                 $('#progressBar').progressbar({
-                    value: 100
+                    value: 10
                 }).hide();
             });
 

@@ -202,8 +202,12 @@ canvas {
     margin: 5px 0 5px 0;
 }
 #errorMsg p {
-    margin: 0;
+    margin:2px 10px 0 10px;
     padding: 0;
+}
+#errorMsg .ui-icon-alert {
+    float: left; 
+    margin: .15em .3em .15em .3em;
 }
 
 /*File tree*/

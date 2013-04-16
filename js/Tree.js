@@ -1,5 +1,4 @@
-function Tree(selector) {
-    this.$el = $(selector);
+function Tree() {
     this.parsedFileList = [];
     var dcmParser = new DcmParser();
     var dcmTree = {};
@@ -29,9 +28,8 @@ function Tree(selector) {
         for(var i = 0, len = fileList.length; i < len; i++) {
             if(fileList[i].type === "application/dicom") {
                 dcmList.push(fileList[i]);
-            }
+            } 
         }
-
         dcmParser.parseFiles(dcmList, function(e) {
             self.parsedFileList = e;
             $('#fileTree').html(dcmRender(buildFromDcmList(self.parsedFileList))).tree({

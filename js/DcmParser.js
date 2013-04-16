@@ -6,6 +6,7 @@ DcmParser.prototype.parseFiles = function(rawFiles, callback) {
     // Reset array
     this.files = [];
     var self = this;
+    var goal = rawFiles.length;
 
     var setupReader = function(rawFile, j, length) {
         var reader = new FileReader();
@@ -17,8 +18,9 @@ DcmParser.prototype.parseFiles = function(rawFiles, callback) {
                 var file = parser.parse_file();
 
                 if(typeof file === 'undefined') {
-                    console.log("Can't read file: " + rawFile.name);
-                    $('#errorMsg').append("<p class='ui-state-error ui-corner-all' style='margin:2px 10px 0 10px'><span class='ui-icon ui-icon-alert' style='float: left; margin-right: .3em;'></span>Can't read file: " + rawFile.name + "</p>");
+                    goal--;
+//                    console.log("Can't read file: " + rawFile.name);
+                    $('#errorMsg').append("<p class='ui-state-error ui-corner-all'><span class='ui-icon ui-icon-alert'></span>Can't read file: " + rawFile.name + "</p>");
                     return;
                 }
                 if(typeof file.RescaleSlope === 'undefined') {
@@ -41,23 +43,26 @@ DcmParser.prototype.parseFiles = function(rawFiles, callback) {
                 }
 
                 self.files.push(file);
-
-                if(j === (length - 1)) {
-                    self.files.sort(function(a, b) {
-                        var A = a.PatientsName.toLowerCase();
-                        var B = b.PatientsName.toLowerCase();
-                        if(A < B)
-                            return -1;
-                        if(A > b)
-                            return 1;
-                        return 0;
-                    });
-                    callback(self.files);
-                }
             }
         };
 
-        reader.onprogress = function(evt) {
+        reader.onloadend = function(e) {
+            // Fire callback only when all files are parsed
+            if(self.files.length === goal) {
+                self.files.sort(function(a, b) {
+                    var A = a.PatientsName.toLowerCase();
+                    var B = b.PatientsName.toLowerCase();
+                    if(A < B)
+                        return -1;
+                    if(A > b)
+                        return 1;
+                    return 0;
+                });
+                callback(self.files);
+            }
+        };
+
+        reader.onprogress = function(e) {
 
         };
 
