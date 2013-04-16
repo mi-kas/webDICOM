@@ -1,6 +1,6 @@
 function Tree() {
     this.parsedFileList = [];
-    var dcmParser = new DcmParser();
+    var fileParser = new FileParser();
     var dcmTree = {};
     var dcmList = [];
     var _html = [];
@@ -20,6 +20,10 @@ function Tree() {
 
         $('#errorMsg').empty();
         $('#fileTree').empty();
+//        console.log(fileList.length/68 *1000);
+//        var $element = $('#progressBar');
+//        var progressBarWidth = $element.width();
+//        $element.show().find('div').addClass('ui-corner-right').animate({width: 270}, fileList.length/68 *1000);
         $('#progressBar').show();
 //        $('#loadingIndicator').show();
         $('*').css('cursor', 'wait');
@@ -30,12 +34,11 @@ function Tree() {
                 dcmList.push(fileList[i]);
             } 
         }
-        dcmParser.parseFiles(dcmList, function(e) {
+        fileParser.parseFiles(dcmList, function(e) {
             self.parsedFileList = e;
             $('#fileTree').html(dcmRender(buildFromDcmList(self.parsedFileList))).tree({
                 expanded: 'li:first'
             });
-
             $('#progressBar').hide();
 //            $('#loadingIndicator').hide();
             $('*').css('cursor', 'default');

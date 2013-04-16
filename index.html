@@ -32,7 +32,7 @@
 
         <!--Dicom Viewer-->
         <script type="text/javascript" src="js/DcmViewer.js"></script>
-        <script type="text/javascript" src="js/DcmParser.js"></script>
+        <script type="text/javascript" src="js/FileParser.js"></script>
         <script type="text/javascript" src="js/CanvasPainter.js"></script>
         <script type="text/javascript" src="js/Toolbox.js"></script>
         <script type="text/javascript" src="js/Tree.js"></script>
@@ -59,7 +59,7 @@
                         for(var i = 0; i < arr.length; i++) {
                             serie.push(tree.parsedFileList[arr[i]]);
                         }
-                        dcmViewer.setParsedFiles(serie);
+                        dcmViewer.showSeries(serie);
                     }
                 });
                 $('#buttonSet').change(function() {
@@ -133,9 +133,15 @@
                 });
                 $('#resizableDiv').resizable({aspectRatio: true});
                 $('#progressBar').progressbar({
-                    value: 10
+                    value: 100
                 }).hide();
             });
+
+            function progress(percent) {
+                var $element = $('#progressBar');
+                var progressBarWidth = percent * $element.width() / 100;
+                $element.find('div').animate({width: progressBarWidth}, 500);
+            }
 
 //            var progress = function(max) {
 //                var progressbar = $('#progressBar'),

@@ -1,8 +1,8 @@
-function DcmParser() {
+function FileParser() {
     this.files = [];
 }
 
-DcmParser.prototype.parseFiles = function(rawFiles, callback) {
+FileParser.prototype.parseFiles = function(rawFiles, callback) {
     // Reset array
     this.files = [];
     var self = this;
@@ -47,6 +47,7 @@ DcmParser.prototype.parseFiles = function(rawFiles, callback) {
         };
 
         reader.onloadend = function(e) {
+//            $("#progressBar").progressbar({ value: ( self.files.length / goal)*100 });
             // Fire callback only when all files are parsed
             if(self.files.length === goal) {
                 self.files.sort(function(a, b) {

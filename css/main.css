@@ -177,7 +177,7 @@ canvas {
     margin-top: 5px;
     height: .6em;
 }
-.progress.active .bar {
+/*.progress.active .bar {
     -webkit-animation: progress-bar-stripes 2s linear infinite;
     -moz-animation: progress-bar-stripes 2s linear infinite;
     -ms-animation: progress-bar-stripes 2s linear infinite;
@@ -195,7 +195,7 @@ canvas {
     -moz-background-size: 40px 40px;
     -o-background-size: 40px 40px;
     background-size: 40px 40px;
-}
+}*/
 #errorMsg {
     color: #f00;
     font-size: 0.7em;

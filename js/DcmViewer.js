@@ -15,7 +15,7 @@ DcmViewer.prototype.setCurrentTool = function(toolName) {
     this.toolbox.setCurrentTool(toolName);
 };
 
-DcmViewer.prototype.setParsedFiles = function(files) {
+DcmViewer.prototype.showSeries = function(files) {
     this.numFiles = files.length;
     for(var i = 0, len = this.painters.length; i < len; i++) {
         this.painters[i].setSeries(files);
@@ -37,6 +37,10 @@ DcmViewer.prototype.setParsedFiles = function(files) {
             }
         });
     }
+};
+
+DcmViewer.prototype.inputHandler = function(e) {
+    
 };
 
 DcmViewer.prototype.eventHandler = function(e) {
