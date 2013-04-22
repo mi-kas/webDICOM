@@ -137,12 +137,12 @@ DcmViewer.prototype.matrixHandler = function(e) {
         }
     }
     // Show or hide infos
-    if($('.studyInfo').is(':visible')) {
-        $('.studyInfo').hide();
-        $('.patientInfo').hide();
-    } else {
+    if($('#showStudyData').val() === 'true') {
         $('.studyInfo').show();
         $('.patientInfo').show();
+    } else {
+        $('.studyInfo').hide();
+        $('.patientInfo').hide();
     }
     
     this.painters = newPainters;

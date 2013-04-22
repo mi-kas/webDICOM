@@ -87,11 +87,11 @@
                     if($('.studyInfo').is(':visible')) {
                         $('.studyInfo').hide();
                         $('.patientInfo').hide();
-                        $('#showStudyData').text('Show Infos');
+                        $('#showStudyData').text('Show Infos').val(false);
                     } else {
                         $('.studyInfo').show();
                         $('.patientInfo').show();
-                        $('#showStudyData').text('Hide Infos');
+                        $('#showStudyData').text('Hide Infos').val(true);
                     }
                 });
 
@@ -213,7 +213,7 @@
                             </select>
                             <button type="button" id="metaButton" value="Meta-Daten">Meta-Data</button>
                             <button type="button" id="resetButton" value="Reset">Reset</button>
-                            <button type="button" id="showStudyData">Hide Infos</button>
+                            <button type="button" id="showStudyData" value="true">Hide Infos</button>
                         </div>
                         <div id="slider"></div>
                     </div>
