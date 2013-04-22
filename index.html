@@ -127,6 +127,22 @@
                     }
                 });
 
+                // Shortcuts for move, zoom and windowLevel
+                $(window).keydown(function(e) {
+                    // strg/ctrl or Mac cmd key
+                    if(e.ctrlKey || e.keyCode === 91) {
+                        $('#move').click();
+                    }
+                    if(e.altKey) {
+                        $('#windowLevel').click();
+                    }
+                    if(e.shiftKey) {
+                        $('#zoom').click();
+                    }
+                    
+                    return;
+                });
+
                 $('#buttonSet').buttonset();
                 $('#resetButton').button();
                 $('#metaButton').button();
@@ -169,7 +185,6 @@
     <body>
         <div id="container">
             <aside id="sidebar">
-                <!--<input id="dicomUpload" type="file" accept="application/dicom" multiple />--> 
                 <!--Only Chrome supports webkitdirectory-->
                 <div id="inputContainer" class="ui-toolbar ui-widget-header">
                     <input id="dicomUpload" type="file" value="Upload file" webkitdirectory multiple />

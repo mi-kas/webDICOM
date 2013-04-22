@@ -40,7 +40,7 @@ DcmViewer.prototype.showSeries = function(files) {
 };
 
 DcmViewer.prototype.inputHandler = function(e) {
-    
+
 };
 
 DcmViewer.prototype.eventHandler = function(e) {
@@ -94,7 +94,7 @@ DcmViewer.prototype.scrollOne = function(num) {
         this.painters[i].drawImg();
         // Update instance number
         var instanceNum = this.painters[i].currentFile.InstanceNumber ? this.painters[i].currentFile.InstanceNumber : ' - ';
-        $(getSelector(this.painters[i])  + ' #instanceNum').text(instanceNum + ' / ' + this.numFiles);
+        $(getSelector(this.painters[i]) + ' #instanceNum').text(instanceNum + ' / ' + this.numFiles);
     }
 };
 
@@ -117,9 +117,12 @@ DcmViewer.prototype.matrixHandler = function(e) {
             //var newSize = Math.min(cellWidth, cellHeight);
             var tmpId = '#' + rowName + ' #column' + x;
             var newId = 'canvas' + x + '' + y;
-            $(tmpId).append('<canvas id="' + newId + '" width="' + cellWidth + '" height="' + cellHeight + '">Your browser does not support HTML5 canvas</canvas>');
-            $(tmpId).append('<div class="studyInfo"></div>');
-            $(tmpId).append('<div class="patientInfo"></div>');
+            var newId2 = 'content' + x + '' + y;
+            $(tmpId).append('<div id="' + newId2 + '" class="viewerCellContent" style="display:block;"></div>');
+
+            $('#' + newId2).append('<canvas id="' + newId + '" width="' + cellWidth + '" height="' + cellHeight + '">Your browser does not support HTML5 canvas</canvas>');
+            $('#' + newId2).append('<div class="studyInfo"></div>');
+            $('#' + newId2).append('<div class="patientInfo"></div>');
 
             var tmpPainter = new CanvasPainter(newId);
             newPainters.push(tmpPainter);
@@ -133,6 +136,15 @@ DcmViewer.prototype.matrixHandler = function(e) {
             }
         }
     }
+    // Show or hide infos
+    if($('.studyInfo').is(':visible')) {
+        $('.studyInfo').hide();
+        $('.patientInfo').hide();
+    } else {
+        $('.studyInfo').show();
+        $('.patientInfo').show();
+    }
+    
     this.painters = newPainters;
 };
 
