@@ -45,6 +45,7 @@
         <script type="text/javascript" src="js/tools/WindowLevel.js"></script>
         <script type="text/javascript" src="js/tools/Zoom.js"></script>
         <script type="text/javascript" src="js/tools/Move.js"></script>
+        <script type="text/javascript" src="js/tools/Roi.js"></script>
 
         <script>
             $(document).ready(function() {
@@ -139,13 +140,32 @@
                     if(e.shiftKey) {
                         $('#zoom').click();
                     }
-                    
+
                     return;
                 });
 
                 $('#buttonSet').buttonset();
                 $('#resetButton').button();
                 $('#metaButton').button();
+//                $('#roi').button();
+//                $('#roiSelect').button({
+//                    text: false,
+//                    icons: {
+//                        primary: "ui-icon-triangle-1-s"
+//                    }
+//                }).click(function() {
+//                    var menu = $('#roiMenu').show().position({
+//                        my: "left top",
+//                        at: "left bottom",
+//                        of: this
+//                    });
+//                    $(document).one("click", function() {
+//                        menu.hide();
+//                    });
+//                    return false;
+//                });
+//                $('#roiDiv').buttonset();
+//                $('#roiMenu').menu().hide();
                 $('#showStudyData').button();
                 $('#matrixView').selectBoxIt();
                 $("#slider").slider({
@@ -202,7 +222,20 @@
                             <input type="radio" id="windowLevel" name="toolbox-buttons" value="Window level" checked="checked" /><label for="windowLevel">Window level</label>
                             <input type="radio" id="move" name="toolbox-buttons" value="Move" /><label for="move">Move</label>
                             <input type="radio" id="zoom" name="toolbox-buttons" value="Zoom" /><label for="zoom">Zoom</label>
+                            <input type="radio" id="roi" name="toolbox-buttons" value="Roi" /><label for="roi">ROI</label>
+                            <!--<button id="roi" value="Roi">ROI</button>-->
                         </div>
+<!--                        <div id="roiDiv">
+                            <button id="roi" value="Roi">ROI</button>
+                            <button id="roiSelect" value="Roi"></button>
+                        </div>
+
+                        <ul id="roiMenu">
+                            <li><a>Green</a></li>
+                            <li><a>Red</a></li>
+                            <li><a>Blue</a></li>
+                            <li><a>Yellow</a></li>
+                        </ul>-->
 
                         <div id="singleButtons">
                             <select id="matrixView" name="matrixView">

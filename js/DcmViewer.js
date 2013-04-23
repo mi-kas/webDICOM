@@ -55,7 +55,7 @@ DcmViewer.prototype.eventHandler = function(e) {
         // pass the event to the currentTool of the toolbox
         var eventFunc = this.toolbox.currentTool[e.type];
         if(eventFunc) {
-            eventFunc(e.x, e.y, this.painters);
+            eventFunc(e.x, e.y, this.painters, e.target);
         }
     }
 };
@@ -193,7 +193,7 @@ DcmViewer.prototype.openMetaDialog = function() {
     var body = document.createElement('tbody');
 
     $.each(file, function(key, value) {
-        if(value !== undefined && typeof value !== 'object' && !$.isFunction(value)) {
+        if(!$.isFunction(value)) { //value !== undefined && typeof value !== 'object' &&   
             var currentRow = document.createElement("tr");
             var cell1 = document.createElement("td");
             var text1 = document.createTextNode(key);
