@@ -26,12 +26,12 @@ There is still work in progress, but basic functionality is in place. TODOs incl
 - ROIs
 
 ##Used libraries
-- jQuery [](http://jquery.com/) & jQuery UI [](http://jqueryui.com/)
-- jQuery Bootstrap [](http://addyosmani.github.io/jquery-ui-bootstrap/)
-- jQuery Custom File Input Plugin [](https://github.com/filamentgroup/jQuery-Custom-File-Input)
-- SelectBoxIt [](http://gregfranko.com/jquery.selectBoxIt.js/)
-- jQueryTree [](https://code.google.com/p/dwpe/source/browse/trunk/tree/js/jQuery.tree.js?r=36)
-- jsdicom-lib [](https://github.com/Infogosoft/jsdicom-lib)
+- [jQuery](http://jquery.com/) & [jQuery UI](http://jqueryui.com/)
+- [jQuery Bootstrap](http://addyosmani.github.io/jquery-ui-bootstrap/)
+- [jQuery Custom File Input Plugin](https://github.com/filamentgroup/jQuery-Custom-File-Input)
+- [SelectBoxIt](http://gregfranko.com/jquery.selectBoxIt.js/)
+- [jQueryTree](https://code.google.com/p/dwpe/source/browse/trunk/tree/js/jQuery.tree.js?r=36)
+- [jsdicom-lib](https://github.com/Infogosoft/jsdicom-lib)
 
 ##Demo
 A demo can be found [here](http://mi-kas.github.com/webDICOM/).
