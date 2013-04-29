@@ -1,15 +1,15 @@
-/*
- * All tools must implement following functions
+/**
+ * @desc 
+ * @author Michael Kaserer e1025263@student.tuwien.ac.at
+ * @required All tools must implement following functions:
  * click(x, y, painters)
- * dblclick(x, y, painters)
  * mousedown(x, y, painters)
  * mouseup(x, y, painters)
  * mousemove(x, y, painters)
  * mouseout(x, y, painters)
- */
+ **/
 function Zoom() {
     this.started = false;
-//    this.curX = 0;
     this.curY = 0;
 }
 
@@ -26,7 +26,7 @@ Zoom.prototype.mouseup = function() {
 
 Zoom.prototype.mousemove = function(x, y, painters) {
     if(this.started) {
-//        var deltaX = x - this.curX;
+        //var deltaX = x - this.curX;
         var deltaY = this.curY - y;
         var newDeltaY = painters[0].getScale() + deltaY / 100.0;
         
@@ -35,7 +35,7 @@ Zoom.prototype.mousemove = function(x, y, painters) {
             painters[i].drawImg();
         }
     }
-//    this.curX = x;
+    //this.curX = x;
     this.curY = y;
 };
 

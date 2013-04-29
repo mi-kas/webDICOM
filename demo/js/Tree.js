@@ -1,46 +1,17 @@
-function Tree(selector) {
-    this.$el = $(selector);
-    this.parsedFileList = [];
-    var dcmParser = new DcmParser();
+/**
+ * @desc 
+ * @author Michael Kaserer e1025263@student.tuwien.ac.at
+ **/
+function Tree() {
     var dcmTree = {};
-    var dcmList = [];
     var _html = [];
-    var self = this;
 
-    this.change = function(e) {
-        // detect 'cancel' or no files in fileList
-        if(e.target.files.length === 0) {
-            return;
-        }
-
+    this.render = function(list) {
         dcmTree = {};
         _html = [];
-        dcmList = [];
-        self.parsedFileList = [];
-        var fileList = e.target.files;
 
-        $('#errorMsg').empty();
-        $('#fileTree').empty();
-        $('#progressBar').show();
-//        $('#loadingIndicator').show();
-        $('*').css('cursor', 'wait');
-
-        // TODO: optimize this so we're not going through the file list twice (here and in buildFromPathList).
-        for(var i = 0, len = fileList.length; i < len; i++) {
-            if(fileList[i].type === "application/dicom") {
-                dcmList.push(fileList[i]);
-            }
-        }
-
-        dcmParser.parseFiles(dcmList, function(e) {
-            self.parsedFileList = e;
-            $('#fileTree').html(dcmRender(buildFromDcmList(self.parsedFileList))).tree({
-                expanded: 'li:first'
-            });
-
-            $('#progressBar').hide();
-//            $('#loadingIndicator').hide();
-            $('*').css('cursor', 'default');
+        $('#fileTree').empty().html(dcmRender(buildFromDcmList(list))).tree({
+            expanded: 'li:first'
         });
     };
 

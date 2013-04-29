@@ -1,21 +1,30 @@
-
+/**
+ * @desc 
+ * @author Michael Kaserer e1025263@student.tuwien.ac.at
+ **/
 function DcmViewer() {
-    this.toolbox = new Toolbox(this.painter);
+    this.toolbox;
+    this.tree;
+    this.fileParser;
     this.scrollIndex = 0;
-    this.eventsEnabled = false;
     this.numFiles = 0;
+    this.eventsEnabled = false;
     this.painters = [];
+    this.parsedFileList = [];
 }
 
 DcmViewer.prototype.init = function() {
+    this.toolbox = new Toolbox();
     this.matrixHandler($('#matrixView').val());
+    this.tree = new Tree();
+    this.fileParser = new FileParser();
 };
 
 DcmViewer.prototype.setCurrentTool = function(toolName) {
     this.toolbox.setCurrentTool(toolName);
 };
 
-DcmViewer.prototype.setParsedFiles = function(files) {
+DcmViewer.prototype.showSeries = function(files) {
     this.numFiles = files.length;
     for(var i = 0, len = this.painters.length; i < len; i++) {
         this.painters[i].setSeries(files);
@@ -39,6 +48,31 @@ DcmViewer.prototype.setParsedFiles = function(files) {
     }
 };
 
+DcmViewer.prototype.inputHandler = function(e) {
+    // detect 'cancel' or no files in fileList
+    if(e.target.files.length === 0) {
+        return;
+    }
+
+    progress(e.target.files.length);
+
+    var fileList = e.target.files;
+    var dcmList = [];
+    this.parsedFileList = [];
+
+    for(var i = 0, len = fileList.length; i < len; i++) {
+        if(fileList[i].type === "application/dicom") {
+            dcmList.push(fileList[i]);
+        }
+    }
+
+    var self = this;
+    this.fileParser.parseFiles(dcmList, function(e) {
+        self.parsedFileList = e;
+        self.tree.render(self.parsedFileList);
+    });
+};
+
 DcmViewer.prototype.eventHandler = function(e) {
     if(this.eventsEnabled) {
         // Firefox doesn't have the offsetX/offsetY properties -> own calculation
@@ -51,7 +85,7 @@ DcmViewer.prototype.eventHandler = function(e) {
         // pass the event to the currentTool of the toolbox
         var eventFunc = this.toolbox.currentTool[e.type];
         if(eventFunc) {
-            eventFunc(e.x, e.y, this.painters);
+            eventFunc(e.x, e.y, this.painters, e.target);
         }
     }
 };
@@ -90,7 +124,7 @@ DcmViewer.prototype.scrollOne = function(num) {
         this.painters[i].drawImg();
         // Update instance number
         var instanceNum = this.painters[i].currentFile.InstanceNumber ? this.painters[i].currentFile.InstanceNumber : ' - ';
-        $(getSelector(this.painters[i])  + ' #instanceNum').text(instanceNum + ' / ' + this.numFiles);
+        $(getSelector(this.painters[i]) + ' #instanceNum').text(instanceNum + ' / ' + this.numFiles);
     }
 };
 
@@ -98,10 +132,9 @@ DcmViewer.prototype.matrixHandler = function(e) {
     var rows = e.split(',')[0];
     var columns = e.split(',')[1];
     var width = parseInt($('#viewer').width());
-    var height = parseInt($('#viewer').height()) - 72;
+    var height = parseInt($('#viewer').height()) - 72 - (rows * 0.5); // 72px toolbar, 0.5px for the border
     var cellWidth = width / columns;
-    var cellHeight = height / rows;
-
+    var cellHeight = (height / rows);
     $('#viewerScreen').empty();
     var newPainters = [];
 
@@ -113,7 +146,10 @@ DcmViewer.prototype.matrixHandler = function(e) {
             //var newSize = Math.min(cellWidth, cellHeight);
             var tmpId = '#' + rowName + ' #column' + x;
             var newId = 'canvas' + x + '' + y;
-            $(tmpId).append('<canvas id="' + newId + '" width="' + cellWidth + '" height="' + cellHeight + '">Your browser does not support HTML5 canvas</canvas>');
+//            var newId2 = 'content' + x + '' + y;
+//            $(tmpId).append('<div id="' + newId2 + '" class="viewerCellContent"></div>');
+//           '#' + newId2
+            $(tmpId).append('<canvas id="' + newId + '" width="' + cellWidth + 'px" height="' + cellHeight + 'px">Your browser does not support HTML5 canvas</canvas>');
             $(tmpId).append('<div class="studyInfo"></div>');
             $(tmpId).append('<div class="patientInfo"></div>');
 
@@ -124,11 +160,24 @@ DcmViewer.prototype.matrixHandler = function(e) {
                 var index = (this.scrollIndex + x + y) % this.numFiles;
                 tmpPainter.setSeries(this.painters[0].series);
                 tmpPainter.currentFile = tmpPainter.series[index];
+                // set old values to the new painters
+                tmpPainter.setWindowing(this.painters[0].getWindowing()[0], this.painters[0].getWindowing()[1]);
+                tmpPainter.setScale(this.painters[0].getScale());
+                tmpPainter.setPan(this.painters[0].getPan()[0], this.painters[0].getPan()[1]);
                 tmpPainter.drawImg();
                 updateInfo(tmpPainter, getSelector(tmpPainter));
             }
         }
     }
+    // Show or hide infos
+    if($('#showStudyData').val() === 'true') {
+        $('.studyInfo').show();
+        $('.patientInfo').show();
+    } else {
+        $('.studyInfo').hide();
+        $('.patientInfo').hide();
+    }
+
     this.painters = newPainters;
 };
 
@@ -137,6 +186,17 @@ DcmViewer.prototype.resetHandler = function() {
         for(var i = 0, len = this.painters.length; i < len; i++) {
             this.painters[i].reset();
         }
+    }
+};
+
+DcmViewer.prototype.treeClick = function(e) {
+    if(e.target.nodeName === 'A' && e.target.dataset.type === 'file') {
+        var serie = [];
+        var arr = e.target.dataset.index.split(',');
+        for(var i = 0; i < arr.length; i++) {
+            serie.push(this.parsedFileList[arr[i]]);
+        }
+        this.showSeries(serie);
     }
 };
 
@@ -177,7 +237,7 @@ DcmViewer.prototype.openMetaDialog = function() {
     var body = document.createElement('tbody');
 
     $.each(file, function(key, value) {
-        if(value !== undefined && typeof value !== 'object' && !$.isFunction(value)) {
+        if(!$.isFunction(value)) { //value !== undefined && typeof value !== 'object' &&   
             var currentRow = document.createElement("tr");
             var cell1 = document.createElement("td");
             var text1 = document.createTextNode(key);

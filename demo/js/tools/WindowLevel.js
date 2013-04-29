@@ -1,12 +1,13 @@
-/*
- * All tools must implement following functions
+/**
+ * @desc 
+ * @author Michael Kaserer e1025263@student.tuwien.ac.at
+ * @required All tools must implement following functions:
  * click(x, y, painters)
- * dblclick(x, y, painters)
  * mousedown(x, y, painters)
  * mouseup(x, y, painters)
  * mousemove(x, y, painters)
  * mouseout(x, y, painters)
- */
+ **/
 function WindowLevel() {
     this.started = false;
     this.curX = 0;

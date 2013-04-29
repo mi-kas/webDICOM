@@ -3,6 +3,8 @@
     <head>
         <title>Dicom Viewer</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="viewport" content="width=device-width">
 
         <!--CSS-->
         <link rel="stylesheet" href="css/bootstrap.min.css" />
@@ -13,8 +15,10 @@
         <link rel="stylesheet" href="js/libs/SelectBoxIt/jquery.selectBoxIt.css" />
 
         <!-- jQuery & Plugins -->
-        <script type="text/javascript" src="js/libs/jquery-1.9.1/jquery.min.js"></script>
+        <script type="text/javascript" src="js/libs/jquery-2.0.0/jquery.min.js"></script>
+        <!--<script type="text/javascript" src="http://code.jquery.com/jquery-2.0.0.min.js"></script>-->
         <script type="text/javascript" src="js/libs/jquery-ui-1.10.2/jquery-ui.custom.min.js"></script>
+        <!--<script type="text/javascript" src="http://code.jquery.com/ui/1.10.2/jquery-ui.min.js"></script>-->
         <script type="text/javascript" src="js/libs/jqueryTree/jquery.tree.js"></script>
         <!-- FileInput -->
         <script src="js/libs/jQuery-UI-FileInput/js/enhance.min.js" type="text/javascript"></script>
@@ -32,7 +36,7 @@
 
         <!--Dicom Viewer-->
         <script type="text/javascript" src="js/DcmViewer.js"></script>
-        <script type="text/javascript" src="js/DcmParser.js"></script>
+        <script type="text/javascript" src="js/FileParser.js"></script>
         <script type="text/javascript" src="js/CanvasPainter.js"></script>
         <script type="text/javascript" src="js/Toolbox.js"></script>
         <script type="text/javascript" src="js/Tree.js"></script>
@@ -41,37 +45,31 @@
         <script type="text/javascript" src="js/tools/WindowLevel.js"></script>
         <script type="text/javascript" src="js/tools/Zoom.js"></script>
         <script type="text/javascript" src="js/tools/Move.js"></script>
+        <script type="text/javascript" src="js/tools/Roi.js"></script>
 
         <script>
             $(document).ready(function() {
                 var dcmViewer = new DcmViewer();
                 dcmViewer.init();
-                var tree = new Tree('#fileTree');
 
                 $('#dicomUpload').customFileInput({
                     button_position: 'right'
+                }).change(function(e) {
+                    dcmViewer.inputHandler(e);
                 });
-                $('#dicomUpload').change(tree.change);
                 $('#fileTree').click(function(e) {
-                    if(e.target.nodeName === 'A' && e.target.dataset.type === 'file') {
-                        var serie = [];
-                        var arr = e.target.dataset.index.split(',');
-                        for(var i = 0; i < arr.length; i++) {
-                            serie.push(tree.parsedFileList[arr[i]]);
-                        }
-                        dcmViewer.setParsedFiles(serie);
-                    }
+                    dcmViewer.treeClick(e);
                 });
-                $('#buttonSet').change(function() {
+                $('#buttonSet').buttonset().change(function() {
                     dcmViewer.setCurrentTool($("input[name='toolbox-buttons']:checked").val());
                 });
-                $('#matrixView').change(function(e) {
+                $('#matrixView').selectBoxIt().change(function(e) {
                     dcmViewer.matrixHandler(e.target.value);
                 });
-                $('#resetButton').click(function() {
+                $('#resetButton').button().click(function() {
                     dcmViewer.resetHandler();
                 });
-                $('#metaButton').click(function() {
+                $('#metaButton').button().click(function() {
                     if(dcmViewer.eventsEnabled) {
                         $('#metaDialog').empty().append(dcmViewer.openMetaDialog()).dialog({
                             height: 600,
@@ -79,43 +77,36 @@
                         });
                     }
                 });
-                $('#showStudyData').click(function() {
+                $('#showStudyData').button().click(function() {
                     if($('.studyInfo').is(':visible')) {
                         $('.studyInfo').hide();
                         $('.patientInfo').hide();
-                        $('#showStudyData').text('Show Infos');
+                        $('#showStudyData').text('Show Infos').val(false);
                     } else {
                         $('.studyInfo').show();
                         $('.patientInfo').show();
-                        $('#showStudyData').text('Hide Infos');
+                        $('#showStudyData').text('Hide Infos').val(true);
                     }
                 });
 
                 $('#viewerScreen').click(function(e) {
                     dcmViewer.eventHandler(e);
-                });
-                $('#viewerScreen').mousemove(function(e) {
+                }).mousemove(function(e) {
                     dcmViewer.eventHandler(e);
-                });
-                $('#viewerScreen').mousedown(function(e) {
+                }).mousedown(function(e) {
                     e.preventDefault();
                     dcmViewer.eventHandler(e);
-                });
-                $('#viewerScreen').mouseup(function(e) {
+                }).mouseup(function(e) {
                     dcmViewer.eventHandler(e);
-                });
-                $('#viewerScreen').mouseout(function(e) {
+                }).mouseout(function(e) {
                     dcmViewer.eventHandler(e);
-                });
-                $('#viewerScreen').bind('mousewheel', function(e) {
+                }).bind('mousewheel', function(e) {
                     if(dcmViewer.numFiles > 1) {
                         e.preventDefault();
                         var num = dcmViewer.scrollHandler(e);
                         $('#slider').slider('value', num);
                     }
-                });
-                // scroll event for firefox
-                $('#viewerScreen').bind('DOMMouseScroll', function(e) {
+                }).bind('DOMMouseScroll', function(e) { // scroll event for firefox
                     if(dcmViewer.numFiles > 1) {
                         e.preventDefault();
                         var num = dcmViewer.scrollHandler(e);
@@ -123,49 +114,64 @@
                     }
                 });
 
-                $('#buttonSet').buttonset();
-                $('#resetButton').button();
-                $('#metaButton').button();
-                $('#showStudyData').button();
-                $('#matrixView').selectBoxIt();
+                // Shortcuts for move, zoom and windowLevel
+                $(window).keydown(function(e) {
+                    // strg/ctrl or Mac cmd key
+                    if(e.ctrlKey || e.keyCode === 91) {
+                        $('#move').click();
+                    }
+                    if(e.altKey) {
+                        $('#windowLevel').click();
+                    }
+                    if(e.shiftKey) {
+                        $('#zoom').click();
+                    }
+                    //capslock
+                    if(e.keyCode === 20) {
+                        $('#roi').click();
+                    }
+                    return;
+                });
+
                 $("#slider").slider({
                     disabled: true
                 });
-                $('#resizableDiv').resizable({aspectRatio: true});
                 $('#progressBar').progressbar({
-                    value: 100
+                    value: 1
                 }).hide();
             });
 
-//            var progress = function(max) {
-//                var progressbar = $('#progressBar'),
-//                        time = 10,
-//                        value = progressbar.val();
-//                progressbar.attr('max', max);
-//                progressbar.show();
-//
-//                var animate = setInterval(function() {
-//                    value += 1;
-//                    if(value === max) {
-//                        clearInterval(animate);
-//                        progressbar.hide();
-//                    } else {
-//                        progressbar.val(value);
-//                    }
-//                }, time);
-//            };
+            var progress = function(numFiles) {
+                var me = $('#progressBar').show().find('div').addClass('ui-corner-right');
+                $('*').css('cursor', 'wait');
+                $('#errorMsg').empty();
+                $('#fileTree').hide();
+                var worker = new Worker('js/Progress.js');
+
+                worker.onmessage = function(e) {
+                    var num = e.data;
+                    if(num >= 100) {
+                        $('#progressBar').hide();
+                        $('*').css('cursor', 'default');
+                        $('#fileTree').fadeIn(100).show();
+                        me.css('width', '1px');
+                    } else {
+                        me.css('width', num + '%');
+                    }
+                };
+                worker.postMessage(numFiles);
+            };
         </script>
     </head>
     <body>
         <div id="container">
             <aside id="sidebar">
-                <!--<input id="dicomUpload" type="file" accept="application/dicom" multiple />--> 
                 <!--Only Chrome supports webkitdirectory-->
                 <div id="inputContainer" class="ui-toolbar ui-widget-header">
                     <input id="dicomUpload" type="file" value="Upload file" webkitdirectory multiple />
                     <div id="progressBar"></div>
                 </div>
-                <img id="loadingIndicator" src="img/loading.gif" style="display:none" />
+                <!--<img id="loadingIndicator" src="img/loading.gif" style="display:none" />-->
                 <div id="errorMsg"></div>
 
                 <div id="fileTree"></div>
@@ -177,6 +183,7 @@
                             <input type="radio" id="windowLevel" name="toolbox-buttons" value="Window level" checked="checked" /><label for="windowLevel">Window level</label>
                             <input type="radio" id="move" name="toolbox-buttons" value="Move" /><label for="move">Move</label>
                             <input type="radio" id="zoom" name="toolbox-buttons" value="Zoom" /><label for="zoom">Zoom</label>
+                            <input type="radio" id="roi" name="toolbox-buttons" value="Roi" /><label for="roi">ROI</label>
                         </div>
 
                         <div id="singleButtons">
@@ -188,7 +195,7 @@
                             </select>
                             <button type="button" id="metaButton" value="Meta-Daten">Meta-Data</button>
                             <button type="button" id="resetButton" value="Reset">Reset</button>
-                            <button type="button" id="showStudyData">Hide Infos</button>
+                            <button type="button" id="showStudyData" value="true">Hide Infos</button>
                         </div>
                         <div id="slider"></div>
                     </div>

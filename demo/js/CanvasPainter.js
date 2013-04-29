@@ -1,4 +1,7 @@
-
+/**
+ * @desc 
+ * @author Michael Kaserer e1025263@student.tuwien.ac.at
+ **/
 function CanvasPainter(canvasId) {
     this.canvas = document.getElementById(canvasId);
     this.context = this.canvas.getContext("2d");
@@ -19,7 +22,7 @@ CanvasPainter.prototype.setSeries = function(serie) {
     this.currentFile = this.series[0];
     this.wc = this.series[0].WindowCenter;
     this.ww = this.series[0].WindowWidth;
-    this.scale = 1;
+    this.scale = calculateRatio(this.currentFile.Columns, this.currentFile.Rows, this.canvas.width, this.canvas.height);
     this.pan = [0, 0];
 };
 
@@ -52,7 +55,7 @@ CanvasPainter.prototype.getPan = function() {
 CanvasPainter.prototype.reset = function() {
     this.wc = this.series[0].WindowCenter;
     this.ww = this.series[0].WindowWidth;
-    this.scale = 1;
+    this.scale = calculateRatio(this.currentFile.Columns, this.currentFile.Rows, this.canvas.width, this.canvas.height);
     this.pan = [0, 0];
     this.drawImg();
 };
@@ -74,8 +77,8 @@ CanvasPainter.prototype.drawImg = function() {
     var imgData = tempContext.createImageData(this.currentFile.Columns, this.currentFile.Rows);
     var pixelData = this.currentFile.PixelData;
     if(typeof pixelData === 'undefined' || pixelData.length === 0) {
-        console.log('PixelData undefined');
-        $('#errorMsg').append("<p class='ui-state-error ui-corner-all' style='margin:2px 10px 0 10px'><span class='ui-icon ui-icon-alert' style='float: left; margin-right: .3em;'></span>Can't read file: "+ this.currentFile.PatientsName +" "+ this.currentFile.SeriesDescription +"</p>");
+    //console.log('PixelData undefined');
+        $('#errorMsg').append("<p class='ui-state-error ui-corner-all'><span class='ui-icon ui-icon-alert'></span>Can't display image: "+ this.currentFile.PatientsName +" "+ this.currentFile.SeriesDescription +"</p>");
         return;
     }
 
@@ -93,9 +96,8 @@ CanvasPainter.prototype.drawImg = function() {
         imgData.data[i + 3] = 255;       // alpha
     }
 
-    var ratio = calculateRatio(this.currentFile.Columns, this.currentFile.Rows, width, height);
-    var targetWidth = ratio * this.scale * this.currentFile.Rows;
-    var targetHeight = ratio * this.scale * this.currentFile.Columns;
+    var targetWidth = this.scale * this.currentFile.Rows;
+    var targetHeight = this.scale * this.currentFile.Columns;
     var xOffset = (width - targetWidth) / 2 + this.pan[0];
     var yOffset = (height - targetHeight) / 2 + this.pan[1];
 
