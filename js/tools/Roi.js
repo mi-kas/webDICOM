@@ -11,11 +11,11 @@ function Roi() {
     this.started = false;
     this.startX = 0;
     this.startY = 0;
-    this.color = '#0f0';
+    this.lineColor = '#0f0';
 }
 
 Roi.prototype.setColor = function(hex) {
-    this.color = hex;
+    this.lineColor = hex;
 };
 
 Roi.prototype.click = function() {
@@ -25,6 +25,7 @@ Roi.prototype.mousedown = function(x, y) {
     this.startX = x;
     this.startY = y;
     this.started = true;
+    this.lineColor = '#0f0';
 };
 
 Roi.prototype.mouseup = function(x, y, painters, target) {
@@ -34,7 +35,7 @@ Roi.prototype.mouseup = function(x, y, painters, target) {
         var context = painter.context;
         var dist = calculateDist(painter, this.startX, this.startY, x, y);
         context.font = "10px Helvetica";
-        context.fillStyle = this.color;
+        context.fillStyle = this.lineColor;
         context.fillText(dist, x + 3, y + 3);
         this.started = false;
     }
@@ -48,7 +49,7 @@ Roi.prototype.mousemove = function(x, y, painters, target) {
         context.beginPath();
         context.moveTo(this.startX, this.startY);
         context.lineTo(x, y);
-        context.strokeStyle = this.color;
+        context.strokeStyle = this.lineColor;
         context.stroke();
         context.closePath();
     }
@@ -57,16 +58,6 @@ Roi.prototype.mousemove = function(x, y, painters, target) {
 Roi.prototype.mouseout = function() {
     this.started = false;
 };
-
-//var drawLine = function(x, y, context) {
-//    painters[0].context.clearRect(0, 0, painters[0].canvas.width, painters[0].canvas.height);
-//    context.beginPath();
-//    context.moveTo(this.startX, this.startY);
-//    context.lineTo(x, y);
-//    context.strokeStyle = '#0f0';
-//    context.stroke();
-//    context.closePath();
-//};
 
 var getPainterFromId = function(id, painters) {
     for(var i = 0, len = painters.length; i < len; i++) {
@@ -81,5 +72,6 @@ var calculateDist = function(painter, startX, startY, endX, endY) {
     var pixelSpacing = painter.currentFile.PixelSpacing ? painter.currentFile.PixelSpacing : [1, 1];
     var a = (endX - startX) * pixelSpacing[0] / painter.getScale(); 
     var b = (endY - startY) * pixelSpacing[1] / painter.getScale();
-    return Math.sqrt(Math.abs(a^2 + b^2)).toFixed(2) + 'mm';
+    
+    return (Math.sqrt(Math.pow(a, 2) + Math.pow(b, 2)) / 10).toFixed(3) + ' cm';
 };

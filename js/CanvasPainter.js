@@ -19,7 +19,7 @@ CanvasPainter.prototype.setSeries = function(serie) {
     this.currentFile = this.series[0];
     this.wc = this.series[0].WindowCenter;
     this.ww = this.series[0].WindowWidth;
-    this.scale = 1;
+    this.scale = calculateRatio(this.currentFile.Columns, this.currentFile.Rows, this.canvas.width, this.canvas.height);
     this.pan = [0, 0];
 };
 
@@ -52,7 +52,7 @@ CanvasPainter.prototype.getPan = function() {
 CanvasPainter.prototype.reset = function() {
     this.wc = this.series[0].WindowCenter;
     this.ww = this.series[0].WindowWidth;
-    this.scale = 1;
+    this.scale = calculateRatio(this.currentFile.Columns, this.currentFile.Rows, this.canvas.width, this.canvas.height);
     this.pan = [0, 0];
     this.drawImg();
 };
@@ -93,9 +93,8 @@ CanvasPainter.prototype.drawImg = function() {
         imgData.data[i + 3] = 255;       // alpha
     }
 
-    var ratio = calculateRatio(this.currentFile.Columns, this.currentFile.Rows, width, height);
-    var targetWidth = ratio * this.scale * this.currentFile.Rows;
-    var targetHeight = ratio * this.scale * this.currentFile.Columns;
+    var targetWidth = this.scale * this.currentFile.Rows;
+    var targetHeight = this.scale * this.currentFile.Columns;
     var xOffset = (width - targetWidth) / 2 + this.pan[0];
     var yOffset = (height - targetHeight) / 2 + this.pan[1];
 

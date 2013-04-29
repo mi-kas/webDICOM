@@ -73,7 +73,7 @@ html, body {
     display: block;
 }
 canvas {
-    cursor:default;
+    cursor: crosshair !important;
     /*display: block;*/
     margin: auto;
 }
