@@ -1,4 +1,3 @@
-
 function DcmViewer() {
     this.toolbox = new Toolbox(this.painter);
     this.scrollIndex = 0;
@@ -102,10 +101,9 @@ DcmViewer.prototype.matrixHandler = function(e) {
     var rows = e.split(',')[0];
     var columns = e.split(',')[1];
     var width = parseInt($('#viewer').width());
-    var height = parseInt($('#viewer').height()) - 72;
+    var height = parseInt($('#viewer').height()) - 72  - (rows * 0.5); // 72px toolbar, 0.5px for the border
     var cellWidth = width / columns;
-    var cellHeight = height / rows;
-
+    var cellHeight = (height / rows);
     $('#viewerScreen').empty();
     var newPainters = [];
 
@@ -117,12 +115,12 @@ DcmViewer.prototype.matrixHandler = function(e) {
             //var newSize = Math.min(cellWidth, cellHeight);
             var tmpId = '#' + rowName + ' #column' + x;
             var newId = 'canvas' + x + '' + y;
-            var newId2 = 'content' + x + '' + y;
-            $(tmpId).append('<div id="' + newId2 + '" class="viewerCellContent" style="display:block;"></div>');
-
-            $('#' + newId2).append('<canvas id="' + newId + '" width="' + cellWidth + '" height="' + cellHeight + '">Your browser does not support HTML5 canvas</canvas>');
-            $('#' + newId2).append('<div class="studyInfo"></div>');
-            $('#' + newId2).append('<div class="patientInfo"></div>');
+//            var newId2 = 'content' + x + '' + y;
+//            $(tmpId).append('<div id="' + newId2 + '" class="viewerCellContent"></div>');
+//           '#' + newId2
+            $(tmpId).append('<canvas id="' + newId + '" width="' + cellWidth + 'px" height="' + cellHeight + 'px">Your browser does not support HTML5 canvas</canvas>');
+            $(tmpId).append('<div class="studyInfo"></div>');
+            $(tmpId).append('<div class="patientInfo"></div>');
 
             var tmpPainter = new CanvasPainter(newId);
             newPainters.push(tmpPainter);
@@ -131,6 +129,10 @@ DcmViewer.prototype.matrixHandler = function(e) {
                 var index = (this.scrollIndex + x + y) % this.numFiles;
                 tmpPainter.setSeries(this.painters[0].series);
                 tmpPainter.currentFile = tmpPainter.series[index];
+                // set old values to the new painters
+                tmpPainter.setWindowing(this.painters[0].getWindowing()[0], this.painters[0].getWindowing()[1]);
+                tmpPainter.setScale(this.painters[0].getScale());
+                tmpPainter.setPan(this.painters[0].getPan()[0], this.painters[0].getPan()[1]);
                 tmpPainter.drawImg();
                 updateInfo(tmpPainter, getSelector(tmpPainter));
             }

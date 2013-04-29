@@ -34,7 +34,7 @@ Roi.prototype.mouseup = function(x, y, painters, target) {
         var painter = getPainterFromId(target.id, painters);
         var context = painter.context;
         var dist = calculateDist(painter, this.startX, this.startY, x, y);
-        context.font = "10px Helvetica";
+        context.font = ".8em Helvetica";
         context.fillStyle = this.lineColor;
         context.fillText(dist, x + 3, y + 3);
         this.started = false;
