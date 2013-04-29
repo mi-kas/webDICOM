@@ -4,10 +4,15 @@ function DcmViewer() {
     this.eventsEnabled = false;
     this.numFiles = 0;
     this.painters = [];
+    this.parsedFileList = [];
+    this.tree;
+    this.fileParser;
 }
 
 DcmViewer.prototype.init = function() {
     this.matrixHandler($('#matrixView').val());
+    this.tree = new Tree();
+    this.fileParser = new FileParser();
 };
 
 DcmViewer.prototype.setCurrentTool = function(toolName) {
@@ -39,7 +44,25 @@ DcmViewer.prototype.showSeries = function(files) {
 };
 
 DcmViewer.prototype.inputHandler = function(e) {
+    // detect 'cancel' or no files in fileList
+    if(e.target.files.length === 0) {
+        return;
+    }
+    var fileList = e.target.files;
+    var dcmList = [];
+    this.parsedFileList = [];
 
+    for(var i = 0, len = fileList.length; i < len; i++) {
+        if(fileList[i].type === "application/dicom") {
+            dcmList.push(fileList[i]);
+        }
+    }
+
+    var self = this;
+    this.fileParser.parseFiles(dcmList, function(e) {
+        self.parsedFileList = e;
+        self.tree.render(self.parsedFileList);
+    });
 };
 
 DcmViewer.prototype.eventHandler = function(e) {
@@ -101,7 +124,7 @@ DcmViewer.prototype.matrixHandler = function(e) {
     var rows = e.split(',')[0];
     var columns = e.split(',')[1];
     var width = parseInt($('#viewer').width());
-    var height = parseInt($('#viewer').height()) - 72  - (rows * 0.5); // 72px toolbar, 0.5px for the border
+    var height = parseInt($('#viewer').height()) - 72 - (rows * 0.5); // 72px toolbar, 0.5px for the border
     var cellWidth = width / columns;
     var cellHeight = (height / rows);
     $('#viewerScreen').empty();
@@ -146,7 +169,7 @@ DcmViewer.prototype.matrixHandler = function(e) {
         $('.studyInfo').hide();
         $('.patientInfo').hide();
     }
-    
+
     this.painters = newPainters;
 };
 
@@ -155,6 +178,17 @@ DcmViewer.prototype.resetHandler = function() {
         for(var i = 0, len = this.painters.length; i < len; i++) {
             this.painters[i].reset();
         }
+    }
+};
+
+DcmViewer.prototype.treeClick = function(e) {
+    if(e.target.nodeName === 'A' && e.target.dataset.type === 'file') {
+        var serie = [];
+        var arr = e.target.dataset.index.split(',');
+        for(var i = 0; i < arr.length; i++) {
+            serie.push(this.parsedFileList[arr[i]]);
+        }
+        this.showSeries(serie);
     }
 };
 

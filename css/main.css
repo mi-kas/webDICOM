@@ -66,12 +66,11 @@ html, body {
 }
 .viewerCells {
     display: table-cell;
-    /*display: block;*/
     position: relative;
 }
-#viewerScreen .viewerCellContent {
-    /*display: block;*/
-}
+/*#viewerScreen .viewerCellContent {
+    display: block;
+}*/
 canvas {
     cursor: default;
     display: block;
