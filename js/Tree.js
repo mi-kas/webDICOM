@@ -10,10 +10,9 @@ function Tree() {
         dcmTree = {};
         _html = [];
 
-        $('#errorMsg').empty();
         $('#fileTree').empty().html(dcmRender(buildFromDcmList(list))).tree({
             expanded: 'li:first'
-        }).hide();
+        });
     };
 
     var buildFromDcmList = function(files) {

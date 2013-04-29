@@ -144,6 +144,8 @@
             var progress = function(numFiles) {
                 var me = $('#progressBar').show().find('div').addClass('ui-corner-right');
                 $('*').css('cursor', 'wait');
+                $('#errorMsg').empty();
+                $('#fileTree').hide();
                 var worker = new Worker('js/Progress.js');
 
                 worker.onmessage = function(e) {
