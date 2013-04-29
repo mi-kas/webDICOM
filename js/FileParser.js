@@ -1,3 +1,7 @@
+/**
+ * @desc 
+ * @author Michael Kaserer e1025263@student.tuwien.ac.at
+ **/
 function FileParser() {
     this.files = [];
 }
@@ -19,7 +23,7 @@ FileParser.prototype.parseFiles = function(rawFiles, callback) {
 
                 if(typeof file === 'undefined') {
                     goal--;
-//                    console.log("Can't read file: " + rawFile.name);
+                    //console.log("Can't read file: " + rawFile.name);
                     $('#errorMsg').append("<p class='ui-state-error ui-corner-all'><span class='ui-icon ui-icon-alert'></span>Can't read file: " + rawFile.name + "</p>");
                     return;
                 }
@@ -47,7 +51,6 @@ FileParser.prototype.parseFiles = function(rawFiles, callback) {
         };
 
         reader.onloadend = function(e) {
-//            $("#progressBar").progressbar({ value: ( self.files.length / goal)*100 });
             // Fire callback only when all files are parsed
             if(self.files.length === goal) {
                 self.files.sort(function(a, b) {

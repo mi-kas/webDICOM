@@ -1,15 +1,20 @@
+/**
+ * @desc 
+ * @author Michael Kaserer e1025263@student.tuwien.ac.at
+ **/
 function DcmViewer() {
-    this.toolbox = new Toolbox(this.painter);
-    this.scrollIndex = 0;
-    this.eventsEnabled = false;
-    this.numFiles = 0;
-    this.painters = [];
-    this.parsedFileList = [];
+    this.toolbox;
     this.tree;
     this.fileParser;
+    this.scrollIndex = 0;
+    this.numFiles = 0;
+    this.eventsEnabled = false;
+    this.painters = [];
+    this.parsedFileList = [];
 }
 
 DcmViewer.prototype.init = function() {
+    this.toolbox = new Toolbox();
     this.matrixHandler($('#matrixView').val());
     this.tree = new Tree();
     this.fileParser = new FileParser();
@@ -48,6 +53,9 @@ DcmViewer.prototype.inputHandler = function(e) {
     if(e.target.files.length === 0) {
         return;
     }
+
+    progress(e.target.files.length);
+
     var fileList = e.target.files;
     var dcmList = [];
     this.parsedFileList = [];

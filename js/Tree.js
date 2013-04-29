@@ -1,3 +1,7 @@
+/**
+ * @desc 
+ * @author Michael Kaserer e1025263@student.tuwien.ac.at
+ **/
 function Tree() {
     var dcmTree = {};
     var _html = [];
@@ -9,18 +13,7 @@ function Tree() {
         $('#errorMsg').empty();
         $('#fileTree').empty().html(dcmRender(buildFromDcmList(list))).tree({
             expanded: 'li:first'
-        });
-//        console.log(fileList.length/68 *1000);
-//        var $element = $('#progressBar');
-//        var progressBarWidth = $element.width();
-//        $element.show().find('div').addClass('ui-corner-right').animate({width: 270}, fileList.length/68 *1000);
-//        $('#progressBar').show();
-//        $('#loadingIndicator').show();
-//        $('*').css('cursor', 'wait');
-
-//            $('#progressBar').hide();
-////            $('#loadingIndicator').hide();
-//            $('*').css('cursor', 'default');
+        }).hide();
     };
 
     var buildFromDcmList = function(files) {

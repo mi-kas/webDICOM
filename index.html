@@ -137,33 +137,28 @@
                     disabled: true
                 });
                 $('#progressBar').progressbar({
-                    value: 100
+                    value: 1
                 }).hide();
             });
 
-//            function progress(percent) {
-//                var $element = $('#progressBar');
-//                var progressBarWidth = percent * $element.width() / 100;
-//                $element.find('div').animate({width: progressBarWidth}, 500);
-//            }
+            var progress = function(numFiles) {
+                var me = $('#progressBar').show().find('div').addClass('ui-corner-right');
+                $('*').css('cursor', 'wait');
+                var worker = new Worker('js/Progress.js');
 
-//            var progress = function(max) {
-//                var progressbar = $('#progressBar'),
-//                        time = 10,
-//                        value = progressbar.val();
-//                progressbar.attr('max', max);
-//                progressbar.show();
-//
-//                var animate = setInterval(function() {
-//                    value += 1;
-//                    if(value === max) {
-//                        clearInterval(animate);
-//                        progressbar.hide();
-//                    } else {
-//                        progressbar.val(value);
-//                    }
-//                }, time);
-//            };
+                worker.onmessage = function(e) {
+                    var num = e.data;
+                    if(num >= 100) {
+                        $('#progressBar').hide();
+                        $('*').css('cursor', 'default');
+                        $('#fileTree').fadeIn(100).show();
+                        me.css('width', '1px');
+                    } else {
+                        me.css('width', num + '%');
+                    }
+                };
+                worker.postMessage(numFiles);
+            };
         </script>
     </head>
     <body>
