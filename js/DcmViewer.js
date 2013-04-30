@@ -163,7 +163,7 @@ DcmViewer.prototype.matrixHandler = function(e) {
                 tmpPainter.currentFile = tmpPainter.series[index];
                 // set old values to the new painters
                 tmpPainter.setWindowing(this.painters[0].getWindowing()[0], this.painters[0].getWindowing()[1]);
-                tmpPainter.setScale(this.painters[0].getScale());
+                //tmpPainter.setScale(this.painters[0].getScale());
                 tmpPainter.setPan(this.painters[0].getPan()[0], this.painters[0].getPan()[1]);
                 tmpPainter.drawImg();
                 updateInfo(tmpPainter, getSelector(tmpPainter));

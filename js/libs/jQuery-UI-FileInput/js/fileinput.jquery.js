@@ -143,7 +143,7 @@
 
     $.fn.customFileInput.defaults = {
         button_position 	: 'right',
-        feedback_text		: 'No file selected...',
+        feedback_text		: 'No folder selected...',
         button_text		: 'Browse',
         button_change_text	: 'Change'
     };
