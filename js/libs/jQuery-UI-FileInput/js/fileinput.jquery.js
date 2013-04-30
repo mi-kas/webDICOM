@@ -107,7 +107,15 @@
             }
             //get folder name
             var tmp = this.$element.context.files[0].webkitRelativePath;
-            var fileName = tmp ? tmp.split('/')[0] : this.$element.val().split(/\\/).pop();
+            var fileName;
+            var length = this.$element.context.files.length;
+            if(tmp) {
+                fileName = tmp.split('/')[0];
+                fileName += length > 1 ? ' (' + length + ' files)': ' (' + length + ' file)';
+            } else {
+                fileName = length > 1 ? length + ' files': length + ' file'; //this.$element.val().split(/\\/).pop();
+            }
+            
             if (!fileName) {
                 this.$uploadFeedback
                     .val(this.options.feedback_text) //set feedback text to filename
