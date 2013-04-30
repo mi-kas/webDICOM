@@ -150,6 +150,7 @@ DcmViewer.prototype.matrixHandler = function(e) {
 //            $(tmpId).append('<div id="' + newId2 + '" class="viewerCellContent"></div>');
 //           '#' + newId2
             $(tmpId).append('<canvas id="' + newId + '" width="' + cellWidth + 'px" height="' + cellHeight + 'px">Your browser does not support HTML5 canvas</canvas>');
+//            $(tmpId).append('<canvas id="drawCanvas' + x + '' + y +'" class="drawLayer" ' + 'width="' + cellWidth + 'px" height="' + cellHeight +'" style=""></canvas>');
             $(tmpId).append('<div class="studyInfo"></div>');
             $(tmpId).append('<div class="patientInfo"></div>');
 

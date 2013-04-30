@@ -77,7 +77,7 @@ CanvasPainter.prototype.drawImg = function() {
     var imgData = tempContext.createImageData(this.currentFile.Columns, this.currentFile.Rows);
     var pixelData = this.currentFile.PixelData;
     if(typeof pixelData === 'undefined' || pixelData.length === 0) {
-    //console.log('PixelData undefined');
+        //console.log('PixelData undefined');
         $('#errorMsg').append("<p class='ui-state-error ui-corner-all'><span class='ui-icon ui-icon-alert'></span>Can't display image: "+ this.currentFile.PatientsName +" "+ this.currentFile.SeriesDescription +"</p>");
         return;
     }
