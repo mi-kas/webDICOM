@@ -1,20 +1,30 @@
 /**
- * @desc 
+ * @desc Builds a tree structure from a array of Dicom files.
  * @author Michael Kaserer e1025263@student.tuwien.ac.at
  **/
 function Tree() {
     var dcmTree = {};
     var _html = [];
 
+    /**
+     * Takes an array of Dicom files as input and computes a tree structure with html unordered lists.
+     * @param {Array} list
+     */
     this.render = function(list) {
         dcmTree = {};
         _html = [];
-
+        
+        // Render the tree with the jqueryTree plugin
         $('#fileTree').empty().html(dcmRender(buildFromDcmList(list))).tree({
             expanded: 'li:first'
         });
     };
 
+    /**
+     * Builds a JSON tree structure form a array of Dicom files. 1st level --> PatientsName. 2nd level --> SeriesDescription.
+     * @param {Array} files Array with Dicom files
+     * @returns JSON tree structure
+     */
     var buildFromDcmList = function(files) {
         for(var i = 0, len = files.length; i < len; i++) {
             var file = files[i];
@@ -37,6 +47,11 @@ function Tree() {
         return dcmTree;
     };
 
+    /**
+     * Build a HTML unordered list from a JSON tree structure.
+     * @param {JSON} tree
+     * @returns HTML ul
+     */
     var dcmRender = function(tree) {
         if(tree) {
             for(var object in tree) {

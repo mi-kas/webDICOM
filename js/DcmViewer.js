@@ -1,5 +1,5 @@
 /**
- * @desc 
+ * @desc Controller of the Dicom Viewer. Handles all user event from the GUI.
  * @author Michael Kaserer e1025263@student.tuwien.ac.at
  **/
 function DcmViewer() {
@@ -13,6 +13,9 @@ function DcmViewer() {
     this.parsedFileList = [];
 }
 
+/**
+ * Initialization. Calls matrixHandler function.
+ */
 DcmViewer.prototype.init = function() {
     this.toolbox = new Toolbox();
     this.matrixHandler($('#matrixView').val());
@@ -20,10 +23,18 @@ DcmViewer.prototype.init = function() {
     this.fileParser = new FileParser();
 };
 
+/**
+ * 
+ * @param {String} toolName Sets the current tool of the toolbox by using the name of it. See Toolbox.js.
+ */
 DcmViewer.prototype.setCurrentTool = function(toolName) {
     this.toolbox.setCurrentTool(toolName);
 };
 
+/**
+ * Sets the files to all painter of the viewer and enables the slider.
+ * @param {Array} files Array of Dicom files
+ */
 DcmViewer.prototype.showSeries = function(files) {
     this.numFiles = files.length;
     for(var i = 0, len = this.painters.length; i < len; i++) {
@@ -36,6 +47,7 @@ DcmViewer.prototype.showSeries = function(files) {
         updateInfo(this.painters[i], getSelector(this.painters[i]));
     }
     this.eventsEnabled = true;
+    // Enable the slider
     if(this.numFiles > 1) {
         var self = this;
         $("#slider").slider('option', {
@@ -48,18 +60,23 @@ DcmViewer.prototype.showSeries = function(files) {
     }
 };
 
+/**
+ * Handles the change-event of the input element. Updates the progress bar, parses the files and renders it on a tree. Only Dicom files are processed.
+ * @param {Event} e Change-event of the input element.
+ */
 DcmViewer.prototype.inputHandler = function(e) {
     // detect 'cancel' or no files in fileList
     if(e.target.files.length === 0) {
         return;
     }
-
+    // for the progressbar
     progress(e.target.files.length);
 
     var fileList = e.target.files;
     var dcmList = [];
     this.parsedFileList = [];
-
+    
+    // only Dicom files
     for(var i = 0, len = fileList.length; i < len; i++) {
         if(fileList[i].type === "application/dicom") {
             dcmList.push(fileList[i]);
@@ -67,12 +84,18 @@ DcmViewer.prototype.inputHandler = function(e) {
     }
 
     var self = this;
+    // parse files
     this.fileParser.parseFiles(dcmList, function(e) {
         self.parsedFileList = e;
+        // render them in a tree
         self.tree.render(self.parsedFileList);
     });
 };
 
+/**
+ * Handles click, mousemove, mousedown, mouseup, mouseout, mousewhell and scroll events of the viewer and passes the event to the current tool of the toolbox.
+ * @param {Event} e 
+ */
 DcmViewer.prototype.eventHandler = function(e) {
     if(this.eventsEnabled) {
         // Firefox doesn't have the offsetX/offsetY properties -> own calculation
@@ -90,6 +113,10 @@ DcmViewer.prototype.eventHandler = function(e) {
     }
 };
 
+/**
+ * Scroll handler of the viewer. Updates also the slider.
+ * @param {Event} evt
+ */
 DcmViewer.prototype.scrollHandler = function(evt) {
     if(this.numFiles > 1 && this.eventsEnabled) {
         evt.preventDefault();
@@ -116,6 +143,10 @@ DcmViewer.prototype.scrollHandler = function(evt) {
     }
 };
 
+/**
+ * Event handler for the slider.
+ * @param {Number} num Current position of the slider
+ */
 DcmViewer.prototype.scrollOne = function(num) {
     this.scrollIndex = num;
     for(var i = 0, len = this.painters.length; i < len; i++) {
@@ -128,11 +159,17 @@ DcmViewer.prototype.scrollOne = function(num) {
     }
 };
 
+/**
+ * Event handler of the drop-down menu. Calculates the sizes of each canvas according to the useres screen size.
+ * @param {Event} e
+ */
 DcmViewer.prototype.matrixHandler = function(e) {
     var rows = e.split(',')[0];
     var columns = e.split(',')[1];
+    // width and heihgt of user's screen
     var width = parseInt($('#viewer').width());
     var height = parseInt($('#viewer').height()) - 72 - (rows * 0.5); // 72px toolbar, 0.5px for the border
+    // calculate canvas sizes
     var cellWidth = width / columns;
     var cellHeight = (height / rows);
     $('#viewerScreen').empty();
@@ -143,17 +180,14 @@ DcmViewer.prototype.matrixHandler = function(e) {
         $('#viewerScreen').append('<div id="' + rowName + '" class="viewerRows"></div>');
         for(var x = 0; x < columns; x++) {
             $('#' + rowName).append('<div id="column' + x + '" class="viewerCells" style="width:' + cellWidth + 'px; height:' + cellHeight + 'px;"></div>');
-            //var newSize = Math.min(cellWidth, cellHeight);
+            // new ids
             var tmpId = '#' + rowName + ' #column' + x;
             var newId = 'canvas' + x + '' + y;
-//            var newId2 = 'content' + x + '' + y;
-//            $(tmpId).append('<div id="' + newId2 + '" class="viewerCellContent"></div>');
-//           '#' + newId2
+            // append canvas and divs
             $(tmpId).append('<canvas id="' + newId + '" width="' + cellWidth + 'px" height="' + cellHeight + 'px">Your browser does not support HTML5 canvas</canvas>');
-//            $(tmpId).append('<canvas id="drawCanvas' + x + '' + y +'" class="drawLayer" ' + 'width="' + cellWidth + 'px" height="' + cellHeight +'" style=""></canvas>');
             $(tmpId).append('<div class="studyInfo"></div>');
             $(tmpId).append('<div class="patientInfo"></div>');
-
+            // paint Dicom image
             var tmpPainter = new CanvasPainter(newId);
             newPainters.push(tmpPainter);
             if(this.eventsEnabled) {
@@ -166,6 +200,7 @@ DcmViewer.prototype.matrixHandler = function(e) {
                 //tmpPainter.setScale(this.painters[0].getScale());
                 tmpPainter.setPan(this.painters[0].getPan()[0], this.painters[0].getPan()[1]);
                 tmpPainter.drawImg();
+                // update study and patient info
                 updateInfo(tmpPainter, getSelector(tmpPainter));
             }
         }
@@ -178,10 +213,13 @@ DcmViewer.prototype.matrixHandler = function(e) {
         $('.studyInfo').hide();
         $('.patientInfo').hide();
     }
-
+    // set new painters
     this.painters = newPainters;
 };
 
+/**
+ * Resets all painters. 
+ */
 DcmViewer.prototype.resetHandler = function() {
     if(this.eventsEnabled) {
         for(var i = 0, len = this.painters.length; i < len; i++) {
@@ -190,6 +228,10 @@ DcmViewer.prototype.resetHandler = function() {
     }
 };
 
+/**
+ * Click handler of the tree. Sets the clicked series and calls showSeries.
+ * @param {Event} e Click event
+ */
 DcmViewer.prototype.treeClick = function(e) {
     if(e.target.nodeName === 'A' && e.target.dataset.type === 'file') {
         var serie = [];
@@ -201,7 +243,12 @@ DcmViewer.prototype.treeClick = function(e) {
     }
 };
 
+/**
+ * Builds a HTML-table with the Dicom file's meta data for jQuery Dialog.
+ * @returns {HTML} table
+ */
 DcmViewer.prototype.openMetaDialog = function() {
+    // alphabetical sort
     var sortObject = function(o) {
         var sorted = {},
                 key, a = [];
@@ -238,7 +285,7 @@ DcmViewer.prototype.openMetaDialog = function() {
     var body = document.createElement('tbody');
 
     $.each(file, function(key, value) {
-        if(!$.isFunction(value)) { //value !== undefined && typeof value !== 'object' &&   
+        if(!$.isFunction(value)) { 
             var currentRow = document.createElement("tr");
             var cell1 = document.createElement("td");
             var text1 = document.createTextNode(key);
@@ -256,6 +303,11 @@ DcmViewer.prototype.openMetaDialog = function() {
     return table;
 };
 
+/**
+ * Updates the study and patient info using a given painter and selector.
+ * @param {CanvasPainter} _this
+ * @param {String} selector
+ */
 var updateInfo = function(_this, selector) {
     var isValidDate = function(d) {
         if(Object.prototype.toString.call(d) !== "[object Date]")
@@ -335,6 +387,10 @@ var updateInfo = function(_this, selector) {
     $(selector + ' .patientInfo').empty().append(ul1);
 };
 
+/**
+ * Calculates the id of the div containing the painter.
+ * @param {CanvasPainter} painter
+ */
 var getSelector = function(painter) {
     var row = painter.canvas.id.charAt(7);
     var column = painter.canvas.id.charAt(6);
