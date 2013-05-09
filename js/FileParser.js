@@ -18,11 +18,6 @@ FileParser.prototype.parseFiles = function(rawFiles, callback) {
     var self = this;
     var goal = rawFiles.length;
     
-     // call setupReader for all files
-    for(var i = 0, len = rawFiles.length; i < len; i++) {
-        setupReader(rawFiles[i], i, len);
-    }
-
     var setupReader = function(rawFile, j, length) {
         var reader = new FileReader();
         reader.readAsArrayBuffer(rawFile);
@@ -101,4 +96,9 @@ FileParser.prototype.parseFiles = function(rawFiles, callback) {
             }
         };
     };
+    
+    // call setupReader for all files
+    for(var i = 0, len = rawFiles.length; i < len; i++) {
+        setupReader(rawFiles[i], i, len);
+    }
 };
