@@ -272,10 +272,10 @@ DcmViewer.prototype.openMetaDialog = function() {
     var head = document.createElement('thead');
     var headRow = document.createElement("tr");
     var headCell1 = document.createElement("th");
-    var headText1 = document.createTextNode('Feldname');
+    var headText1 = document.createTextNode('Field Name');
     headCell1.appendChild(headText1);
     var headCell2 = document.createElement("th");
-    var headText2 = document.createTextNode('Inhalt');
+    var headText2 = document.createTextNode('Content');
     headCell2.appendChild(headText2);
     headRow.appendChild(headCell1);
     headRow.appendChild(headCell2);
