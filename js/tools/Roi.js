@@ -30,7 +30,7 @@ Roi.prototype.mousedown = function(x, y) {
 };
 
 Roi.prototype.mouseup = function(x, y, painters, target) {
-    if(this.started) {
+    if(this.started && this.startX !== x && this.startY !== y){
         // calculate and show length
         var painter = getPainterFromId(target.id, painters);
         var context = painter.context;
@@ -38,8 +38,8 @@ Roi.prototype.mouseup = function(x, y, painters, target) {
         context.font = ".8em Helvetica";
         context.fillStyle = this.lineColor;
         context.fillText(dist, x + 3, y + 3);
-        this.started = false;
     }
+    this.started = false;
 };
 
 Roi.prototype.mousemove = function(x, y, painters, target) {
