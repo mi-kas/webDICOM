@@ -6,11 +6,13 @@ Features:
 - Sort images by patient’s name and study’s name
 - Show sorted images in a tree–view
 - Scrolling through images of a series
-- Changing the windowing function • Zoom
+- Changing the windowing function 
+- Zoom
 - Move
 - Length measurement
-- 1×2, 2×2 and 4×4 grid–view
-- Show patient and study information in the corners • Display all DICOM attributes of the image
+- 1×1, 1×2, 2×2 and 4×4 grid–view
+- Show patient and study information in the corners 
+- Display all DICOM attributes of the image
 - Reset functionality
 
 The user can upload a folder with DICOM images. The files are then parsed and sorted by patient's name & 
@@ -36,7 +38,7 @@ Basic functionality is in place. Still to do:
 - [jsdicom-lib](https://github.com/Infogosoft/jsdicom-lib)
 
 ##Demo
-A demo can be found [here](http://mi-kas.github.com/webDICOM/).
+A demo can be found [here](http://mi-kas.github.io/webDICOM/demo/).
 
 ##License
 [GNU GPLv3](http://www.gnu.org/licenses/gpl-3.0)
