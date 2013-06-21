@@ -18,7 +18,7 @@ FileParser.prototype.parseFiles = function(rawFiles, callback) {
     var self = this;
     var goal = rawFiles.length;
     
-    var setupReader = function(rawFile, j, length) {
+    var setupReader = function(rawFile) {
         var reader = new FileReader();
         reader.readAsArrayBuffer(rawFile);
         reader.onload = function(evt) {
@@ -64,7 +64,7 @@ FileParser.prototype.parseFiles = function(rawFiles, callback) {
                     var B = b.PatientsName.toLowerCase();
                     if(A < B)
                         return -1;
-                    if(A > b)
+                    if(A > B)
                         return 1;
                     return 0;
                 });
@@ -99,6 +99,6 @@ FileParser.prototype.parseFiles = function(rawFiles, callback) {
     
     // call setupReader for all files
     for(var i = 0, len = rawFiles.length; i < len; i++) {
-        setupReader(rawFiles[i], i, len);
+        setupReader(rawFiles[i]);
     }
 };
