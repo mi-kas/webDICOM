@@ -155,7 +155,7 @@ function element_reader(tag_reader, number_reader, implicit) {
         element.implicit = implicit;
         offset += element.vl;
         return offset;
-    };
+    }
 }
 
 function element_writer(tag_writer, number_writer, implicit) {
@@ -183,7 +183,7 @@ function element_writer(tag_writer, number_writer, implicit) {
         // Write actual data
         buffer.set(element.data, offset);
         return offset + element.vl;
-    };
+    }
 }
 
 transferSyntaxes = {
@@ -191,7 +191,7 @@ transferSyntaxes = {
     "LittleEndianExplicit": "1.2.840.10008.1.2.1",
     "BigEndianExplicit": "1.2.840.10008.1.2.2",
     "DeflatedLittleEndianExplicit": "1.2.840.10008.1.2.1.99"
-};
+}
 
 tag_readers = {
     "1.2.840.10008.1.2": read_tag_LE,
@@ -220,7 +220,7 @@ tag_readers = {
     "1.2.840.10008.1.2.4.90": read_tag_LE,
     "1.2.840.10008.1.2.4.91": read_tag_LE,
     "1.2.840.10008.1.2.4.92": read_tag_LE,
-    "1.2.840.10008.1.2.4.93": read_tag_LE
+    "1.2.840.10008.1.2.4.93": read_tag_LE,
 };
 
 tag_writers = {
@@ -250,7 +250,7 @@ tag_writers = {
     "1.2.840.10008.1.2.4.90": write_tag_LE,
     "1.2.840.10008.1.2.4.91": write_tag_LE,
     "1.2.840.10008.1.2.4.92": write_tag_LE,
-    "1.2.840.10008.1.2.4.93": write_tag_LE
+    "1.2.840.10008.1.2.4.93": write_tag_LE,
 };
 
 is_implicit = {
@@ -281,7 +281,7 @@ is_implicit = {
     "1.2.840.10008.1.2.4.91": false,
     "1.2.840.10008.1.2.4.92": false,
     "1.2.840.10008.1.2.4.93": false
-};
+}
 
 is_little_endian = {
     "1.2.840.10008.1.2": true,
@@ -347,7 +347,7 @@ number_writers = {
     "1.2.840.10008.1.2.4.91": write_number_LE,
     "1.2.840.10008.1.2.4.92": write_number_LE,
     "1.2.840.10008.1.2.4.93": write_number_LE
-};
+}
 
 // Element reader factory
 // All transfer syntaxes for encapsulation of encoded pixel data uses Explicit VR Little endian (11_05 A4)
@@ -355,7 +355,7 @@ function get_element_reader(transfersyntaxUID) {
     if(transfersyntaxUID in tag_readers && transfersyntaxUID in number_readers) {
         return new element_reader(tag_readers[transfersyntaxUID],
                                   number_readers[transfersyntaxUID],
-                                  is_implicit[transfersyntaxUID]);
+                                  is_implicit[transfersyntaxUID])
     }
     return;
 }

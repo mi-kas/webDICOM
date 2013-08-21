@@ -34,7 +34,7 @@ function DataElement(little_endian) {
                 return undefined;
             }
         };
-    };
+    }
     this.get_repr = _get_repr(this.little_endian ? element_to_repr_le : element_to_repr_be);
 }
 
@@ -46,15 +46,15 @@ function DcmFile() {
 
 DcmFile.prototype.get_meta_element = function(tag) {
     return this.meta_elements[tag];
-};
+}
 
 DcmFile.prototype.get_element = function(tag) {
     return this.data_elements[tag];
-};
+}
 
 DcmFile.prototype.get = function(tagname) {
     return this.data_elements[dcmdict[tag]].get_value();
-};
+}
 
 DcmFile.prototype.getCTValue = function(col, row) {
     if(col < 0 || col >= this.Columns || row < 0 || row >= this.Rows)
@@ -62,7 +62,7 @@ DcmFile.prototype.getCTValue = function(col, row) {
     var data_idx = (col + row*this.Columns);
     var intensity = this.PixelData[data_idx] * this.RescaleSlope + this.RescaleIntercept;
     return intensity;
-};
+}
 
 DcmFile.prototype.getPatientCoordinate = function(col, row) {
         if (this.imagePosition == undefined || this.imageOrientationColumn == undefined || this.imageOrientationRow == undefined)
@@ -70,4 +70,4 @@ DcmFile.prototype.getPatientCoordinate = function(col, row) {
         return [this.imagePosition[0] + row * this.imageOrientationRow[0] + col * this.imageOrientationColumn[0],
                 this.imagePosition[1] + row * this.imageOrientationRow[1] + col * this.imageOrientationColumn[1],
                 this.imagePosition[2] + row * this.imageOrientationRow[2] + col * this.imageOrientationColumn[2]];
-};
+}

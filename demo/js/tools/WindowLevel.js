@@ -1,5 +1,5 @@
 /**
- * @desc 
+ * @desc Implements the windowing function functionality.
  * @author Michael Kaserer e1025263@student.tuwien.ac.at
  * @required All tools must implement following functions:
  * click(x, y, painters)
@@ -28,6 +28,7 @@ WindowLevel.prototype.mouseup = function() {
 WindowLevel.prototype.mousemove = function(x, y, painters) {
     if(this.started) {
         var curWindowing = painters[0].getWindowing();
+        // Calculate new values
         var deltaX = x - this.curX;
         var deltaY = this.curY - y;
         var newX = curWindowing[0] + deltaX;

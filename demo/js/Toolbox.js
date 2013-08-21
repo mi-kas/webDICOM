@@ -12,6 +12,10 @@ function Toolbox() {
      this.currentTool = this.tools['Window level'];
 }
 
+/**
+ * Sets the currentTool by its name.
+ * @param {String} funcName
+ */
 Toolbox.prototype.setCurrentTool = function(funcName) {
     this.currentTool = this.tools[funcName];
 };

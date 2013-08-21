@@ -1,18 +1,24 @@
 /**
- * @desc 
+ * @desc Takes the files of the HTML input and parses them with the DicomParser.
  * @author Michael Kaserer e1025263@student.tuwien.ac.at
  **/
 function FileParser() {
     this.files = [];
 }
 
+/**
+ * Parses all files and sets default values for not existing values of RescaleSlope, RescaleIntercept, WindowWith and WindowCenter.
+ * Sorts the files alphabetically by PatientsName.
+ * @param {Array} rawFiles      Files to be parsed
+ * @param {function} callback   Function to be called after all files are parsed
+ */
 FileParser.prototype.parseFiles = function(rawFiles, callback) {
     // Reset array
     this.files = [];
     var self = this;
     var goal = rawFiles.length;
-
-    var setupReader = function(rawFile, j, length) {
+    
+    var setupReader = function(rawFile) {
         var reader = new FileReader();
         reader.readAsArrayBuffer(rawFile);
         reader.onload = function(evt) {
@@ -58,16 +64,12 @@ FileParser.prototype.parseFiles = function(rawFiles, callback) {
                     var B = b.PatientsName.toLowerCase();
                     if(A < B)
                         return -1;
-                    if(A > b)
+                    if(A > B)
                         return 1;
                     return 0;
                 });
                 callback(self.files);
             }
-        };
-
-        reader.onprogress = function(e) {
-
         };
 
         reader.onerror = function(e) {
@@ -94,8 +96,9 @@ FileParser.prototype.parseFiles = function(rawFiles, callback) {
             }
         };
     };
-
+    
+    // call setupReader for all files
     for(var i = 0, len = rawFiles.length; i < len; i++) {
-        setupReader(rawFiles[i], i, len);
+        setupReader(rawFiles[i]);
     }
 };

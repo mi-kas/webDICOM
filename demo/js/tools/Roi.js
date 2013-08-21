@@ -1,5 +1,5 @@
 /**
- * @desc 
+ * @desc Implements the length measurement functionality. Lenght is calculated by using the PixelSpacing of the image and Pythagoras' theorem.
  * @author Michael Kaserer e1025263@student.tuwien.ac.at
  * @required All tools must implement following functions:
  * click(x, y, painters)
@@ -30,7 +30,7 @@ Roi.prototype.mousedown = function(x, y) {
 };
 
 Roi.prototype.mouseup = function(x, y, painters, target) {
-    if(this.started) {
+    if(this.started && this.startX !== x && this.startY !== y){
         // calculate and show length
         var painter = getPainterFromId(target.id, painters);
         var context = painter.context;
@@ -38,8 +38,8 @@ Roi.prototype.mouseup = function(x, y, painters, target) {
         context.font = ".8em Helvetica";
         context.fillStyle = this.lineColor;
         context.fillText(dist, x + 3, y + 3);
-        this.started = false;
     }
+    this.started = false;
 };
 
 Roi.prototype.mousemove = function(x, y, painters, target) {
@@ -69,6 +69,15 @@ var getPainterFromId = function(id, painters) {
     return null;
 };
 
+/**
+ * Calculates the distance between two points considering the PixelSpacing and scale.
+ * @param {CanvasPainter} painter
+ * @param {Number} startX   X-value of the start point
+ * @param {Number} startY   Y-value of the start point
+ * @param {Number} endX     X-value of the end point
+ * @param {Number} endY     Y-value of the end point
+ * @returns {Number} Length betwen the two points
+ */
 var calculateDist = function(painter, startX, startY, endX, endY) {
     var pixelSpacing = painter.currentFile.PixelSpacing ? painter.currentFile.PixelSpacing : [1, 1];
     var a = (endX - startX) * pixelSpacing[0] / painter.getScale(); 

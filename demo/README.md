@@ -1,14 +1,19 @@
 # webDICOM
 
 Implementation of a web-based (JavaScript and HTML5 only) DICOM viewer as part of my Bachelor's thesis. 
-Following features will be implemented:
-- Loading and displaying DICOM images by specifying files or a directory
-- Scrolling through the images
-- Changing the windowing function
+Features:
+- Load and display DICOM images by specifying a directory 
+- Sort images by patient’s name and study’s name
+- Show sorted images in a tree–view
+- Scrolling through images of a series
+- Changing the windowing function 
 - Zoom
 - Move
-- Panning 
-- Displaying patient information in the corners
+- Length measurement
+- 1×1, 1×2, 2×2 and 4×4 grid–view
+- Show patient and study information in the corners 
+- Display all DICOM attributes of the image
+- Reset functionality
 
 The user can upload a folder with DICOM images. The files are then parsed and sorted by patient's name & 
 series description and viewed in a tree view. By clicking on a series, the images are displayed in the viewer.
@@ -17,13 +22,12 @@ series description and viewed in a tree view. By clicking on a series, the image
 The visualisation of DICOM images is done with the HTML5 canvas element. 
 
 ##Browser support
-Best performance and user expierence with Google Chrome. HTML5 Upload Folder (webkitdirectory) works only with Chrome. 
+Best performance and user expierence with Google Chrome and Opera Next, because only they support the HTML5 webkitdirectory tag. 
 Other browsers accept multiple files.
 
 ##Status
-There is still work in progress, but basic functionality is in place. TODOs include:
-- compressed DICOMs (JPEG, JPEG2000, JPEG-LS)
-- ROIs
+Basic functionality is in place. Still to do:
+- Support for compressed DICOMs (JPEG, JPEG2000, JPEG-LS)
 
 ##Used libraries
 - [jQuery](http://jquery.com/) & [jQuery UI](http://jqueryui.com/)
@@ -34,4 +38,19 @@ There is still work in progress, but basic functionality is in place. TODOs incl
 - [jsdicom-lib](https://github.com/Infogosoft/jsdicom-lib)
 
 ##Demo
-A demo can be found [here](http://mi-kas.github.com/webDICOM/).
+A demo can be found [here](http://mi-kas.github.io/webDICOM/demo/).
+
+##License
+[GNU GPLv3](http://www.gnu.org/licenses/gpl-3.0)
+
+webDICOM is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License version 3 as published by
+the Free Software Foundation.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see [http://www.gnu.org/licenses/](http://www.gnu.org/licenses/).

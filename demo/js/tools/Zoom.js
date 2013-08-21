@@ -1,5 +1,5 @@
 /**
- * @desc 
+ * @desc Implements the zoom functionality.
  * @author Michael Kaserer e1025263@student.tuwien.ac.at
  * @required All tools must implement following functions:
  * click(x, y, painters)
@@ -26,7 +26,6 @@ Zoom.prototype.mouseup = function() {
 
 Zoom.prototype.mousemove = function(x, y, painters) {
     if(this.started) {
-        //var deltaX = x - this.curX;
         var deltaY = this.curY - y;
         var newDeltaY = painters[0].getScale() + deltaY / 100.0;
         
@@ -35,7 +34,6 @@ Zoom.prototype.mousemove = function(x, y, painters) {
             painters[i].drawImg();
         }
     }
-    //this.curX = x;
     this.curY = y;
 };
 
