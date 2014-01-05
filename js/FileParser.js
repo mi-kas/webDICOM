@@ -1,6 +1,6 @@
 /**
  * @desc Takes the files of the HTML input and parses them with the DicomParser.
- * @author Michael Kaserer e1025263@student.tuwien.ac.at
+ * @author Michael Kaserer 
  **/
 function FileParser() {
     this.files = [];

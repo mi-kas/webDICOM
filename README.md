@@ -22,12 +22,13 @@ series description and viewed in a tree view. By clicking on a series, the image
 The visualisation of DICOM images is done with the HTML5 canvas element. 
 
 ##Browser support
-Best performance and user expierence with Google Chrome and Opera Next, because only they support the HTML5 webkitdirectory tag. 
-Other browsers accept multiple files.
+Best performance and user expierence with Google Chrome under Mac OS X. 
+Other browsers accept only multiple files.
 
 ##Status
 Basic functionality is in place. Still to do:
 - Support for compressed DICOMs (JPEG, JPEG2000, JPEG-LS)
+- Windows support
 
 ##Used libraries
 - [jQuery](http://jquery.com/) & [jQuery UI](http://jqueryui.com/)

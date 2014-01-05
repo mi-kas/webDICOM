@@ -1,7 +1,7 @@
 /**
  * @desc CanvasPainter is used to draw a Dicom file on a HTML-canvas element. Scale, windowing and pan can be altered.
  * @param {String} canvasId Id of the HTML-canvas element for the painter.
- * @author Michael Kaserer e1025263@student.tuwien.ac.at
+ * @author Michael Kaserer
  **/
 function CanvasPainter(canvasId) {
     this.canvas = document.getElementById(canvasId);

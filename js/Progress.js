@@ -2,7 +2,7 @@
  * @desc This JavaScript worker takes the number of files and perform
  * progress with a certain delay for the progressbar.
  * It posts the current percentual value of the progressbar back to the HTML file.
- * @author Michael Kaserer e1025263@student.tuwien.ac.at
+ * @author Michael Kaserer
  **/
 var current = 0;
 var max = 100;

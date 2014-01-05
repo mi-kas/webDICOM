@@ -1,6 +1,6 @@
 /**
  * @desc 
- * @author Michael Kaserer e1025263@student.tuwien.ac.at
+ * @author Michael Kaserer
  **/
 function Toolbox() {
     this.tools = {

@@ -1,6 +1,6 @@
 /**
  * @desc Controller of the Dicom Viewer. Handles all user event from the GUI.
- * @author Michael Kaserer e1025263@student.tuwien.ac.at
+ * @author Michael Kaserer
  **/
 function DcmViewer() {
     this.toolbox;

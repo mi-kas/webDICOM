@@ -1,6 +1,6 @@
 /**
  * @desc Builds a tree structure from a array of Dicom files.
- * @author Michael Kaserer e1025263@student.tuwien.ac.at
+ * @author Michael Kaserer 
  **/
 function Tree() {
     var dcmTree = {};
